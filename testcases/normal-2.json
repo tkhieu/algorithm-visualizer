@@ -1,0 +1,52 @@
+{
+  "id": "normal-2",
+  "name": "Nhiều cách chọn",
+  "group": "normal",
+  "input": {
+    "capacity": 48,
+    "items": [
+      {
+        "name": "Vật 1",
+        "weight": 11,
+        "value": 45
+      },
+      {
+        "name": "Vật 2",
+        "weight": 16,
+        "value": 67
+      },
+      {
+        "name": "Vật 3",
+        "weight": 4,
+        "value": 53
+      },
+      {
+        "name": "Vật 4",
+        "weight": 5,
+        "value": 63
+      },
+      {
+        "name": "Vật 5",
+        "weight": 16,
+        "value": 48
+      },
+      {
+        "name": "Vật 6",
+        "weight": 5,
+        "value": 89
+      },
+      {
+        "name": "Vật 7",
+        "weight": 14,
+        "value": 31
+      },
+      {
+        "name": "Vật 8",
+        "weight": 4,
+        "value": 51
+      }
+    ]
+  },
+  "expectedOptimum": 368,
+  "note": null
+}

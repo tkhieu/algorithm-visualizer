@@ -1,0 +1,1 @@
+export const pseudocode=[{id:'sort',text:'Sắp vật theo vᵢ/wᵢ giảm dần',indent:0},{id:'consider',text:'Xét lần lượt từng vật',indent:0},{id:'take',text:'Nếu vừa túi, lấy vật',indent:1},{id:'reject',text:'Nếu không vừa, bỏ vật',indent:1},{id:'done',text:'Trả về nghiệm khả thi (xấp xỉ)',indent:0}];

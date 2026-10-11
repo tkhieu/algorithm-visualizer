@@ -1,0 +1,32 @@
+{
+  "id": "normal-1",
+  "name": "Ví dụ cơ bản",
+  "group": "normal",
+  "input": {
+    "capacity": 7,
+    "items": [
+      {
+        "name": "A",
+        "weight": 1,
+        "value": 1
+      },
+      {
+        "name": "B",
+        "weight": 3,
+        "value": 4
+      },
+      {
+        "name": "C",
+        "weight": 4,
+        "value": 5
+      },
+      {
+        "name": "D",
+        "weight": 5,
+        "value": 7
+      }
+    ]
+  },
+  "expectedOptimum": 9,
+  "note": null
+}

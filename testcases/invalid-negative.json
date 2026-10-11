@@ -1,0 +1,17 @@
+{
+  "id": "invalid-negative",
+  "name": "Khối lượng âm",
+  "group": "invalid",
+  "input": {
+    "capacity": 5,
+    "items": [
+      {
+        "name": "A",
+        "weight": -1,
+        "value": 8
+      }
+    ]
+  },
+  "expectedOptimum": null,
+  "note": null
+}

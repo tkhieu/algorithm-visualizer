@@ -1,0 +1,2 @@
+import {describe,it,expect} from 'vitest';import {manifest} from './manifest';import {registry} from './registry';
+describe('catalog',()=>{it('manifest và registry khớp hoàn toàn',async()=>{expect(manifest.map(x=>x.id).sort()).toEqual(Object.keys(registry).sort());for(const m of manifest){const a=(await registry[m.id]()).algorithm;for(const key of ['id','problemId','title','chapter','section','page','technique','exactness','complexity','views'] as const)expect(a[key]).toEqual(m[key])}})});

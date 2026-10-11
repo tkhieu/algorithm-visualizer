@@ -1,0 +1,1 @@
+export const pseudocode=[{id:'start',text:'best ← 0; duyệt cây tập con',indent:0},{id:'branch',text:'Thử bỏ hoặc lấy vật i',indent:1},{id:'leaf',text:'Nếu khả thi và tốt hơn, cập nhật best',indent:1},{id:'done',text:'Trả về best và tập vật',indent:0}];

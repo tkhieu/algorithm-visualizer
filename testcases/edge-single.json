@@ -1,0 +1,17 @@
+{
+  "id": "edge-single",
+  "name": "Một vật vừa túi",
+  "group": "edge",
+  "input": {
+    "capacity": 5,
+    "items": [
+      {
+        "name": "A",
+        "weight": 5,
+        "value": 9
+      }
+    ]
+  },
+  "expectedOptimum": 9,
+  "note": null
+}

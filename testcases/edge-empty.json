@@ -1,0 +1,11 @@
+{
+  "id": "edge-empty",
+  "name": "Không có vật",
+  "group": "edge",
+  "input": {
+    "capacity": 10,
+    "items": []
+  },
+  "expectedOptimum": 0,
+  "note": null
+}

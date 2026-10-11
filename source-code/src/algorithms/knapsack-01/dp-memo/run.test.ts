@@ -1,0 +1,2 @@
+import {it,expect} from 'vitest';import {algorithm} from './index';import {MetricsRecorder} from '../../../core/recorder';import {check} from '../../../problems/knapsack-01/checker';
+it('dp-memo trả nghiệm khả thi và metadata hợp lệ',()=>{const input={capacity:7,items:[{name:'A',weight:3,value:4},{name:'B',weight:4,value:5},{name:'C',weight:5,value:6}]};const result=algorithm.run(input,{rec:new MetricsRecorder(),signal:new AbortController().signal});expect(check(input,result).ok).toBe(true);expect(algorithm.pseudocode.length).toBeGreaterThan(0)});

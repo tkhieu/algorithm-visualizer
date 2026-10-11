@@ -1,0 +1,27 @@
+{
+  "id": "special-greedy",
+  "name": "Tham lam không tối ưu",
+  "group": "special",
+  "input": {
+    "capacity": 50,
+    "items": [
+      {
+        "name": "A",
+        "weight": 10,
+        "value": 60
+      },
+      {
+        "name": "B",
+        "weight": 20,
+        "value": 100
+      },
+      {
+        "name": "C",
+        "weight": 30,
+        "value": 120
+      }
+    ]
+  },
+  "expectedOptimum": 220,
+  "note": null
+}
