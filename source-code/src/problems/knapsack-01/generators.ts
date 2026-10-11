@@ -1,0 +1,2 @@
+import type {SizeClass} from '../../core/contracts';import type {Input} from './definition';import {rng} from '../../lib/random';
+export function generate(seed:number,size:SizeClass):Input{const r=rng(seed);const n={tiny:4,small:8,medium:16,large:28}[size];const maxW={tiny:8,small:18,medium:35,large:70}[size];const items=Array.from({length:n},(_,i)=>({name:`Vật ${i+1}`,weight:1+Math.floor(r()*maxW),value:1+Math.floor(r()*100)}));return {capacity:Math.floor(maxW*n/3),items}}

@@ -1,0 +1,1 @@
+export const pseudocode=[{id:'init',text:'F[0,w] ← 0 cho mọi w',indent:0},{id:'cell',text:'F[i,w] ← max(F[i−1,w], F[i−1,w−wᵢ]+vᵢ)',indent:0},{id:'backtrack',text:'Truy vết từ F[n,W] để lấy tập vật',indent:0},{id:'done',text:'Trả về F[n,W] và tập vật',indent:0}];

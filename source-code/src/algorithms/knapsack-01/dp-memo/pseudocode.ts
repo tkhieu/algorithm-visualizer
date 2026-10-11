@@ -1,0 +1,1 @@
+export const pseudocode=[{id:'call',text:'M(i,w): tra ô nhớ; nếu chưa có thì tính',indent:0},{id:'base',text:'Nếu i=0 hoặc w=0: trả về 0',indent:1},{id:'compute',text:'M(i,w) ← max(bỏ vật, lấy vật nếu vừa)',indent:1},{id:'backtrack',text:'Truy vết các ô nhớ để chọn vật',indent:0},{id:'done',text:'Trả về M(n,W)',indent:0}];
