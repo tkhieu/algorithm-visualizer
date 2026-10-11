@@ -3,4 +3,4 @@ function Shell(){const [mode,setMode]=React.useState<'chapter'|'technique'>('cha
 function PlayerRoute(){const {algoId}=useParams();return <PlayerPage key={algoId} algoId={algoId||'dp-table'}/>}
 function AboutPage(){return <div className="space-y-4"><h1>Giới thiệu</h1><p>Ứng dụng minh họa bài toán cái túi 0/1 trong môn Phân tích và thiết kế thuật toán (CS112).</p><p>Năm cách giải dựa trên Anany Levitin, <em>Introduction to the Design and Analysis of Algorithms</em>, bản 3, các mục §3.4, §8.2, §12.2 và §12.3.</p><p>Phím tắt ở trình phát: Space phát/dừng; ←/→ lùi/tiến; Shift+←/→ đổi giai đoạn; +/− đổi tốc độ.</p></div>}
 import * as React from 'react';
-export function App(){return <BrowserRouter><Shell/></BrowserRouter>}
+export function App(){return <BrowserRouter basename={import.meta.env.BASE_URL}><Shell/></BrowserRouter>}
