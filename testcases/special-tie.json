@@ -1,0 +1,22 @@
+{
+  "id": "special-tie",
+  "name": "Nhiều nghiệm tối ưu",
+  "group": "special",
+  "input": {
+    "capacity": 5,
+    "items": [
+      {
+        "name": "A",
+        "weight": 5,
+        "value": 8
+      },
+      {
+        "name": "B",
+        "weight": 5,
+        "value": 8
+      }
+    ]
+  },
+  "expectedOptimum": 8,
+  "note": null
+}

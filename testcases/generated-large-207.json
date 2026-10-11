@@ -1,0 +1,151 @@
+{
+  "id": "generated-large-207",
+  "group": "large",
+  "seed": 207,
+  "input": {
+    "capacity": 653,
+    "items": [
+      {
+        "name": "Vật 1",
+        "weight": 9,
+        "value": 91
+      },
+      {
+        "name": "Vật 2",
+        "weight": 59,
+        "value": 75
+      },
+      {
+        "name": "Vật 3",
+        "weight": 10,
+        "value": 93
+      },
+      {
+        "name": "Vật 4",
+        "weight": 34,
+        "value": 27
+      },
+      {
+        "name": "Vật 5",
+        "weight": 34,
+        "value": 94
+      },
+      {
+        "name": "Vật 6",
+        "weight": 16,
+        "value": 71
+      },
+      {
+        "name": "Vật 7",
+        "weight": 70,
+        "value": 29
+      },
+      {
+        "name": "Vật 8",
+        "weight": 9,
+        "value": 47
+      },
+      {
+        "name": "Vật 9",
+        "weight": 12,
+        "value": 48
+      },
+      {
+        "name": "Vật 10",
+        "weight": 44,
+        "value": 1
+      },
+      {
+        "name": "Vật 11",
+        "weight": 5,
+        "value": 51
+      },
+      {
+        "name": "Vật 12",
+        "weight": 59,
+        "value": 9
+      },
+      {
+        "name": "Vật 13",
+        "weight": 39,
+        "value": 77
+      },
+      {
+        "name": "Vật 14",
+        "weight": 24,
+        "value": 18
+      },
+      {
+        "name": "Vật 15",
+        "weight": 24,
+        "value": 27
+      },
+      {
+        "name": "Vật 16",
+        "weight": 6,
+        "value": 61
+      },
+      {
+        "name": "Vật 17",
+        "weight": 45,
+        "value": 32
+      },
+      {
+        "name": "Vật 18",
+        "weight": 62,
+        "value": 96
+      },
+      {
+        "name": "Vật 19",
+        "weight": 2,
+        "value": 75
+      },
+      {
+        "name": "Vật 20",
+        "weight": 56,
+        "value": 62
+      },
+      {
+        "name": "Vật 21",
+        "weight": 51,
+        "value": 16
+      },
+      {
+        "name": "Vật 22",
+        "weight": 61,
+        "value": 53
+      },
+      {
+        "name": "Vật 23",
+        "weight": 44,
+        "value": 93
+      },
+      {
+        "name": "Vật 24",
+        "weight": 6,
+        "value": 18
+      },
+      {
+        "name": "Vật 25",
+        "weight": 1,
+        "value": 20
+      },
+      {
+        "name": "Vật 26",
+        "weight": 37,
+        "value": 49
+      },
+      {
+        "name": "Vật 27",
+        "weight": 59,
+        "value": 53
+      },
+      {
+        "name": "Vật 28",
+        "weight": 20,
+        "value": 38
+      }
+    ]
+  },
+  "expectedOptimum": 1351
+}

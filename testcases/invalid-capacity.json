@@ -1,0 +1,11 @@
+{
+  "id": "invalid-capacity",
+  "name": "Sức chứa âm",
+  "group": "invalid",
+  "input": {
+    "capacity": -1,
+    "items": []
+  },
+  "expectedOptimum": null,
+  "note": null
+}
