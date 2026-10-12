@@ -18,6 +18,8 @@ export const algorithm: Algorithm<Input, Output, VisualState> = {
   pseudocode,
   legend,
   traceLimit: limits,
+  precondition: (input) =>
+    input.edges.some(([, , weight]) => weight !== 1) ? 'cần trọng số đơn vị' : undefined,
   initVisual,
   run,
 }

@@ -50,3 +50,11 @@ test('B3: so sánh và bộ ca kiểm thử hoạt động cho từng bài toán
   }
   expect(errors).toEqual([])
 })
+
+test('B3: BFS thông báo không áp dụng với cạnh có trọng số', async ({ page }) => {
+  await page.goto('/play/single-source-shortest-path/bfs-unweighted')
+  await page.getByRole('tab', { name: 'Ca kiểm thử' }).click()
+  await page.getByRole('combobox', { name: 'Ca kiểm thử' }).selectOption('special')
+  await page.getByRole('button', { name: 'Chạy', exact: true }).click()
+  await expect(page.getByTestId('output')).toContainText('Không áp dụng: cần trọng số đơn vị')
+})

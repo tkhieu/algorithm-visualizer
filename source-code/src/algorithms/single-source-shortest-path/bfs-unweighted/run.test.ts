@@ -4,6 +4,8 @@ import { generate } from '../../../problems/single-source-shortest-path/generato
 import { reference } from '../../../problems/single-source-shortest-path/checker'
 import { MetricsRecorder, TraceRecorder } from '../../../core/recorder'
 import { TraceStore } from '../../../core/trace/TraceStore'
+import { execute } from '../../../core/worker-protocol/execute'
+import { cases } from '../../../problems/single-source-shortest-path/cases'
 it(`${algorithm.id}: seed, trace, tiếng Việt`, () => {
   for (let seed = 1; seed <= 40; seed++) {
     const original = generate(seed, 'small'),
@@ -37,4 +39,10 @@ it(`${algorithm.id}: seed, trace, tiếng Việt`, () => {
   expect(rec.steps.some((s) => s.explain.includes('đỉnh') || s.explain.includes('nguồn'))).toBe(
     true,
   )
+})
+
+it('từ chối có lý do khi ca đặc biệt có trọng số khác 1', async () => {
+  const special = cases.find((item) => item.id === 'special')!
+  const result = await execute(algorithm.id, special.input, true)
+  expect(result).toEqual({ status: 'not-applicable', reason: 'cần trọng số đơn vị' })
 })

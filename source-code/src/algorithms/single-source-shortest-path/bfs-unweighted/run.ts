@@ -2,8 +2,6 @@ import type { RunContext } from '../../../core/contracts'
 import type { Input, Output } from '../../../problems/single-source-shortest-path/definition'
 import type { VisualState } from '../shared'
 export function run(input: Input, { rec, signal }: RunContext<VisualState>): Output {
-  if (input.edges.some((e) => e[2] !== 1))
-    throw new Error('BFS chỉ áp dụng cho cạnh có trọng số 1.')
   const adj = Array.from({ length: input.n }, () => [] as number[])
   for (const [a, b] of input.edges) adj[a].push(b)
   const dist: (number | null)[] = Array(input.n).fill(null),
