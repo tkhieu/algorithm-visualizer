@@ -1,0 +1,5 @@
+export const pseudocode = [
+  { id: 'pivot', text: 'Chọn phần tử cuối làm chốt', indent: 0 },
+  { id: 'partition', text: 'Phân hoạch Lomuto', indent: 0 },
+  { id: 'done', text: 'Trả về a[k−1]', indent: 0 }
+];

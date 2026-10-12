@@ -1,0 +1,41 @@
+import type { RunContext } from '../../../core/contracts';
+import { f, type Input, type Output } from '../../../problems/root-finding/definition';
+import { finish, type VisualState } from '../shared';
+export function run(input: Input, { rec, signal }: RunContext<VisualState>): Output {
+  let lo = input.left,
+    hi = input.right,
+    flo = f(lo, input.c, input.d),
+    fhi = f(hi, input.c, input.d),
+    root = lo;
+  if (flo === 0) return finish(rec, input, lo);
+  if (fhi === 0) return finish(rec, input, hi);
+  for (let iteration = 0; iteration < 500; iteration++) {
+    if (signal.aborted) throw new Error('Đã huỷ');
+    // Giao điểm với trục hoành của dây cung nối hai đầu khoảng.
+    root = (lo * fhi - hi * flo) / (fhi - flo);
+    const value = f(root, input.c, input.d);
+    rec.count('compare');
+    rec.step(
+      'secant',
+      `Lần ${iteration + 1}: dây cung cắt trục tại ${root}, f(x)=${value}.`,
+      (d) => {
+        d.secant = { from: { x: lo, y: flo }, to: { x: hi, y: fhi } };
+        d.iterates?.push({ x: root, y: value });
+        d.note = `Ước lượng ${root}`;
+      }
+    );
+    if (Math.abs(value) <= input.tolerance * input.c || Math.abs(hi - lo) <= input.tolerance) break;
+    if (value < 0) {
+      lo = root;
+      flo = value;
+    } else {
+      hi = root;
+      fhi = value;
+    }
+    rec.step('narrow', `Giữ khoảng [${lo}, ${hi}] kẹp nghiệm.`, (d) => {
+      d.intervals = [{ from: lo, to: hi }];
+      d.note = `Khoảng [${lo}, ${hi}]`;
+    });
+  }
+  return finish(rec, input, root);
+}

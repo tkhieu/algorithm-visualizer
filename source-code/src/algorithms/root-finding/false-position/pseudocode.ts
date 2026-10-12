@@ -1,0 +1,5 @@
+export const pseudocode = [
+  { id: 'secant', text: 'Cắt dây cung với trục hoành', indent: 0 },
+  { id: 'narrow', text: 'Giữ khoảng kẹp nghiệm', indent: 0 },
+  { id: 'done', text: 'Trả về nghiệm gần đúng', indent: 0 }
+];

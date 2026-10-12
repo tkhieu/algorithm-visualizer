@@ -1,0 +1,24 @@
+import type { RunContext } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/gcd/definition';
+import type { VisualState } from '../shared';
+export function run({ a, b }: Input, { rec, signal }: RunContext<VisualState>): Output {
+  let k = Math.min(a, b);
+  if (k === 0) k = Math.max(a, b);
+  while (k > 0) {
+    if (signal.aborted) throw new Error('Đã huỷ');
+    rec.count('compare', 2);
+    rec.step('test', `Thử ước ${k}: ${a}%${k}=${a % k}, ${b}%${k}=${b % k}.`, (d) => {
+      d.items.push({ label: String(k) });
+      d.current = d.items.length - 1;
+      d.note = `Thử ước ${k}`;
+    });
+    if (a % k === 0 && b % k === 0) break;
+    k--;
+  }
+  rec.step('done', `Ước chung lớn nhất là ${k}.`, (d) => {
+    d.items.push({ label: String(k), role: 'done' });
+    d.current = d.items.length - 1;
+    d.note = `ƯCLN = ${k}`;
+  });
+  return { gcd: k };
+}

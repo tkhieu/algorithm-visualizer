@@ -1,0 +1,23 @@
+import type { RunContext } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/josephus/definition';
+import { finish, type VisualState } from '../shared';
+export function run({ n, k }: Input, { rec, signal }: RunContext<VisualState>): Output {
+  const alive = Array.from({ length: n }, (_, i) => i + 1);
+  let index = 0;
+  while (alive.length > 1) {
+    if (signal.aborted) throw new Error('Đã huỷ');
+    index = (index + k - 1) % alive.length;
+    const removed = alive.splice(index, 1)[0];
+    rec.count('visit');
+    rec.step(
+      'remove',
+      `Đếm ${k} người và loại người số ${removed}; còn ${alive.length} người.`,
+      (d) => {
+        d.items[removed - 1].role = 'removed';
+        d.current = alive[index % alive.length] - 1;
+        d.note = `Đã loại ${removed}`;
+      }
+    );
+  }
+  return finish(rec, alive[0]);
+}

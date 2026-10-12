@@ -1,0 +1,16 @@
+import type { TestCase } from '../../core/contracts';
+import type { Input } from './definition';
+import { generate } from './generators';
+import { reference } from './checker';
+const raw: TestCase<Input>[] = [
+  { id: 'normal-1', name: 'Số Fibonacci thứ sáu', group: 'normal', input: { n: 6 } },
+  { id: 'normal-2', name: 'Số Fibonacci thứ mười', group: 'normal', input: { n: 10 } },
+  { id: 'edge-zero', name: 'F(0)', group: 'edge', input: { n: 0 } },
+  { id: 'small-1', name: 'Dữ liệu nhỏ', group: 'small', input: generate(7, 'small') },
+  { id: 'large-1', name: 'Dữ liệu lớn', group: 'large', input: generate(13, 'large') },
+  { id: 'special-one', name: 'F(1)', group: 'special', input: { n: 1 } },
+  { id: 'invalid-negative', name: 'Chỉ số âm', group: 'invalid', input: { n: -1 } }
+];
+export const cases = raw.map((c) =>
+  c.group === 'invalid' ? c : { ...c, expected: { value: reference(c.input as Input) } }
+);

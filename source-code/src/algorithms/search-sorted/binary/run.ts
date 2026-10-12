@@ -1,0 +1,23 @@
+import type { RunContext } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/search-sorted/definition';
+import { mark, finish, type VisualState } from '../shared';
+export function run({ values, target }: Input, { rec, signal }: RunContext<VisualState>): Output {
+  let lo = 0,
+    hi = values.length - 1,
+    index = -1;
+  while (lo <= hi) {
+    if (signal.aborted) throw new Error('Đã huỷ');
+    const mid = Math.floor((lo + hi) / 2);
+    rec.count('compare');
+    rec.step('probe', `Xét giữa [${lo}, ${hi}]: a[${mid}]=${values[mid]}.`, (d) => {
+      mark(d, mid, `Khoảng [${lo}, ${hi}]`);
+      d.ranges = [{ from: lo, to: hi, role: 'active' }];
+    });
+    if (values[mid] >= target) {
+      if (values[mid] === target) index = mid;
+      hi = mid - 1;
+    } else lo = mid + 1;
+  }
+  finish(rec, index);
+  return { index };
+}

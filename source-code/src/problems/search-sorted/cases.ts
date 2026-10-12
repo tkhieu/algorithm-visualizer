@@ -1,0 +1,36 @@
+import type { TestCase } from '../../core/contracts';
+import type { Input } from './definition';
+import { generate } from './generators';
+import { reference } from './checker';
+const raw: TestCase<Input>[] = [
+  {
+    id: 'normal-1',
+    name: 'Tìm thấy trong dãy',
+    group: 'normal',
+    input: { values: [1, 3, 3, 7], target: 3 }
+  },
+  {
+    id: 'normal-2',
+    name: 'Không tìm thấy',
+    group: 'normal',
+    input: { values: [1, 3, 7], target: 5 }
+  },
+  { id: 'edge-empty', name: 'Dãy rỗng', group: 'edge', input: { values: [], target: 2 } },
+  { id: 'small-1', name: 'Dữ liệu nhỏ', group: 'small', input: generate(7, 'small') },
+  { id: 'large-1', name: 'Dữ liệu lớn', group: 'large', input: generate(13, 'large') },
+  {
+    id: 'special-equal',
+    name: 'Nhiều phần tử bằng nhau',
+    group: 'special',
+    input: { values: [4, 4, 4, 4], target: 4 }
+  },
+  {
+    id: 'invalid-unsorted',
+    name: 'Dãy chưa sắp xếp',
+    group: 'invalid',
+    input: { values: [2, 1], target: 1 }
+  }
+];
+export const cases = raw.map((c) =>
+  c.group === 'invalid' ? c : { ...c, expected: { index: reference(c.input as Input) } }
+);
