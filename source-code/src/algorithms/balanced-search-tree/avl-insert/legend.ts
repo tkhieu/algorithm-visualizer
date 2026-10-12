@@ -3,4 +3,5 @@ export const legend: Legend = {
   'Đang so sánh': 'Nền xám',
   'Vừa chèn': 'Nền đen',
   'Gốc con sau xoay': 'Viền đậm',
+  'Chỉ số dưới mỗi đỉnh': 'Hệ số cân bằng (cao trái − cao phải)',
 };

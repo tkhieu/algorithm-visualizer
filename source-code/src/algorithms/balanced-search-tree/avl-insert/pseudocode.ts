@@ -8,8 +8,13 @@ export const pseudocode = [
   },
   { id: 'insert', text: 'Chèn k làm lá mới', indent: 1 },
   {
+    id: 'rebalance-inner',
+    text: 'Trường hợp kép: xoay đơn con (trái hoặc phải) của đỉnh mất cân bằng trước',
+    indent: 1,
+  },
+  {
     id: 'rebalance',
-    text: 'Đi lên theo đường chèn: cập nhật độ cao, nếu |cân bằng| > 1 thì xoay đơn/kép',
+    text: 'Đi lên theo đường chèn: cập nhật độ cao/cân bằng, nếu |cân bằng| > 1 thì xoay đỉnh đó',
     indent: 1,
   },
   { id: 'done', text: 'Trả về tập khóa và độ cao cây', indent: 0 },

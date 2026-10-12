@@ -9,7 +9,7 @@ interface Node {
   height: number;
 }
 export interface VisualState {
-  nodes: { id: string; parent: string | null; label: string; role?: string }[];
+  nodes: { id: string; parent: string | null; label: string; role?: string; sub?: string }[];
   note: string;
 }
 export function initVisual(_input: Input): VisualState {
@@ -18,14 +18,17 @@ export function initVisual(_input: Input): VisualState {
 }
 function render(nodes: Node[], rootId: number | null): VisualState['nodes'] {
   const byId = new Map(nodes.map(n => [n.id, n]));
+  const heightOf = (id: number | null) => (id === null ? -1 : byId.get(id)!.height);
   const out: VisualState['nodes'] = [];
   const walk = (id: number | null) => {
     if (id === null) return;
     const n = byId.get(id)!;
+    const balance = heightOf(n.left) - heightOf(n.right);
     out.push({
       id: String(n.id),
       parent: n.parent === null ? null : String(n.parent),
       label: String(n.key),
+      sub: balance > 0 ? `+${balance}` : String(balance),
     });
     walk(n.left);
     walk(n.right);
@@ -155,14 +158,18 @@ export function run(input: Input, { rec }: RunContext<VisualState>): Output {
       if (balance > 1) {
         const leftId = find(nodeId).left as number;
         if (balanceOf(leftId) < 0) {
+          const innerKey = find(leftId).key;
+          rotateLeft(leftId);
           rec.step(
-            'rebalance',
-            `Mất cân bằng trái-phải tại ${nodeKey}: xoay trái con trái ${find(leftId).key} trước.`,
-            () => {},
-            [],
+            'rebalance-inner',
+            `Mất cân bằng trái-phải tại ${nodeKey}: xoay trái con trái ${innerKey} trước ` +
+              `(trạng thái cây ngay sau lần xoay đơn đầu tiên).`,
+            d => {
+              d.nodes = render(nodes, rootId);
+            },
+            [{ target: `tree-node-${leftId}`, role: 'current' }],
             'balance',
           );
-          rotateLeft(leftId);
         }
         const newTop = rotateRight(nodeId);
         rec.step(
@@ -177,14 +184,18 @@ export function run(input: Input, { rec }: RunContext<VisualState>): Output {
       } else if (balance < -1) {
         const rightId = find(nodeId).right as number;
         if (balanceOf(rightId) > 0) {
+          const innerKey = find(rightId).key;
+          rotateRight(rightId);
           rec.step(
-            'rebalance',
-            `Mất cân bằng phải-trái tại ${nodeKey}: xoay phải con phải ${find(rightId).key} trước.`,
-            () => {},
-            [],
+            'rebalance-inner',
+            `Mất cân bằng phải-trái tại ${nodeKey}: xoay phải con phải ${innerKey} trước ` +
+              `(trạng thái cây ngay sau lần xoay đơn đầu tiên).`,
+            d => {
+              d.nodes = render(nodes, rootId);
+            },
+            [{ target: `tree-node-${rightId}`, role: 'current' }],
             'balance',
           );
-          rotateRight(rightId);
         }
         const newTop = rotateLeft(nodeId);
         rec.step(

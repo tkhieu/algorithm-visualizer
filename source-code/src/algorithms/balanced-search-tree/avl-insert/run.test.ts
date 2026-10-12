@@ -74,4 +74,38 @@ describe('chèn cây AVL', () => {
     const rebalance = rec.steps.find(s => s.lineId === 'rebalance');
     expect(rebalance?.explain).toContain('xoay');
   });
+  it('xoay kép (trái-phải) hiển thị trạng thái sau lần xoay đơn đầu tiên như một bước riêng', () => {
+    // Chèn 3,1,2 là ví dụ kinh điển của trường hợp kép trái-phải: mất cân bằng tại gốc (3), con
+    // trái (1) lại lệch phải. Ngay sau lần xoay trái đơn đầu tiên (tại con trái), con trái của
+    // gốc phải đổi từ khóa 1 sang khóa 2 — bước "rebalance-inner" phải tự vẽ lại cây để thể hiện
+    // đúng trạng thái này, không chỉ thông báo rồi để trạng thái cũ nguyên vẹn.
+    const input = { keys: [3, 1, 2] };
+    const rec = new TraceRecorder(
+      algorithm.initVisual(input),
+      new Set(algorithm.pseudocode.map(l => l.id)),
+      algorithm.traceLimit,
+    );
+    algorithm.run(input, { rec, signal: new AbortController().signal });
+    const store = new TraceStore(algorithm.initVisual(input));
+    for (const step of rec.steps) store.append(step);
+    const innerIdx = rec.steps.findIndex(s => s.lineId === 'rebalance-inner');
+    expect(innerIdx).toBeGreaterThanOrEqual(0);
+    const afterInner = store.seek(innerIdx + 1);
+    const root = afterInner.nodes.find(n => n.parent === null)!;
+    expect(root.label).toBe('3');
+    const rootLeft = afterInner.nodes.find(n => n.parent === root.id)!;
+    expect(rootLeft.label).toBe('2');
+  });
+  it('hiển thị đúng hệ số cân bằng (cao trái − cao phải) trên mỗi đỉnh', () => {
+    const balanced = traceFinal({ keys: [1, 2, 3] });
+    // Cây cân bằng hoàn chỉnh [1,2,3]: mọi đỉnh có bf = 0.
+    expect(balanced.nodes.every(n => n.sub === '0')).toBe(true);
+    // 5,3,8,1 không cần xoay (chênh cao vẫn ≤ 1): gốc 5 và con 3 có bf = +1, lá 1 và 8 có bf = 0.
+    const skewed = traceFinal({ keys: [5, 3, 8, 1] });
+    const byLabel = new Map(skewed.nodes.map(n => [n.label, n.sub]));
+    expect(byLabel.get('5')).toBe('+1');
+    expect(byLabel.get('3')).toBe('+1');
+    expect(byLabel.get('8')).toBe('0');
+    expect(byLabel.get('1')).toBe('0');
+  });
 });
