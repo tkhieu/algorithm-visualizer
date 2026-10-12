@@ -18,8 +18,8 @@ const knapsackProblem:ProblemSummary={id:'knapsack-01',title:'Bài toán cái t�
 // --- Toàn bộ catalog còn lại (Phase B sẽ lần lượt chuyển từng dòng sang status 'ready').
 // Số mục/trang tham chiếu từ docs/levitin-thuat-toan-co-the-demo.md. Với biến thể mở rộng,
 // trang chỉ tới chủ đề gần nhất; Phase B sẽ ghi rõ nguồn riêng trong phần mô tả thuật toán.
-interface AlgoDef{id:string;title:string;technique:string;exactness?:'exact'|'approximate'|'heuristic';time:string;space:string}
-interface ProblemDef{id:string;title:string;views:VisualKind[];algos:AlgoDef[]}
+interface AlgoDef{id:string;title:string;technique:string;exactness?:'exact'|'approximate'|'heuristic';time:string;space:string;status?:Status;views?:VisualKind[]}
+interface ProblemDef{id:string;title:string;views:VisualKind[];algos:AlgoDef[];status?:Status}
 
 type Citation={section:string;page:number};
 const citationByProblem:Record<string,Citation>={
@@ -132,39 +132,39 @@ const plannedDefs:ProblemDef[]=[
  ]},
 
  // B2 — Chương 3.1, 4.1, 5.1–5.3, 6.1, 6.3, 6.4, 7.1, 7.3, 7.4
- {id:'sorting',title:'Sắp xếp',views:['array-bars','tree'],algos:[
-  {id:'selection',title:'Sắp xếp chọn',technique:'brute-force',time:'O(n²)',space:'O(1)'},
-  {id:'bubble',title:'Sắp xếp nổi bọt',technique:'brute-force',time:'O(n²)',space:'O(1)'},
-  {id:'insertion',title:'Sắp xếp chèn',technique:'decrease-and-conquer',time:'O(n²)',space:'O(1)'},
-  {id:'mergesort',title:'Sắp xếp trộn',technique:'divide-and-conquer',time:'O(n log n)',space:'O(n)'},
-  {id:'quicksort',title:'Sắp xếp nhanh',technique:'divide-and-conquer',time:'O(n log n) TB',space:'O(log n)'},
-  {id:'heapsort',title:'Sắp xếp vun đống',technique:'transform-and-conquer',time:'O(n log n)',space:'O(1)'},
-  {id:'counting',title:'Sắp xếp đếm phân phối',technique:'space-time-tradeoff',time:'O(n+k)',space:'O(n+k)'},
+ {id:'sorting',title:'Sắp xếp',views:['array-bars','tree'],status:'ready',algos:[
+  {id:'selection',title:'Sắp xếp chọn',technique:'brute-force',time:'O(n²)',space:'O(1)',status:'ready',views:['array-bars']},
+  {id:'bubble',title:'Sắp xếp nổi bọt',technique:'brute-force',time:'O(n²)',space:'O(1)',status:'ready',views:['array-bars']},
+  {id:'insertion',title:'Sắp xếp chèn',technique:'decrease-and-conquer',time:'O(n²)',space:'O(1)',status:'ready',views:['array-bars']},
+  {id:'mergesort',title:'Sắp xếp trộn',technique:'divide-and-conquer',time:'O(n log n)',space:'O(n)',status:'ready',views:['array-bars']},
+  {id:'quicksort',title:'Sắp xếp nhanh',technique:'divide-and-conquer',time:'O(n log n) TB',space:'O(log n)',status:'ready',views:['array-bars']},
+  {id:'heapsort',title:'Sắp xếp vun đống',technique:'transform-and-conquer',time:'O(n log n)',space:'O(1)',status:'ready',views:['array-bars','tree']},
+  {id:'counting',title:'Sắp xếp đếm phân phối',technique:'space-time-tradeoff',time:'O(n+k)',space:'O(n+k)',status:'ready',views:['array-bars']},
  ]},
- {id:'heap-construction',title:'Xây dựng đống (heap)',views:['tree','array-bars'],algos:[
-  {id:'bottom-up',title:'Xây đống từ dưới lên',technique:'transform-and-conquer',time:'O(n)',space:'O(1)'},
-  {id:'top-down',title:'Xây đống từ trên xuống',technique:'transform-and-conquer',time:'O(n log n)',space:'O(1)'},
+ {id:'heap-construction',title:'Xây dựng đống (heap)',views:['tree','array-bars'],status:'ready',algos:[
+  {id:'bottom-up',title:'Xây đống từ dưới lên',technique:'transform-and-conquer',time:'O(n)',space:'O(1)',status:'ready'},
+  {id:'top-down',title:'Xây đống từ trên xuống',technique:'transform-and-conquer',time:'O(n log n)',space:'O(1)',status:'ready'},
  ]},
- {id:'binary-tree-traversal',title:'Duyệt cây nhị phân',views:['tree'],algos:[
-  {id:'preorder',title:'Duyệt trước',technique:'divide-and-conquer',time:'O(n)',space:'O(h)'},
-  {id:'inorder',title:'Duyệt giữa',technique:'divide-and-conquer',time:'O(n)',space:'O(h)'},
-  {id:'postorder',title:'Duyệt sau',technique:'divide-and-conquer',time:'O(n)',space:'O(h)'},
-  {id:'level-order',title:'Duyệt theo mức',technique:'decrease-and-conquer',time:'O(n)',space:'O(n)'},
+ {id:'binary-tree-traversal',title:'Duyệt cây nhị phân',views:['tree'],status:'ready',algos:[
+  {id:'preorder',title:'Duyệt trước',technique:'divide-and-conquer',time:'O(n)',space:'O(h)',status:'ready'},
+  {id:'inorder',title:'Duyệt giữa',technique:'divide-and-conquer',time:'O(n)',space:'O(h)',status:'ready'},
+  {id:'postorder',title:'Duyệt sau',technique:'divide-and-conquer',time:'O(n)',space:'O(h)',status:'ready'},
+  {id:'level-order',title:'Duyệt theo mức',technique:'decrease-and-conquer',time:'O(n)',space:'O(n)',status:'ready'},
  ]},
- {id:'balanced-search-tree',title:'Cây tìm kiếm cân bằng',views:['tree'],algos:[
-  {id:'bst-insert',title:'Chèn cây tìm kiếm nhị phân',technique:'decrease-and-conquer',time:'O(h)',space:'O(1)'},
-  {id:'avl-insert',title:'Chèn cây AVL',technique:'transform-and-conquer',time:'O(log n)',space:'O(1)'},
-  {id:'two-three-insert',title:'Chèn cây 2-3',technique:'transform-and-conquer',time:'O(log n)',space:'O(1)'},
-  {id:'b-tree-insert',title:'Chèn cây B',technique:'space-time-tradeoff',time:'O(log n)',space:'O(1)'},
+ {id:'balanced-search-tree',title:'Cây tìm kiếm cân bằng',views:['tree'],status:'ready',algos:[
+  {id:'bst-insert',title:'Chèn cây tìm kiếm nhị phân',technique:'decrease-and-conquer',time:'O(h)',space:'O(1)',status:'ready'},
+  {id:'avl-insert',title:'Chèn cây AVL',technique:'transform-and-conquer',time:'O(log n)',space:'O(1)',status:'ready'},
+  {id:'two-three-insert',title:'Chèn cây 2-3',technique:'transform-and-conquer',time:'O(log n)',space:'O(1)',status:'ready'},
+  {id:'b-tree-insert',title:'Chèn cây B',technique:'space-time-tradeoff',time:'O(log n)',space:'O(1)',status:'ready'},
  ]},
- {id:'dictionary-hashing',title:'Từ điển bằng bảng băm',views:['hash-table'],algos:[
-  {id:'separate-chaining',title:'Băm với danh sách liên kết',technique:'space-time-tradeoff',time:'O(1) TB',space:'O(n)'},
-  {id:'linear-probing',title:'Băm với dò tuyến tính',technique:'space-time-tradeoff',time:'O(1) TB',space:'O(n)'},
+ {id:'dictionary-hashing',title:'Từ điển bằng bảng băm',views:['hash-table'],status:'ready',algos:[
+  {id:'separate-chaining',title:'Băm với danh sách liên kết',technique:'space-time-tradeoff',time:'O(1) TB',space:'O(n)',status:'ready'},
+  {id:'linear-probing',title:'Băm với dò tuyến tính',technique:'space-time-tradeoff',time:'O(1) TB',space:'O(n)',status:'ready'},
  ]},
- {id:'element-uniqueness',title:'Kiểm tra phần tử duy nhất',views:['array-bars'],algos:[
-  {id:'brute-force',title:'So từng cặp',technique:'brute-force',time:'O(n²)',space:'O(1)'},
-  {id:'presort',title:'Sắp xếp trước rồi quét',technique:'transform-and-conquer',time:'O(n log n)',space:'O(n)'},
-  {id:'mode',title:'Tìm mode bằng sắp xếp trước',technique:'transform-and-conquer',time:'O(n log n)',space:'O(n)'},
+ {id:'element-uniqueness',title:'Kiểm tra phần tử duy nhất',views:['array-bars'],status:'ready',algos:[
+  {id:'brute-force',title:'So từng cặp',technique:'brute-force',time:'O(n²)',space:'O(1)',status:'ready'},
+  {id:'presort',title:'Sắp xếp trước rồi quét',technique:'transform-and-conquer',time:'O(n log n)',space:'O(n)',status:'ready'},
+  {id:'mode',title:'Tìm mode bằng sắp xếp trước',technique:'transform-and-conquer',time:'O(n log n)',space:'O(n)',status:'ready'},
  ]},
 
  // B3 — Chương 3.5, 4.2, 8.4, 9.1–9.4, 10.2–10.4
@@ -297,10 +297,10 @@ const plannedAlgorithms:AlgorithmSummary[]=plannedDefs.flatMap(p=>p.algos.map(a=
  return {
   id:`${p.id}/${a.id}`,problemId:p.id,title:a.title,chapter,section:citation.section,page:citation.page,
   technique:a.technique,exactness:a.exactness??'exact',
-  complexity:{time:a.time,space:a.space},views:p.views,status:'planned',
+  complexity:{time:a.time,space:a.space},views:a.views??p.views,status:a.status??'planned',
  } satisfies AlgorithmSummary;
 }));
-const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({id:p.id,title:p.title,status:'planned'}));
+const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({id:p.id,title:p.title,status:p.status??'planned'}));
 
 export const problems:ProblemSummary[]=[knapsackProblem,...plannedProblems];
 export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...plannedAlgorithms];
