@@ -1,0 +1,2 @@
+import type {RunContext} from '../../../core/contracts';import type {Input,Output} from '../../../problems/josephus/definition';import {finish,type VisualState} from '../shared';
+export function run({n,k}:Input,{rec,signal}:RunContext<VisualState>):Output{let index=0;for(let size=1;size<=n;size++){if(signal.aborted)throw new Error('Đã huỷ');index=(index+k)%size;rec.count('assign');rec.step('advance',`Với ${size} người, vị trí sống sót (đếm từ 0) là ${index}.`,d=>{d.current=index;d.note=`J(${size},${k}) = ${index+1}`})}return finish(rec,index+1)}

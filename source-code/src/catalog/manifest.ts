@@ -290,6 +290,7 @@ const plannedDefs:ProblemDef[]=[
  ]},
 ];
 
+const readyB1Problems=new Set(['gcd','fibonacci','search-sorted','fake-coin','multiplication','josephus']);
 const plannedAlgorithms:AlgorithmSummary[]=plannedDefs.flatMap(p=>p.algos.map(a=>{
  const citation=citationByAlgorithm[`${p.id}/${a.id}`]??citationByProblem[p.id];
  if(!citation)throw new Error(`Thiếu mục/trang cho ${p.id}/${a.id}`);
@@ -297,10 +298,10 @@ const plannedAlgorithms:AlgorithmSummary[]=plannedDefs.flatMap(p=>p.algos.map(a=
  return {
   id:`${p.id}/${a.id}`,problemId:p.id,title:a.title,chapter,section:citation.section,page:citation.page,
   technique:a.technique,exactness:a.exactness??'exact',
-  complexity:{time:a.time,space:a.space},views:p.views,status:'planned',
+  complexity:{time:a.time,space:a.space},views:p.views,status:readyB1Problems.has(p.id)?'ready':'planned',
  } satisfies AlgorithmSummary;
 }));
-const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({id:p.id,title:p.title,status:'planned'}));
+const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({id:p.id,title:p.title,status:readyB1Problems.has(p.id)?'ready':'planned'}));
 
 export const problems:ProblemSummary[]=[knapsackProblem,...plannedProblems];
 export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...plannedAlgorithms];
