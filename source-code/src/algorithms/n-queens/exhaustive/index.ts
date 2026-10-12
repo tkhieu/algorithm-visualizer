@@ -1,2 +1,23 @@
-import type {Algorithm} from '../../../core/contracts';import type {Input,Output} from '../../../problems/n-queens/definition';import {initVisual,limits,type VisualState} from '../shared';import {run} from './run';import {pseudocode} from './pseudocode';import {legend} from './legend';
-export const algorithm:Algorithm<Input,Output,VisualState>={id:'n-queens/exhaustive',problemId:'n-queens',title:'Vét cạn mọi cách đặt',chapter:12,section:'12.1',page:425,technique:'brute-force',exactness:'exact',complexity:{time:'O(nⁿ) xấu nhất',space:'O(n)'},views:['board','state-space-tree'],pseudocode,legend,traceLimit:{...limits,maxInputSize:6},initVisual,run};
+import type {Algorithm} from '../../../core/contracts';
+import type {Input, Output} from '../../../problems/n-queens/definition';
+import {initVisual, limits, type VisualState} from '../shared';
+import {run} from './run';
+import {pseudocode} from './pseudocode';
+import {legend} from './legend';
+export const algorithm: Algorithm<Input, Output, VisualState> = {
+  id: 'n-queens/exhaustive',
+  problemId: 'n-queens',
+  title: 'Vét cạn mọi cách đặt',
+  chapter: 12,
+  section: '12.1',
+  page: 425,
+  technique: 'brute-force',
+  exactness: 'exact',
+  complexity: {time: 'O(nⁿ) xấu nhất', space: 'O(n)'},
+  views: ['board', 'state-space-tree'],
+  pseudocode,
+  legend,
+  traceLimit: {...limits, maxInputSize: 6},
+  initVisual,
+  run,
+};

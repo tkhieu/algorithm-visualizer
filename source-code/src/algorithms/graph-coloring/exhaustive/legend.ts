@@ -1,1 +1,1 @@
-export const legend={'Đang xét':'Viền đậm','Nghiệm':'Nhãn số màu'};
+export const legend = {'Đang xét': 'Viền đậm', Nghiệm: 'Nhãn số màu'};
