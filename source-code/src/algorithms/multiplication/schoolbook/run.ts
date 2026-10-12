@@ -1,2 +1,29 @@
-import type {RunContext} from '../../../core/contracts';import type {Input,Output} from '../../../problems/multiplication/definition';import {record,finish,type VisualState} from '../shared';
-export function run({a,b}:Input,{rec,signal}:RunContext<VisualState>):Output{const digits=new Array<number>(a.length+b.length).fill(0);for(let i=a.length-1;i>=0;i--){if(signal.aborted)throw new Error('Đã huỷ');for(let j=b.length-1;j>=0;j--){const pos=i+j+1;digits[pos]+=(a.charCodeAt(i)-48)*(b.charCodeAt(j)-48);rec.count('assign');record(rec,'multiply',`Nhân chữ số ${a[i]} với ${b[j]}, cộng vào cột ${pos}.`,String(digits[pos]))}}for(let i=digits.length-1;i>0;i--){const carry=Math.floor(digits[i]/10);digits[i]%=10;digits[i-1]+=carry;rec.count('assign',2);record(rec,'carry',`Chuyển nhớ ${carry} từ cột ${i} sang cột ${i-1}.`,digits.join(''))}const product=digits.join('').replace(/^0+(?=\d)/,'');return finish(rec,product)}
+import type { RunContext } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/multiplication/definition';
+import { record, finish, type VisualState } from '../shared';
+export function run({ a, b }: Input, { rec, signal }: RunContext<VisualState>): Output {
+  const digits = new Array<number>(a.length + b.length).fill(0);
+  for (let i = a.length - 1; i >= 0; i--) {
+    if (signal.aborted) throw new Error('Đã huỷ');
+    for (let j = b.length - 1; j >= 0; j--) {
+      const pos = i + j + 1;
+      digits[pos] += (a.charCodeAt(i) - 48) * (b.charCodeAt(j) - 48);
+      rec.count('assign');
+      record(
+        rec,
+        'multiply',
+        `Nhân chữ số ${a[i]} với ${b[j]}, cộng vào cột ${pos}.`,
+        String(digits[pos])
+      );
+    }
+  }
+  for (let i = digits.length - 1; i > 0; i--) {
+    const carry = Math.floor(digits[i] / 10);
+    digits[i] %= 10;
+    digits[i - 1] += carry;
+    rec.count('assign', 2);
+    record(rec, 'carry', `Chuyển nhớ ${carry} từ cột ${i} sang cột ${i - 1}.`, digits.join(''));
+  }
+  const product = digits.join('').replace(/^0+(?=\d)/, '');
+  return finish(rec, product);
+}

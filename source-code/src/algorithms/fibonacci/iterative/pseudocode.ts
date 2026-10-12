@@ -1,1 +1,5 @@
-export const pseudocode=[{"id": "base", "text": "Khởi tạo hai số cơ sở", "indent": 0}, {"id": "advance", "text": "Dịch cặp hai số Fibonacci", "indent": 0}, {"id": "done", "text": "Trả về F(n)", "indent": 0}];
+export const pseudocode = [
+  { id: 'base', text: 'Khởi tạo hai số cơ sở', indent: 0 },
+  { id: 'advance', text: 'Dịch cặp hai số Fibonacci', indent: 0 },
+  { id: 'done', text: 'Trả về F(n)', indent: 0 }
+];

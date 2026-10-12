@@ -1,1 +1,6 @@
-export const pseudocode=[{"id": "split", "text": "Chia mỗi ma trận thành bốn khối", "indent": 0}, {"id": "base", "text": "Nhân hai ô cơ sở", "indent": 0}, {"id": "combine", "text": "Tính bảy tích con và ghép bốn khối", "indent": 0}, {"id": "done", "text": "Trả về C", "indent": 0}];
+export const pseudocode = [
+  { id: 'split', text: 'Chia mỗi ma trận thành bốn khối', indent: 0 },
+  { id: 'base', text: 'Nhân hai ô cơ sở', indent: 0 },
+  { id: 'combine', text: 'Tính bảy tích con và ghép bốn khối', indent: 0 },
+  { id: 'done', text: 'Trả về C', indent: 0 }
+];

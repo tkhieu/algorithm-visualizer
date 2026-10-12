@@ -1,2 +1,23 @@
-import type {Algorithm} from '../../../core/contracts';import type {Input,Output} from '../../../problems/polynomial-eval/definition';import {initVisual,type VisualState} from '../shared';import {run} from './run';import {pseudocode} from './pseudocode';import {legend} from './legend';
-export const algorithm:Algorithm<Input,Output,VisualState>={id:'polynomial-eval/horner',problemId:'polynomial-eval',title:'Quy tắc Horner',chapter:6,section:'6.5',page:234,technique:'transform-and-conquer',exactness:'exact',complexity:{time:'O(n)',space:'O(1)'},views:['sequence'],pseudocode,legend,traceLimit:{maxInputSize:11,maxSteps:1000,maxBytes:2000000},initVisual,run};
+import type { Algorithm } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/polynomial-eval/definition';
+import { initVisual, type VisualState } from '../shared';
+import { run } from './run';
+import { pseudocode } from './pseudocode';
+import { legend } from './legend';
+export const algorithm: Algorithm<Input, Output, VisualState> = {
+  id: 'polynomial-eval/horner',
+  problemId: 'polynomial-eval',
+  title: 'Quy tắc Horner',
+  chapter: 6,
+  section: '6.5',
+  page: 234,
+  technique: 'transform-and-conquer',
+  exactness: 'exact',
+  complexity: { time: 'O(n)', space: 'O(1)' },
+  views: ['sequence'],
+  pseudocode,
+  legend,
+  traceLimit: { maxInputSize: 11, maxSteps: 1000, maxBytes: 2000000 },
+  initVisual,
+  run
+};

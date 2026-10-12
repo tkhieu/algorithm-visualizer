@@ -1,2 +1,12 @@
-import type {TestCase} from '../../core/contracts';import type {Input} from './definition';import {generate} from './generators';
-export const cases:TestCase<Input>[]=[{id:'normal-1',name:'Sinh với n=3',group:'normal',input:{n:3}},{id:'normal-2',name:'Sinh với n=4',group:'normal',input:{n:4}},{id:'edge-one',name:'Một phần tử',group:'edge',input:{n:1}},{id:'small-1',name:'Dữ liệu nhỏ',group:'small',input:generate(7,'small')},{id:'large-1',name:'Dữ liệu lớn',group:'large',input:{n:5}},{id:'special-two',name:'Hai phần tử',group:'special',input:{n:2}},{id:'invalid-zero',name:'n bằng không',group:'invalid',input:{n:0}}];
+import type { TestCase } from '../../core/contracts';
+import type { Input } from './definition';
+import { generate } from './generators';
+export const cases: TestCase<Input>[] = [
+  { id: 'normal-1', name: 'Sinh với n=3', group: 'normal', input: { n: 3 } },
+  { id: 'normal-2', name: 'Sinh với n=4', group: 'normal', input: { n: 4 } },
+  { id: 'edge-one', name: 'Một phần tử', group: 'edge', input: { n: 1 } },
+  { id: 'small-1', name: 'Dữ liệu nhỏ', group: 'small', input: generate(7, 'small') },
+  { id: 'large-1', name: 'Dữ liệu lớn', group: 'large', input: { n: 5 } },
+  { id: 'special-two', name: 'Hai phần tử', group: 'special', input: { n: 2 } },
+  { id: 'invalid-zero', name: 'n bằng không', group: 'invalid', input: { n: 0 } }
+];

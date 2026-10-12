@@ -1,2 +1,12 @@
-import {it,expect} from 'vitest';import {problem} from './index';import {cases} from './cases';
-it('Nim: lược đồ và ví dụ tay',()=>{expect(problem.check({piles:[1,2,3]},{winning:false,pile:-1,remove:0}).ok).toBe(true);expect(problem.check({piles:[7]},{winning:true,pile:0,remove:7}).ok).toBe(true);expect(problem.check({piles:[1,2,4]},{winning:true,pile:2,remove:2}).ok).toBe(false);for(const c of cases)expect(problem.inputSchema.safeParse(c.input).success).toBe(c.group!=='invalid')});
+import { it, expect } from 'vitest';
+import { problem } from './index';
+import { cases } from './cases';
+it('Nim: lược đồ và ví dụ tay', () => {
+  expect(problem.check({ piles: [1, 2, 3] }, { winning: false, pile: -1, remove: 0 }).ok).toBe(
+    true
+  );
+  expect(problem.check({ piles: [7] }, { winning: true, pile: 0, remove: 7 }).ok).toBe(true);
+  expect(problem.check({ piles: [1, 2, 4] }, { winning: true, pile: 2, remove: 2 }).ok).toBe(false);
+  for (const c of cases)
+    expect(problem.inputSchema.safeParse(c.input).success).toBe(c.group !== 'invalid');
+});

@@ -1,2 +1,33 @@
-import {it,expect} from 'vitest';import {problem} from './index';import {cases} from './cases';
-it('Sinh tổ hợp: lược đồ và ví dụ tay',()=>{expect(problem.check({n:2},{kind:'permutations',objects:[[1,2],[2,1]]}).ok).toBe(true);expect(problem.check({n:2},{kind:'gray',objects:[[0,0],[0,1],[1,0],[1,1]]}).ok).toBe(false);for(const c of cases)expect(problem.inputSchema.safeParse(c.input).success).toBe(c.group!=='invalid')});
+import { it, expect } from 'vitest';
+import { problem } from './index';
+import { cases } from './cases';
+it('Sinh tổ hợp: lược đồ và ví dụ tay', () => {
+  expect(
+    problem.check(
+      { n: 2 },
+      {
+        kind: 'permutations',
+        objects: [
+          [1, 2],
+          [2, 1]
+        ]
+      }
+    ).ok
+  ).toBe(true);
+  expect(
+    problem.check(
+      { n: 2 },
+      {
+        kind: 'gray',
+        objects: [
+          [0, 0],
+          [0, 1],
+          [1, 0],
+          [1, 1]
+        ]
+      }
+    ).ok
+  ).toBe(false);
+  for (const c of cases)
+    expect(problem.inputSchema.safeParse(c.input).success).toBe(c.group !== 'invalid');
+});

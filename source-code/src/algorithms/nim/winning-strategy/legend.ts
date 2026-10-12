@@ -1,1 +1,1 @@
-export const legend={current:'Đống đang xét',done:'Đống được chọn'};
+export const legend = { current: 'Đống đang xét', done: 'Đống được chọn' };

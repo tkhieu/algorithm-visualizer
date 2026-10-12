@@ -1,1 +1,37 @@
-import type {TestCase} from '../../core/contracts';import type {Input} from './definition';import {generate} from './generators';export const cases:TestCase<Input>[]=[{id:'normal-1',name:'Nghiệm bằng một',group:'normal',input:{c:1,d:2,left:0,right:2,tolerance:1e-6}},{id:'normal-2',name:'Nghiệm không nguyên',group:'normal',input:{c:2,d:5,left:0,right:3,tolerance:1e-6}},{id:'edge-boundary',name:'Nghiệm tại biên',group:'edge',input:{c:1,d:0,left:0,right:2,tolerance:1e-6}},{id:'small-1',name:'Dữ liệu nhỏ',group:'small',input:generate(7,'small')},{id:'large-1',name:'Độ chính xác cao',group:'large',input:generate(13,'large')},{id:'special-zero',name:'Nghiệm bằng không',group:'special',input:{c:3,d:0,left:-1,right:1,tolerance:1e-8}},{id:'invalid-bracket',name:'Khoảng không kẹp nghiệm',group:'invalid',input:{c:1,d:2,left:2,right:3,tolerance:1e-6}}];
+import type { TestCase } from '../../core/contracts';
+import type { Input } from './definition';
+import { generate } from './generators';
+export const cases: TestCase<Input>[] = [
+  {
+    id: 'normal-1',
+    name: 'Nghiệm bằng một',
+    group: 'normal',
+    input: { c: 1, d: 2, left: 0, right: 2, tolerance: 1e-6 }
+  },
+  {
+    id: 'normal-2',
+    name: 'Nghiệm không nguyên',
+    group: 'normal',
+    input: { c: 2, d: 5, left: 0, right: 3, tolerance: 1e-6 }
+  },
+  {
+    id: 'edge-boundary',
+    name: 'Nghiệm tại biên',
+    group: 'edge',
+    input: { c: 1, d: 0, left: 0, right: 2, tolerance: 1e-6 }
+  },
+  { id: 'small-1', name: 'Dữ liệu nhỏ', group: 'small', input: generate(7, 'small') },
+  { id: 'large-1', name: 'Độ chính xác cao', group: 'large', input: generate(13, 'large') },
+  {
+    id: 'special-zero',
+    name: 'Nghiệm bằng không',
+    group: 'special',
+    input: { c: 3, d: 0, left: -1, right: 1, tolerance: 1e-8 }
+  },
+  {
+    id: 'invalid-bracket',
+    name: 'Khoảng không kẹp nghiệm',
+    group: 'invalid',
+    input: { c: 1, d: 2, left: 2, right: 3, tolerance: 1e-6 }
+  }
+];

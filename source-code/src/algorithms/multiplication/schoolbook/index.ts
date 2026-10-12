@@ -1,2 +1,23 @@
-import type {Algorithm} from '../../../core/contracts';import type {Input,Output} from '../../../problems/multiplication/definition';import {initVisual,type VisualState} from '../shared';import {run} from './run';import {pseudocode} from './pseudocode';import {legend} from './legend';
-export const algorithm:Algorithm<Input,Output,VisualState>={id:'multiplication/schoolbook',problemId:'multiplication',title:'Nhân theo cách thông thường',chapter:5,section:'5.4',page:186,technique:'brute-force',exactness:'exact',complexity:{time:'O(n²)',space:'O(1)'},views:['sequence'],pseudocode,legend,traceLimit:{maxInputSize:40,maxSteps:10000,maxBytes:20000000},initVisual,run};
+import type { Algorithm } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/multiplication/definition';
+import { initVisual, type VisualState } from '../shared';
+import { run } from './run';
+import { pseudocode } from './pseudocode';
+import { legend } from './legend';
+export const algorithm: Algorithm<Input, Output, VisualState> = {
+  id: 'multiplication/schoolbook',
+  problemId: 'multiplication',
+  title: 'Nhân theo cách thông thường',
+  chapter: 5,
+  section: '5.4',
+  page: 186,
+  technique: 'brute-force',
+  exactness: 'exact',
+  complexity: { time: 'O(n²)', space: 'O(1)' },
+  views: ['sequence'],
+  pseudocode,
+  legend,
+  traceLimit: { maxInputSize: 40, maxSteps: 10000, maxBytes: 20000000 },
+  initVisual,
+  run
+};

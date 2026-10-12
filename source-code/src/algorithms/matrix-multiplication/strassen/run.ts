@@ -1,6 +1,76 @@
-import type {RunContext} from '../../../core/contracts';import type {Input,Output} from '../../../problems/matrix-multiplication/definition';import {finish,type VisualState} from '../shared';
-type Matrix=number[][];
-const zeros=(n:number):Matrix=>Array.from({length:n},()=>Array<number>(n).fill(0));
-const add=(a:Matrix,b:Matrix,sign=1):Matrix=>a.map((row,i)=>row.map((v,j)=>v+sign*b[i][j]));
-const quarter=(a:Matrix,r:number,c:number,h:number):Matrix=>Array.from({length:h},(_,i)=>a[i+r].slice(c,c+h));
-export function run({a,b}:Input,{rec,signal}:RunContext<VisualState>):Output{const n=a.length,size=2**Math.ceil(Math.log2(n)),pa=zeros(size),pb=zeros(size);for(let i=0;i<n;i++)for(let j=0;j<n;j++){pa[i][j]=a[i][j];pb[i][j]=b[i][j]}function multiply(x:Matrix,y:Matrix):Matrix{if(signal.aborted)throw new Error('Đã huỷ');const m=x.length;rec.count('recurse');if(m===1){const value=x[0][0]*y[0][0];rec.step('base',`Nhân hai ô ${x[0][0]}×${y[0][0]}=${value}.`,d=>{d.note=`Tích cơ sở ${value}`});return [[value]]}const h=m/2,[a11,a12,a21,a22]=[quarter(x,0,0,h),quarter(x,0,h,h),quarter(x,h,0,h),quarter(x,h,h,h)],[b11,b12,b21,b22]=[quarter(y,0,0,h),quarter(y,0,h,h),quarter(y,h,0,h),quarter(y,h,h,h)];rec.step('split',`Chia hai ma trận cấp ${m} thành bốn khối cấp ${h}.`,d=>{d.note=`Chia khối cấp ${m}`});const p1=multiply(add(a11,a22),add(b11,b22)),p2=multiply(add(a21,a22),b11),p3=multiply(a11,add(b12,b22,-1)),p4=multiply(a22,add(b21,b11,-1)),p5=multiply(add(a11,a12),b22),p6=multiply(add(a21,a11,-1),add(b11,b12)),p7=multiply(add(a12,a22,-1),add(b21,b22));const c11=add(add(add(p1,p4),p5,-1),p7),c12=add(p3,p5),c21=add(p2,p4),c22=add(add(add(p1,p2,-1),p3),p6);const result=zeros(m);for(let i=0;i<h;i++)for(let j=0;j<h;j++){result[i][j]=c11[i][j];result[i][j+h]=c12[i][j];result[i+h][j]=c21[i][j];result[i+h][j+h]=c22[i][j]}rec.count('assign');rec.step('combine',`Ghép bảy tích Strassen thành ma trận cấp ${m}.`,d=>{d.note=`Đã ghép ma trận cấp ${m}`});return result}const full=multiply(pa,pb),matrix=full.slice(0,n).map(row=>row.slice(0,n));return finish(rec,matrix)}
+import type { RunContext } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/matrix-multiplication/definition';
+import { finish, type VisualState } from '../shared';
+type Matrix = number[][];
+const zeros = (n: number): Matrix => Array.from({ length: n }, () => Array<number>(n).fill(0));
+const add = (a: Matrix, b: Matrix, sign = 1): Matrix =>
+  a.map((row, i) => row.map((v, j) => v + sign * b[i][j]));
+const quarter = (a: Matrix, r: number, c: number, h: number): Matrix =>
+  Array.from({ length: h }, (_, i) => a[i + r].slice(c, c + h));
+export function run({ a, b }: Input, { rec, signal }: RunContext<VisualState>): Output {
+  const n = a.length,
+    size = 2 ** Math.ceil(Math.log2(n)),
+    pa = zeros(size),
+    pb = zeros(size);
+  for (let i = 0; i < n; i++)
+    for (let j = 0; j < n; j++) {
+      pa[i][j] = a[i][j];
+      pb[i][j] = b[i][j];
+    }
+  function multiply(x: Matrix, y: Matrix): Matrix {
+    if (signal.aborted) throw new Error('Đã huỷ');
+    const m = x.length;
+    rec.count('recurse');
+    if (m === 1) {
+      const value = x[0][0] * y[0][0];
+      rec.step('base', `Nhân hai ô ${x[0][0]}×${y[0][0]}=${value}.`, (d) => {
+        d.note = `Tích cơ sở ${value}`;
+      });
+      return [[value]];
+    }
+    const h = m / 2,
+      [a11, a12, a21, a22] = [
+        quarter(x, 0, 0, h),
+        quarter(x, 0, h, h),
+        quarter(x, h, 0, h),
+        quarter(x, h, h, h)
+      ],
+      [b11, b12, b21, b22] = [
+        quarter(y, 0, 0, h),
+        quarter(y, 0, h, h),
+        quarter(y, h, 0, h),
+        quarter(y, h, h, h)
+      ];
+    rec.step('split', `Chia hai ma trận cấp ${m} thành bốn khối cấp ${h}.`, (d) => {
+      d.note = `Chia khối cấp ${m}`;
+    });
+    // Bảy tích Strassen thay cho tám tích khối của phép nhân thông thường.
+    const p1 = multiply(add(a11, a22), add(b11, b22)),
+      p2 = multiply(add(a21, a22), b11),
+      p3 = multiply(a11, add(b12, b22, -1)),
+      p4 = multiply(a22, add(b21, b11, -1)),
+      p5 = multiply(add(a11, a12), b22),
+      p6 = multiply(add(a21, a11, -1), add(b11, b12)),
+      p7 = multiply(add(a12, a22, -1), add(b21, b22));
+    const c11 = add(add(add(p1, p4), p5, -1), p7),
+      c12 = add(p3, p5),
+      c21 = add(p2, p4),
+      c22 = add(add(add(p1, p2, -1), p3), p6);
+    const result = zeros(m);
+    for (let i = 0; i < h; i++)
+      for (let j = 0; j < h; j++) {
+        result[i][j] = c11[i][j];
+        result[i][j + h] = c12[i][j];
+        result[i + h][j] = c21[i][j];
+        result[i + h][j + h] = c22[i][j];
+      }
+    rec.count('assign');
+    rec.step('combine', `Ghép bảy tích Strassen thành ma trận cấp ${m}.`, (d) => {
+      d.note = `Đã ghép ma trận cấp ${m}`;
+    });
+    return result;
+  }
+  const full = multiply(pa, pb),
+    matrix = full.slice(0, n).map((row) => row.slice(0, n));
+  return finish(rec, matrix);
+}

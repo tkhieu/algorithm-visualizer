@@ -1,3 +1,26 @@
-import type {TestCase} from '../../core/contracts';import type {Input} from './definition';import {generate} from './generators';import {reference} from './checker';
-const raw:TestCase<Input>[]=[{id:'normal-1',name:'Có phần tử trùng',group:'normal',input:{values:[7,2,5,2],k:2}},{id:'normal-2',name:'Phần tử giữa',group:'normal',input:{values:[7,2,5],k:2}},{id:'edge-one',name:'Một phần tử',group:'edge',input:{values:[8],k:1}},{id:'small-1',name:'Dữ liệu nhỏ',group:'small',input:generate(7,'small')},{id:'large-1',name:'Dữ liệu lớn',group:'large',input:generate(13,'large')},{id:'special-all-equal',name:'Mọi giá trị bằng nhau',group:'special',input:{values:[4,4,4,4],k:3}},{id:'invalid-k',name:'k vượt số phần tử',group:'invalid',input:{values:[1,2],k:3}}];
-export const cases=raw.map(c=>c.group==='invalid'?c:{...c,expected:{value:reference(c.input as Input)}});
+import type { TestCase } from '../../core/contracts';
+import type { Input } from './definition';
+import { generate } from './generators';
+import { reference } from './checker';
+const raw: TestCase<Input>[] = [
+  {
+    id: 'normal-1',
+    name: 'Có phần tử trùng',
+    group: 'normal',
+    input: { values: [7, 2, 5, 2], k: 2 }
+  },
+  { id: 'normal-2', name: 'Phần tử giữa', group: 'normal', input: { values: [7, 2, 5], k: 2 } },
+  { id: 'edge-one', name: 'Một phần tử', group: 'edge', input: { values: [8], k: 1 } },
+  { id: 'small-1', name: 'Dữ liệu nhỏ', group: 'small', input: generate(7, 'small') },
+  { id: 'large-1', name: 'Dữ liệu lớn', group: 'large', input: generate(13, 'large') },
+  {
+    id: 'special-all-equal',
+    name: 'Mọi giá trị bằng nhau',
+    group: 'special',
+    input: { values: [4, 4, 4, 4], k: 3 }
+  },
+  { id: 'invalid-k', name: 'k vượt số phần tử', group: 'invalid', input: { values: [1, 2], k: 3 } }
+];
+export const cases = raw.map((c) =>
+  c.group === 'invalid' ? c : { ...c, expected: { value: reference(c.input as Input) } }
+);

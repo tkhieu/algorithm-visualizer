@@ -1,2 +1,23 @@
-import type {Algorithm} from '../../../core/contracts';import type {Input,Output} from '../../../problems/gcd/definition';import {initVisual,type VisualState} from '../shared';import {run} from './run';import {pseudocode} from './pseudocode';import {legend} from './legend';
-export const algorithm:Algorithm<Input,Output,VisualState>={id:'gcd/consecutive-integer',problemId:'gcd',title:'Kiểm tra số nguyên giảm dần',chapter:1,section:'1.1',page:3,technique:'brute-force',exactness:'exact',complexity:{time:'O(min(m,n))',space:'O(1)'},views:['sequence'],pseudocode,legend,traceLimit:{maxInputSize:1000000,maxSteps:1000000,maxBytes:20000000},initVisual,run};
+import type { Algorithm } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/gcd/definition';
+import { initVisual, type VisualState } from '../shared';
+import { run } from './run';
+import { pseudocode } from './pseudocode';
+import { legend } from './legend';
+export const algorithm: Algorithm<Input, Output, VisualState> = {
+  id: 'gcd/consecutive-integer',
+  problemId: 'gcd',
+  title: 'Kiểm tra số nguyên giảm dần',
+  chapter: 1,
+  section: '1.1',
+  page: 3,
+  technique: 'brute-force',
+  exactness: 'exact',
+  complexity: { time: 'O(min(m,n))', space: 'O(1)' },
+  views: ['sequence'],
+  pseudocode,
+  legend,
+  traceLimit: { maxInputSize: 1000000, maxSteps: 1000000, maxBytes: 20000000 },
+  initVisual,
+  run
+};

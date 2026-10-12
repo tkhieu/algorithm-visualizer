@@ -1,1 +1,5 @@
-export const pseudocode=[{"id": "multiply", "text": "Nếu bit thấp là 1, nhân vào kết quả", "indent": 0}, {"id": "square", "text": "Bình phương cơ số và chia đôi số mũ", "indent": 0}, {"id": "done", "text": "Trả về lũy thừa", "indent": 0}];
+export const pseudocode = [
+  { id: 'multiply', text: 'Nếu bit thấp là 1, nhân vào kết quả', indent: 0 },
+  { id: 'square', text: 'Bình phương cơ số và chia đôi số mũ', indent: 0 },
+  { id: 'done', text: 'Trả về lũy thừa', indent: 0 }
+];

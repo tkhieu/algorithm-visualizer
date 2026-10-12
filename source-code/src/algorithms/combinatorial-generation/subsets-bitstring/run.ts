@@ -1,2 +1,13 @@
-import type {RunContext} from '../../../core/contracts';import type {Input,Output} from '../../../problems/combinatorial-generation/definition';import {emit,finish,type VisualState} from '../shared';
-export function run({n}:Input,{rec,signal}:RunContext<VisualState>):Output{const objects:number[][]=[];for(let value=0;value<2**n;value++){if(signal.aborted)throw new Error('Đã huỷ');const bits=Array.from({length:n},(_,j)=>(value>>(n-j-1))&1);objects.push(bits);emit(rec,bits,`Sinh tập con ứng với chuỗi bit ${bits.join('')}.`)}return finish(rec,'subsets',objects)}
+import type { RunContext } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/combinatorial-generation/definition';
+import { emit, finish, type VisualState } from '../shared';
+export function run({ n }: Input, { rec, signal }: RunContext<VisualState>): Output {
+  const objects: number[][] = [];
+  for (let value = 0; value < 2 ** n; value++) {
+    if (signal.aborted) throw new Error('Đã huỷ');
+    const bits = Array.from({ length: n }, (_, j) => (value >> (n - j - 1)) & 1);
+    objects.push(bits);
+    emit(rec, bits, `Sinh tập con ứng với chuỗi bit ${bits.join('')}.`);
+  }
+  return finish(rec, 'subsets', objects);
+}
