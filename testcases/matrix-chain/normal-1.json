@@ -1,0 +1,15 @@
+{
+  "id": "normal-1",
+  "name": "Ví dụ kinh điển (4 ma trận)",
+  "group": "normal",
+  "input": {
+    "dims": [
+      10,
+      100,
+      5,
+      50
+    ]
+  },
+  "expected": null,
+  "note": null
+}

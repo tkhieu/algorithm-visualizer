@@ -1,0 +1,16 @@
+{
+  "id": "special-duplicates",
+  "name": "Nhiều giá trị trùng",
+  "group": "special",
+  "input": {
+    "values": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,12 @@
+{
+  "id": "edge",
+  "name": "Đỉnh cô lập",
+  "group": "edge",
+  "input": {
+    "n": 2,
+    "edges": [],
+    "start": 1
+  },
+  "expected": null,
+  "note": null
+}

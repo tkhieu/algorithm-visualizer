@@ -1,0 +1,28 @@
+{
+  "id": "large-1",
+  "name": "Cỡ lớn 1",
+  "group": "large",
+  "input": {
+    "values": [
+      19,
+      1,
+      16,
+      30,
+      30,
+      9,
+      19,
+      22,
+      13,
+      30,
+      14,
+      15,
+      5,
+      13,
+      8,
+      5
+    ],
+    "target": 160
+  },
+  "expected": null,
+  "note": null
+}

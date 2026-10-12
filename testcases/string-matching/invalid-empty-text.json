@@ -1,0 +1,11 @@
+{
+  "id": "invalid-empty-text",
+  "name": "Văn bản rỗng",
+  "group": "invalid",
+  "input": {
+    "text": "",
+    "pattern": "A"
+  },
+  "expected": null,
+  "note": null
+}

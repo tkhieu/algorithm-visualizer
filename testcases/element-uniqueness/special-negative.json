@@ -1,0 +1,16 @@
+{
+  "id": "special-negative",
+  "name": "Trùng giá trị âm",
+  "group": "special",
+  "input": {
+    "values": [
+      -3,
+      2,
+      -3,
+      7,
+      0
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,23 @@
+{
+  "id": "edge-triangle",
+  "name": "Tam giác (3 điểm)",
+  "group": "edge",
+  "input": {
+    "points": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 5
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

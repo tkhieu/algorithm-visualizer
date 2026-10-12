@@ -1,0 +1,29 @@
+{
+  "id": "special",
+  "name": "Hai phía muốn khác nhau",
+  "group": "special",
+  "input": {
+    "men": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "women": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

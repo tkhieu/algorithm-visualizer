@@ -1,0 +1,14 @@
+{
+  "id": "normal-2",
+  "name": "Nghiệm không nguyên",
+  "group": "normal",
+  "input": {
+    "c": 2,
+    "d": 5,
+    "left": 0,
+    "right": 3,
+    "tolerance": 0.000001
+  },
+  "expected": null,
+  "note": null
+}

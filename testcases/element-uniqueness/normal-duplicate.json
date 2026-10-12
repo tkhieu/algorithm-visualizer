@@ -1,0 +1,17 @@
+{
+  "id": "normal-duplicate",
+  "name": "Dãy có trùng",
+  "group": "normal",
+  "input": {
+    "values": [
+      5,
+      3,
+      8,
+      1,
+      3,
+      2
+    ]
+  },
+  "expected": null,
+  "note": null
+}

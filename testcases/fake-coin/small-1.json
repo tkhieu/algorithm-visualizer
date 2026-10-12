@@ -1,0 +1,22 @@
+{
+  "id": "small-1",
+  "name": "Dữ liệu nhỏ",
+  "group": "small",
+  "input": {
+    "weights": [
+      9,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10
+    ]
+  },
+  "expected": {
+    "index": 0
+  },
+  "note": null
+}

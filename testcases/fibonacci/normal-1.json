@@ -1,0 +1,12 @@
+{
+  "id": "normal-1",
+  "name": "Số Fibonacci thứ sáu",
+  "group": "normal",
+  "input": {
+    "n": 6
+  },
+  "expected": {
+    "value": 8
+  },
+  "note": null
+}

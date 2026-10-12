@@ -1,0 +1,24 @@
+{
+  "id": "invalid-cycle",
+  "name": "Có chu trình",
+  "group": "invalid",
+  "input": {
+    "nodes": [
+      {
+        "id": 0,
+        "value": 1,
+        "left": 1,
+        "right": null
+      },
+      {
+        "id": 1,
+        "value": 2,
+        "left": 0,
+        "right": null
+      }
+    ],
+    "root": 0
+  },
+  "expected": null,
+  "note": null
+}

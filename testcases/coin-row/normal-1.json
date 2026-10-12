@@ -1,0 +1,17 @@
+{
+  "id": "normal-1",
+  "name": "Ví dụ Levitin",
+  "group": "normal",
+  "input": {
+    "values": [
+      5,
+      1,
+      2,
+      10,
+      6,
+      2
+    ]
+  },
+  "expected": 17,
+  "note": null
+}

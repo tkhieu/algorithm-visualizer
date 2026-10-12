@@ -1,0 +1,17 @@
+{
+  "id": "normal-2",
+  "name": "Bốn đồng xu",
+  "group": "normal",
+  "input": {
+    "weights": [
+      10,
+      10,
+      9,
+      10
+    ]
+  },
+  "expected": {
+    "index": 2
+  },
+  "note": null
+}

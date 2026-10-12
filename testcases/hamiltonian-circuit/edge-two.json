@@ -1,0 +1,19 @@
+{
+  "id": "edge-two",
+  "name": "Hai đỉnh — vô nghiệm",
+  "group": "edge",
+  "input": {
+    "nodes": [
+      "A",
+      "B"
+    ],
+    "edges": [
+      {
+        "from": "A",
+        "to": "B"
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,15 @@
+{
+  "id": "edge",
+  "name": "Một ký hiệu",
+  "group": "edge",
+  "input": {
+    "symbols": [
+      {
+        "label": "A",
+        "frequency": 5
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

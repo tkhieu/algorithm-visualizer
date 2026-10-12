@@ -1,0 +1,36 @@
+{
+  "id": "edge-right-chain",
+  "name": "Chuỗi lệch phải",
+  "group": "edge",
+  "input": {
+    "nodes": [
+      {
+        "id": 0,
+        "value": 1,
+        "left": null,
+        "right": 1
+      },
+      {
+        "id": 1,
+        "value": 2,
+        "left": null,
+        "right": 2
+      },
+      {
+        "id": 2,
+        "value": 3,
+        "left": null,
+        "right": 3
+      },
+      {
+        "id": 3,
+        "value": 4,
+        "left": null,
+        "right": null
+      }
+    ],
+    "root": 0
+  },
+  "expected": null,
+  "note": null
+}

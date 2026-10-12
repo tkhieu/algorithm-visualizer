@@ -1,0 +1,13 @@
+{
+  "id": "special-negative-even",
+  "name": "Lũy thừa chẵn của số âm",
+  "group": "special",
+  "input": {
+    "base": -3,
+    "exponent": 6
+  },
+  "expected": {
+    "value": "729"
+  },
+  "note": null
+}

@@ -1,0 +1,19 @@
+{
+  "id": "special-ascending",
+  "name": "Dãy tăng dần (trường hợp xấu cho BST thường)",
+  "group": "special",
+  "input": {
+    "keys": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  "expected": null,
+  "note": null
+}

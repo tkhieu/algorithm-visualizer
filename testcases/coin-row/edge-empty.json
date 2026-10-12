@@ -1,0 +1,10 @@
+{
+  "id": "edge-empty",
+  "name": "Không có đồng xu",
+  "group": "edge",
+  "input": {
+    "values": []
+  },
+  "expected": 0,
+  "note": null
+}

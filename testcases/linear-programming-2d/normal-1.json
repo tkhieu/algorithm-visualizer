@@ -1,0 +1,30 @@
+{
+  "id": "normal-1",
+  "name": "Ví dụ Levitin (3x+5y)",
+  "group": "normal",
+  "input": {
+    "objective": {
+      "cx": 3,
+      "cy": 5
+    },
+    "constraints": [
+      {
+        "a": 1,
+        "b": 0,
+        "c": 4
+      },
+      {
+        "a": 0,
+        "b": 2,
+        "c": 12
+      },
+      {
+        "a": 3,
+        "b": 2,
+        "c": 18
+      }
+    ]
+  },
+  "expected": 36,
+  "note": null
+}

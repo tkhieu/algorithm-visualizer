@@ -1,0 +1,13 @@
+{
+  "id": "edge-zero",
+  "name": "Một số bằng không",
+  "group": "edge",
+  "input": {
+    "a": 0,
+    "b": 7
+  },
+  "expected": {
+    "gcd": 7
+  },
+  "note": null
+}

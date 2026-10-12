@@ -1,0 +1,11 @@
+{
+  "id": "invalid-empty",
+  "name": "Không có đỉnh nào",
+  "group": "invalid",
+  "input": {
+    "nodes": [],
+    "edges": []
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,10 @@
+{
+  "id": "invalid-empty",
+  "name": "Không có kích thước nào",
+  "group": "invalid",
+  "input": {
+    "dims": []
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,11 @@
+{
+  "id": "small-1",
+  "name": "Cỡ nhỏ 1",
+  "group": "small",
+  "input": {
+    "a": "CBBCDC",
+    "b": "BBDADA"
+  },
+  "expected": null,
+  "note": null
+}

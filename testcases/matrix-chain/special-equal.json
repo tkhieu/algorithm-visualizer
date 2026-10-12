@@ -1,0 +1,16 @@
+{
+  "id": "special-equal",
+  "name": "Mọi kích thước bằng nhau",
+  "group": "special",
+  "input": {
+    "dims": [
+      10,
+      10,
+      10,
+      10,
+      10
+    ]
+  },
+  "expected": null,
+  "note": null
+}

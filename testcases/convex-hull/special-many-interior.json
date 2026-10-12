@@ -1,0 +1,47 @@
+{
+  "id": "special-many-interior",
+  "name": "Nhiều điểm trong, bao lồi nhỏ",
+  "group": "special",
+  "input": {
+    "points": [
+      {
+        "x": -20,
+        "y": -20
+      },
+      {
+        "x": 20,
+        "y": -20
+      },
+      {
+        "x": 20,
+        "y": 20
+      },
+      {
+        "x": -20,
+        "y": 20
+      },
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": -1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": -4
+      },
+      {
+        "x": -5,
+        "y": 3
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

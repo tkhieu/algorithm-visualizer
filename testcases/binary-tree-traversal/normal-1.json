@@ -1,0 +1,30 @@
+{
+  "id": "normal-1",
+  "name": "Cây nhỏ cân đối",
+  "group": "normal",
+  "input": {
+    "nodes": [
+      {
+        "id": 0,
+        "value": 8,
+        "left": 1,
+        "right": 2
+      },
+      {
+        "id": 1,
+        "value": 3,
+        "left": null,
+        "right": null
+      },
+      {
+        "id": 2,
+        "value": 10,
+        "left": null,
+        "right": null
+      }
+    ],
+    "root": 0
+  },
+  "expected": null,
+  "note": null
+}

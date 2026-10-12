@@ -1,0 +1,17 @@
+{
+  "id": "invalid",
+  "name": "Trọng số âm",
+  "group": "invalid",
+  "input": {
+    "n": 2,
+    "edges": [
+      [
+        0,
+        1,
+        -1
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,11 @@
+{
+  "id": "invalid-too-long",
+  "name": "Chuỗi vượt giới hạn",
+  "group": "invalid",
+  "input": {
+    "a": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "b": "B"
+  },
+  "expected": null,
+  "note": null
+}

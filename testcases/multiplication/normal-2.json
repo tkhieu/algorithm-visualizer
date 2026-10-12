@@ -1,0 +1,13 @@
+{
+  "id": "normal-2",
+  "name": "Hai số nhiều chữ số",
+  "group": "normal",
+  "input": {
+    "a": "98765",
+    "b": "43210"
+  },
+  "expected": {
+    "product": "4267635650"
+  },
+  "note": null
+}

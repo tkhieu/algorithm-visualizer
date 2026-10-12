@@ -1,0 +1,27 @@
+{
+  "id": "small",
+  "name": "Ít ký hiệu",
+  "group": "small",
+  "input": {
+    "symbols": [
+      {
+        "label": "K1",
+        "frequency": 22
+      },
+      {
+        "label": "K2",
+        "frequency": 2
+      },
+      {
+        "label": "K3",
+        "frequency": 14
+      },
+      {
+        "label": "K4",
+        "frequency": 3
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

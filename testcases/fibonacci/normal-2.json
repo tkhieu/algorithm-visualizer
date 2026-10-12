@@ -1,0 +1,12 @@
+{
+  "id": "normal-2",
+  "name": "Số Fibonacci thứ mười",
+  "group": "normal",
+  "input": {
+    "n": 10
+  },
+  "expected": {
+    "value": 55
+  },
+  "note": null
+}

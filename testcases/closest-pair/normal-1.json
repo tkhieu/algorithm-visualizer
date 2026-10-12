@@ -1,0 +1,27 @@
+{
+  "id": "normal-1",
+  "name": "Bốn điểm cơ bản",
+  "group": "normal",
+  "input": {
+    "points": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 5
+      }
+    ]
+  },
+  "expected": 4.123105625617661,
+  "note": null
+}

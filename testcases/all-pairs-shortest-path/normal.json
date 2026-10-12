@@ -1,0 +1,27 @@
+{
+  "id": "normal",
+  "name": "Đường đi ngắn gián tiếp",
+  "group": "normal",
+  "input": {
+    "n": 3,
+    "edges": [
+      [
+        0,
+        1,
+        7
+      ],
+      [
+        0,
+        2,
+        2
+      ],
+      [
+        2,
+        1,
+        2
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

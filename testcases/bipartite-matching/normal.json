@@ -1,0 +1,21 @@
+{
+  "id": "normal",
+  "name": "Hai cặp độc lập",
+  "group": "normal",
+  "input": {
+    "left": 2,
+    "right": 2,
+    "edges": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,13 @@
+{
+  "id": "edge-two",
+  "name": "Hai đồng xu",
+  "group": "edge",
+  "input": {
+    "values": [
+      3,
+      9
+    ]
+  },
+  "expected": 9,
+  "note": null
+}

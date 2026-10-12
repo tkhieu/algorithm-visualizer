@@ -1,0 +1,13 @@
+{
+  "id": "edge-two",
+  "name": "Hai khoá",
+  "group": "edge",
+  "input": {
+    "freq": [
+      3,
+      9
+    ]
+  },
+  "expected": 15,
+  "note": null
+}

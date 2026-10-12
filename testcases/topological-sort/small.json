@@ -1,0 +1,11 @@
+{
+  "id": "small",
+  "name": "DAG nhỏ",
+  "group": "small",
+  "input": {
+    "n": 4,
+    "edges": []
+  },
+  "expected": null,
+  "note": null
+}

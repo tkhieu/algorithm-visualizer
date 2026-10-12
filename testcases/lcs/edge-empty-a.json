@@ -1,0 +1,11 @@
+{
+  "id": "edge-empty-a",
+  "name": "Chuỗi a rỗng",
+  "group": "edge",
+  "input": {
+    "a": "",
+    "b": "ABC"
+  },
+  "expected": null,
+  "note": null
+}

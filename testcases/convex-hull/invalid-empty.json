@@ -1,0 +1,10 @@
+{
+  "id": "invalid-empty",
+  "name": "Chỉ hai điểm",
+  "group": "invalid",
+  "input": {
+    "points": []
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,14 @@
+{
+  "id": "edge-single",
+  "name": "Một người một việc",
+  "group": "edge",
+  "input": {
+    "cost": [
+      [
+        5
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

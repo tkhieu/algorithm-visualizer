@@ -1,0 +1,14 @@
+{
+  "id": "edge-zero",
+  "name": "Số tiền 0",
+  "group": "edge",
+  "input": {
+    "amount": 0,
+    "coins": [
+      1,
+      5
+    ]
+  },
+  "expected": 0,
+  "note": null
+}

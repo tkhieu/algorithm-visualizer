@@ -1,0 +1,15 @@
+{
+  "id": "normal-2",
+  "name": "Ngẫu nhiên nhỏ",
+  "group": "normal",
+  "input": {
+    "text": "CACDDBCCBDBBABAA",
+    "pattern": "CAC"
+  },
+  "expected": {
+    "positions": [
+      0
+    ]
+  },
+  "note": null
+}

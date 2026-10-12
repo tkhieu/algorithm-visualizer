@@ -1,0 +1,23 @@
+{
+  "id": "invalid-singular",
+  "name": "Ma trận suy biến",
+  "group": "invalid",
+  "input": {
+    "a": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "b": [
+      2,
+      4
+    ]
+  },
+  "expected": null,
+  "note": null
+}

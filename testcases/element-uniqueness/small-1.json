@@ -1,0 +1,17 @@
+{
+  "id": "small-1",
+  "name": "Tập nhỏ 1",
+  "group": "small",
+  "input": {
+    "values": [
+      1,
+      -3,
+      0,
+      3,
+      3,
+      -2
+    ]
+  },
+  "expected": null,
+  "note": null
+}

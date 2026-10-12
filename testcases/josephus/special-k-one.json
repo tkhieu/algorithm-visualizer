@@ -1,0 +1,13 @@
+{
+  "id": "special-k-one",
+  "name": "Đếm từng người",
+  "group": "special",
+  "input": {
+    "n": 6,
+    "k": 1
+  },
+  "expected": {
+    "survivor": 6
+  },
+  "note": null
+}

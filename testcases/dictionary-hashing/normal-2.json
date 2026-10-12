@@ -1,0 +1,17 @@
+{
+  "id": "normal-2",
+  "name": "Bộ khóa ngẫu nhiên",
+  "group": "normal",
+  "input": {
+    "tableSize": 7,
+    "keys": [
+      72,
+      3,
+      45,
+      7,
+      76
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,23 @@
+{
+  "id": "special",
+  "name": "Tần suất bằng nhau",
+  "group": "special",
+  "input": {
+    "symbols": [
+      {
+        "label": "A",
+        "frequency": 1
+      },
+      {
+        "label": "B",
+        "frequency": 1
+      },
+      {
+        "label": "C",
+        "frequency": 1
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

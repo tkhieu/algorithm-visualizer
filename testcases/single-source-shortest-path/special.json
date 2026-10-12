@@ -1,0 +1,28 @@
+{
+  "id": "special",
+  "name": "Đường nhẹ gián tiếp",
+  "group": "special",
+  "input": {
+    "n": 3,
+    "edges": [
+      [
+        0,
+        1,
+        9
+      ],
+      [
+        0,
+        2,
+        2
+      ],
+      [
+        2,
+        1,
+        2
+      ]
+    ],
+    "source": 0
+  },
+  "expected": null,
+  "note": null
+}

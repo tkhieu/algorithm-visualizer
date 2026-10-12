@@ -1,0 +1,18 @@
+{
+  "id": "normal-1",
+  "name": "Ví dụ cơ bản có nghiệm",
+  "group": "normal",
+  "input": {
+    "values": [
+      3,
+      34,
+      4,
+      12,
+      5,
+      2
+    ],
+    "target": 9
+  },
+  "expected": null,
+  "note": null
+}

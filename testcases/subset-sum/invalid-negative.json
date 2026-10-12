@@ -1,0 +1,14 @@
+{
+  "id": "invalid-negative",
+  "name": "Giá trị âm",
+  "group": "invalid",
+  "input": {
+    "values": [
+      -1,
+      2
+    ],
+    "target": 1
+  },
+  "expected": null,
+  "note": null
+}

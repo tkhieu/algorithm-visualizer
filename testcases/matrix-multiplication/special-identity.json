@@ -1,0 +1,40 @@
+{
+  "id": "special-identity",
+  "name": "Nhân ma trận đơn vị",
+  "group": "special",
+  "input": {
+    "a": [
+      [
+        1,
+        2
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "b": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  "expected": {
+    "matrix": [
+      [
+        1,
+        2
+      ],
+      [
+        3,
+        4
+      ]
+    ]
+  },
+  "note": null
+}

@@ -1,0 +1,23 @@
+{
+  "id": "normal-2",
+  "name": "Bộ sinh ngẫu nhiên",
+  "group": "normal",
+  "input": {
+    "keys": [
+      110,
+      -231,
+      -22,
+      -213,
+      131,
+      -10,
+      -7,
+      -170,
+      -119,
+      26,
+      -153,
+      -209
+    ]
+  },
+  "expected": null,
+  "note": null
+}

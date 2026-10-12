@@ -1,0 +1,32 @@
+{
+  "id": "small-1",
+  "name": "Tập nhỏ 1",
+  "group": "small",
+  "input": {
+    "capacity": 10,
+    "items": [
+      {
+        "name": "Vật 1",
+        "weight": 1,
+        "value": 7
+      },
+      {
+        "name": "Vật 2",
+        "weight": 8,
+        "value": 70
+      },
+      {
+        "name": "Vật 3",
+        "weight": 5,
+        "value": 41
+      },
+      {
+        "name": "Vật 4",
+        "weight": 4,
+        "value": 24
+      }
+    ]
+  },
+  "expected": 77,
+  "note": null
+}

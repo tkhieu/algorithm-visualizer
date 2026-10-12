@@ -1,0 +1,20 @@
+{
+  "id": "special-unbounded",
+  "name": "Hàm mục tiêu không bị chặn",
+  "group": "special",
+  "input": {
+    "objective": {
+      "cx": 1,
+      "cy": 1
+    },
+    "constraints": [
+      {
+        "a": -1,
+        "b": -1,
+        "c": -1
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

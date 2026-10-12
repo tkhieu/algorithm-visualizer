@@ -1,0 +1,19 @@
+{
+  "id": "normal-2",
+  "name": "Ngẫu nhiên nhỏ",
+  "group": "normal",
+  "input": {
+    "values": [
+      18,
+      0,
+      15,
+      29,
+      29,
+      8,
+      18,
+      21
+    ]
+  },
+  "expected": 83,
+  "note": null
+}

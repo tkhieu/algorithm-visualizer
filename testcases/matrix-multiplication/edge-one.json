@@ -1,0 +1,25 @@
+{
+  "id": "edge-one",
+  "name": "Ma trận 1×1",
+  "group": "edge",
+  "input": {
+    "a": [
+      [
+        2
+      ]
+    ],
+    "b": [
+      [
+        3
+      ]
+    ]
+  },
+  "expected": {
+    "matrix": [
+      [
+        6
+      ]
+    ]
+  },
+  "note": null
+}

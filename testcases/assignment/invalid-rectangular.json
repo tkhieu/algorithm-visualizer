@@ -1,0 +1,20 @@
+{
+  "id": "invalid-rectangular",
+  "name": "Ma trận không vuông",
+  "group": "invalid",
+  "input": {
+    "cost": [
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        4,
+        5
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

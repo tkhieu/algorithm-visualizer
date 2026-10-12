@@ -1,0 +1,18 @@
+{
+  "id": "normal-1",
+  "name": "Mảng nhỏ chưa có thứ tự",
+  "group": "normal",
+  "input": {
+    "values": [
+      5,
+      3,
+      8,
+      1,
+      9,
+      2,
+      7
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,17 @@
+{
+  "id": "invalid",
+  "name": "Không liên thông",
+  "group": "invalid",
+  "input": {
+    "n": 3,
+    "edges": [
+      [
+        0,
+        1,
+        2
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

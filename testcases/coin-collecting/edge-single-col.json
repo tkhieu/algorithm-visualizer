@@ -1,0 +1,20 @@
+{
+  "id": "edge-single-col",
+  "name": "Một cột",
+  "group": "edge",
+  "input": {
+    "grid": [
+      [
+        true
+      ],
+      [
+        false
+      ],
+      [
+        true
+      ]
+    ]
+  },
+  "expected": 2,
+  "note": null
+}

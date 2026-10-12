@@ -1,0 +1,16 @@
+{
+  "id": "edge-reverse",
+  "name": "Sắp ngược",
+  "group": "edge",
+  "input": {
+    "values": [
+      5,
+      4,
+      3,
+      2,
+      1
+    ]
+  },
+  "expected": null,
+  "note": null
+}

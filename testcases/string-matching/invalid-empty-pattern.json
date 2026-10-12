@@ -1,0 +1,11 @@
+{
+  "id": "invalid-empty-pattern",
+  "name": "Mẫu rỗng",
+  "group": "invalid",
+  "input": {
+    "text": "ABC",
+    "pattern": ""
+  },
+  "expected": null,
+  "note": null
+}

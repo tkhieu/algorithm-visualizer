@@ -1,0 +1,25 @@
+{
+  "id": "small-2",
+  "name": "Tập nhỏ 2",
+  "group": "small",
+  "input": {
+    "values": [
+      33,
+      -25,
+      -30,
+      5,
+      53,
+      18,
+      0,
+      -20,
+      40,
+      -54,
+      40,
+      -42,
+      -11,
+      47
+    ]
+  },
+  "expected": null,
+  "note": null
+}

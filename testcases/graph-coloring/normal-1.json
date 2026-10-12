@@ -1,0 +1,29 @@
+{
+  "id": "normal-1",
+  "name": "Tam giác với 3 màu — khả thi",
+  "group": "normal",
+  "input": {
+    "nodes": [
+      "A",
+      "B",
+      "C"
+    ],
+    "edges": [
+      {
+        "from": "A",
+        "to": "B"
+      },
+      {
+        "from": "B",
+        "to": "C"
+      },
+      {
+        "from": "C",
+        "to": "A"
+      }
+    ],
+    "colors": 3
+  },
+  "expected": null,
+  "note": null
+}

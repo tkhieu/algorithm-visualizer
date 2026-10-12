@@ -1,0 +1,10 @@
+{
+  "id": "edge-one",
+  "name": "Một phần tử",
+  "group": "edge",
+  "input": {
+    "n": 1
+  },
+  "expected": null,
+  "note": null
+}

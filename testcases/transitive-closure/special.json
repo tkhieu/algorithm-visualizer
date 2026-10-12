@@ -1,0 +1,24 @@
+{
+  "id": "special",
+  "name": "Chu trình",
+  "group": "special",
+  "input": {
+    "n": 3,
+    "edges": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        0
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

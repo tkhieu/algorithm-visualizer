@@ -1,0 +1,15 @@
+{
+  "id": "special-all",
+  "name": "Đích bằng tổng tất cả",
+  "group": "special",
+  "input": {
+    "values": [
+      2,
+      3,
+      5
+    ],
+    "target": 10
+  },
+  "expected": null,
+  "note": null
+}

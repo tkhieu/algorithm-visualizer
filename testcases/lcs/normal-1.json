@@ -1,0 +1,11 @@
+{
+  "id": "normal-1",
+  "name": "Ví dụ cơ bản",
+  "group": "normal",
+  "input": {
+    "a": "ABCBDAB",
+    "b": "BDCABA"
+  },
+  "expected": null,
+  "note": null
+}

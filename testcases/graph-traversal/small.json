@@ -1,0 +1,17 @@
+{
+  "id": "small",
+  "name": "Đồ thị nhỏ",
+  "group": "small",
+  "input": {
+    "n": 4,
+    "edges": [
+      [
+        3,
+        0
+      ]
+    ],
+    "start": 1
+  },
+  "expected": null,
+  "note": null
+}

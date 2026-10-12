@@ -1,0 +1,13 @@
+{
+  "id": "normal-2",
+  "name": "Cơ số âm",
+  "group": "normal",
+  "input": {
+    "base": -2,
+    "exponent": 3
+  },
+  "expected": {
+    "value": "-8"
+  },
+  "note": null
+}

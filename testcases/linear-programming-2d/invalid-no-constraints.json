@@ -1,0 +1,14 @@
+{
+  "id": "invalid-no-constraints",
+  "name": "Không có ràng buộc",
+  "group": "invalid",
+  "input": {
+    "objective": {
+      "cx": 1,
+      "cy": 1
+    },
+    "constraints": []
+  },
+  "expected": null,
+  "note": null
+}

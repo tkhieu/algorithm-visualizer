@@ -1,0 +1,11 @@
+{
+  "id": "special-disjoint",
+  "name": "Không có ký tự chung",
+  "group": "special",
+  "input": {
+    "a": "AAA",
+    "b": "BBB"
+  },
+  "expected": null,
+  "note": null
+}

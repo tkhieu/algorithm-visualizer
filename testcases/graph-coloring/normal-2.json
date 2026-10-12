@@ -1,0 +1,29 @@
+{
+  "id": "normal-2",
+  "name": "Tam giác với 2 màu — vô nghiệm",
+  "group": "normal",
+  "input": {
+    "nodes": [
+      "A",
+      "B",
+      "C"
+    ],
+    "edges": [
+      {
+        "from": "A",
+        "to": "B"
+      },
+      {
+        "from": "B",
+        "to": "C"
+      },
+      {
+        "from": "C",
+        "to": "A"
+      }
+    ],
+    "colors": 2
+  },
+  "expected": null,
+  "note": null
+}

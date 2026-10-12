@@ -1,0 +1,29 @@
+{
+  "id": "special-path",
+  "name": "Đường đi thẳng — không có chu trình",
+  "group": "special",
+  "input": {
+    "nodes": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "edges": [
+      {
+        "from": "A",
+        "to": "B"
+      },
+      {
+        "from": "B",
+        "to": "C"
+      },
+      {
+        "from": "C",
+        "to": "D"
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

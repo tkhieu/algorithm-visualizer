@@ -1,0 +1,13 @@
+{
+  "id": "large-1",
+  "name": "Văn bản dài 1",
+  "group": "large",
+  "input": {
+    "text": "BBBBBDDBBDABCBADACDABACBACDDCCABBBCBBDCDBDDDCABAACBDBACDAAAACDBDADDBAAADDCBBABDABACBACDBBCBACDCDBACACACCBCDACBBCDACBCCDC",
+    "pattern": "BDBAAACA"
+  },
+  "expected": {
+    "positions": []
+  },
+  "note": null
+}

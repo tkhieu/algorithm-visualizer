@@ -1,0 +1,13 @@
+{
+  "id": "normal-1",
+  "name": "Hai mũ năm",
+  "group": "normal",
+  "input": {
+    "base": 2,
+    "exponent": 5
+  },
+  "expected": {
+    "value": "32"
+  },
+  "note": null
+}

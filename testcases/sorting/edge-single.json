@@ -1,0 +1,12 @@
+{
+  "id": "edge-single",
+  "name": "Một phần tử",
+  "group": "edge",
+  "input": {
+    "values": [
+      5
+    ]
+  },
+  "expected": null,
+  "note": null
+}

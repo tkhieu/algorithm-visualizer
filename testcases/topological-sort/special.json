@@ -1,0 +1,20 @@
+{
+  "id": "special",
+  "name": "Nhiều nguồn",
+  "group": "special",
+  "input": {
+    "n": 4,
+    "edges": [
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        3
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

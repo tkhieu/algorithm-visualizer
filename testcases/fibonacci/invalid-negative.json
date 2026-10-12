@@ -1,0 +1,10 @@
+{
+  "id": "invalid-negative",
+  "name": "Chỉ số âm",
+  "group": "invalid",
+  "input": {
+    "n": -1
+  },
+  "expected": null,
+  "note": null
+}

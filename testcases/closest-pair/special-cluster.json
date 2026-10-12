@@ -1,0 +1,31 @@
+{
+  "id": "special-cluster",
+  "name": "Một cặp rất gần giữa đám điểm thưa",
+  "group": "special",
+  "input": {
+    "points": [
+      {
+        "x": -100,
+        "y": -100
+      },
+      {
+        "x": 100,
+        "y": 100
+      },
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": -80,
+        "y": 60
+      }
+    ]
+  },
+  "expected": 1,
+  "note": null
+}

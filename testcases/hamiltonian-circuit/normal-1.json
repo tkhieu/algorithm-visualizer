@@ -1,0 +1,33 @@
+{
+  "id": "normal-1",
+  "name": "Chu trình vuông A-B-C-D",
+  "group": "normal",
+  "input": {
+    "nodes": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "edges": [
+      {
+        "from": "A",
+        "to": "B"
+      },
+      {
+        "from": "B",
+        "to": "C"
+      },
+      {
+        "from": "C",
+        "to": "D"
+      },
+      {
+        "from": "D",
+        "to": "A"
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

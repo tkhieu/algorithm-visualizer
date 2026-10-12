@@ -1,0 +1,24 @@
+{
+  "id": "invalid-duplicate",
+  "name": "Trùng id",
+  "group": "invalid",
+  "input": {
+    "nodes": [
+      {
+        "id": 0,
+        "value": 1,
+        "left": null,
+        "right": null
+      },
+      {
+        "id": 0,
+        "value": 2,
+        "left": null,
+        "right": null
+      }
+    ],
+    "root": 0
+  },
+  "expected": null,
+  "note": null
+}

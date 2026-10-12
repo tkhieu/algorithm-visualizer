@@ -1,0 +1,13 @@
+{
+  "id": "edge-empty",
+  "name": "Mọi đống rỗng",
+  "group": "edge",
+  "input": {
+    "piles": [
+      0,
+      0
+    ]
+  },
+  "expected": null,
+  "note": null
+}

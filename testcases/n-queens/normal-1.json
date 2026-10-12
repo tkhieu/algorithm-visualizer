@@ -1,0 +1,10 @@
+{
+  "id": "normal-1",
+  "name": "Bàn cờ 4×4",
+  "group": "normal",
+  "input": {
+    "n": 4
+  },
+  "expected": null,
+  "note": null
+}

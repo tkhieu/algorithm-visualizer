@@ -1,0 +1,10 @@
+{
+  "id": "normal-2",
+  "name": "Bàn cờ 8×8 cổ điển",
+  "group": "normal",
+  "input": {
+    "n": 8
+  },
+  "expected": null,
+  "note": null
+}

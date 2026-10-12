@@ -1,0 +1,19 @@
+{
+  "id": "edge-two",
+  "name": "Hai điểm",
+  "group": "edge",
+  "input": {
+    "points": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 4
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

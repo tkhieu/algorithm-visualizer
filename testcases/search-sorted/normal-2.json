@@ -1,0 +1,17 @@
+{
+  "id": "normal-2",
+  "name": "Không tìm thấy",
+  "group": "normal",
+  "input": {
+    "values": [
+      1,
+      3,
+      7
+    ],
+    "target": 5
+  },
+  "expected": {
+    "index": -1
+  },
+  "note": null
+}

@@ -1,0 +1,13 @@
+{
+  "id": "small-1",
+  "name": "Dữ liệu nhỏ",
+  "group": "small",
+  "input": {
+    "a": "10965",
+    "b": "44257"
+  },
+  "expected": {
+    "product": "485278005"
+  },
+  "note": null
+}

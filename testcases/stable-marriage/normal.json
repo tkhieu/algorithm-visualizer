@@ -1,0 +1,29 @@
+{
+  "id": "normal",
+  "name": "Hai cặp",
+  "group": "normal",
+  "input": {
+    "men": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "women": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

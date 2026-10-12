@@ -1,0 +1,17 @@
+{
+  "id": "normal-2",
+  "name": "Phần tử giữa",
+  "group": "normal",
+  "input": {
+    "values": [
+      7,
+      2,
+      5
+    ],
+    "k": 2
+  },
+  "expected": {
+    "value": 5
+  },
+  "note": null
+}

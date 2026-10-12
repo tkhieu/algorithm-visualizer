@@ -1,0 +1,12 @@
+{
+  "id": "invalid-range",
+  "name": "Khóa ngoài phạm vi",
+  "group": "invalid",
+  "input": {
+    "keys": [
+      10000
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,13 @@
+{
+  "id": "normal-1",
+  "name": "Phép nhân 123 × 45",
+  "group": "normal",
+  "input": {
+    "a": "123",
+    "b": "45"
+  },
+  "expected": {
+    "product": "5535"
+  },
+  "note": null
+}

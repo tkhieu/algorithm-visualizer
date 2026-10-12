@@ -1,0 +1,15 @@
+{
+  "id": "invalid-out-of-range",
+  "name": "Toạ độ ngoài phạm vi",
+  "group": "invalid",
+  "input": {
+    "points": [
+      {
+        "x": 5000,
+        "y": 0
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

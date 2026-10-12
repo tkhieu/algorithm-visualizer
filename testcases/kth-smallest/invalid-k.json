@@ -1,0 +1,14 @@
+{
+  "id": "invalid-k",
+  "name": "k vượt số phần tử",
+  "group": "invalid",
+  "input": {
+    "values": [
+      1,
+      2
+    ],
+    "k": 3
+  },
+  "expected": null,
+  "note": null
+}

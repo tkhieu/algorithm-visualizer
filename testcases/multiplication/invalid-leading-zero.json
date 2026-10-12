@@ -1,0 +1,11 @@
+{
+  "id": "invalid-leading-zero",
+  "name": "Số có 0 đứng đầu",
+  "group": "invalid",
+  "input": {
+    "a": "012",
+    "b": "3"
+  },
+  "expected": null,
+  "note": null
+}

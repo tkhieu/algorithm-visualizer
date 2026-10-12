@@ -1,0 +1,10 @@
+{
+  "id": "invalid-empty",
+  "name": "Không có khoá nào",
+  "group": "invalid",
+  "input": {
+    "freq": []
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,16 @@
+{
+  "id": "special-collision",
+  "name": "Toàn bộ khóa cùng dư",
+  "group": "special",
+  "input": {
+    "tableSize": 5,
+    "keys": [
+      3,
+      8,
+      13,
+      18
+    ]
+  },
+  "expected": null,
+  "note": null
+}

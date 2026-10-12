@@ -1,0 +1,22 @@
+{
+  "id": "special",
+  "name": "Cạnh song song",
+  "group": "special",
+  "input": {
+    "n": 2,
+    "edges": [
+      [
+        0,
+        1,
+        9
+      ],
+      [
+        0,
+        1,
+        3
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

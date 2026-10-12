@@ -1,0 +1,29 @@
+{
+  "id": "small",
+  "name": "Mạng nhỏ",
+  "group": "small",
+  "input": {
+    "n": 4,
+    "edges": [
+      [
+        0,
+        2,
+        6
+      ],
+      [
+        0,
+        3,
+        10
+      ],
+      [
+        3,
+        0,
+        9
+      ]
+    ],
+    "source": 0,
+    "sink": 3
+  },
+  "expected": null,
+  "note": null
+}

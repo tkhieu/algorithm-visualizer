@@ -1,0 +1,59 @@
+{
+  "id": "large-1",
+  "name": "Tập lớn 1",
+  "group": "large",
+  "input": {
+    "grid": [
+      [
+        false,
+        false,
+        true,
+        true,
+        false,
+        false
+      ],
+      [
+        false,
+        true,
+        false,
+        false,
+        true,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        false,
+        true,
+        false
+      ],
+      [
+        false,
+        true,
+        false,
+        true,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        true,
+        false,
+        false
+      ]
+    ]
+  },
+  "expected": 6,
+  "note": null
+}

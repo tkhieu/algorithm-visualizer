@@ -1,0 +1,58 @@
+{
+  "id": "normal-2",
+  "name": "Đồ thị đủ 5 đỉnh (K5)",
+  "group": "normal",
+  "input": {
+    "nodes": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "edges": [
+      {
+        "from": "A",
+        "to": "B"
+      },
+      {
+        "from": "A",
+        "to": "C"
+      },
+      {
+        "from": "A",
+        "to": "D"
+      },
+      {
+        "from": "A",
+        "to": "E"
+      },
+      {
+        "from": "B",
+        "to": "C"
+      },
+      {
+        "from": "B",
+        "to": "D"
+      },
+      {
+        "from": "B",
+        "to": "E"
+      },
+      {
+        "from": "C",
+        "to": "D"
+      },
+      {
+        "from": "C",
+        "to": "E"
+      },
+      {
+        "from": "D",
+        "to": "E"
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

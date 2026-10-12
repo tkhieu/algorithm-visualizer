@@ -1,0 +1,19 @@
+{
+  "id": "special-no-coins",
+  "name": "Không có đồng xu nào",
+  "group": "special",
+  "input": {
+    "grid": [
+      [
+        false,
+        false
+      ],
+      [
+        false,
+        false
+      ]
+    ]
+  },
+  "expected": 0,
+  "note": null
+}

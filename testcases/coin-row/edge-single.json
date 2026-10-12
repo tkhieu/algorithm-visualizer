@@ -1,0 +1,12 @@
+{
+  "id": "edge-single",
+  "name": "Một đồng xu",
+  "group": "edge",
+  "input": {
+    "values": [
+      7
+    ]
+  },
+  "expected": 7,
+  "note": null
+}

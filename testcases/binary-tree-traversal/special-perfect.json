@@ -1,0 +1,54 @@
+{
+  "id": "special-perfect",
+  "name": "Cây hoàn chỉnh 7 đỉnh",
+  "group": "special",
+  "input": {
+    "nodes": [
+      {
+        "id": 0,
+        "value": 4,
+        "left": 1,
+        "right": 2
+      },
+      {
+        "id": 1,
+        "value": 2,
+        "left": 3,
+        "right": 4
+      },
+      {
+        "id": 2,
+        "value": 6,
+        "left": 5,
+        "right": 6
+      },
+      {
+        "id": 3,
+        "value": 1,
+        "left": null,
+        "right": null
+      },
+      {
+        "id": 4,
+        "value": 3,
+        "left": null,
+        "right": null
+      },
+      {
+        "id": 5,
+        "value": 5,
+        "left": null,
+        "right": null
+      },
+      {
+        "id": 6,
+        "value": 7,
+        "left": null,
+        "right": null
+      }
+    ],
+    "root": 0
+  },
+  "expected": null,
+  "note": null
+}

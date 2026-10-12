@@ -1,0 +1,19 @@
+{
+  "id": "special-tie",
+  "name": "Nhiều nghiệm tối ưu bằng nhau",
+  "group": "special",
+  "input": {
+    "cost": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

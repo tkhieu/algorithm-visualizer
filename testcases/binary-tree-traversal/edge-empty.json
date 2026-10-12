@@ -1,0 +1,11 @@
+{
+  "id": "edge-empty",
+  "name": "Cây rỗng",
+  "group": "edge",
+  "input": {
+    "nodes": [],
+    "root": null
+  },
+  "expected": null,
+  "note": null
+}
