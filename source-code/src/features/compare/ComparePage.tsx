@@ -52,6 +52,19 @@ function LoadedComparePage({problemId,problem}:{problemId:string;problem:AnyProb
  // làn mới (idle) vừa tạo cho đúng id đó.
  const runGen=useRef(0);
  const activeCancels=useRef<(()=>void)[]>([]);
+ // Khi rời trang (unmount) giữa lúc đang so sánh: tăng runGen để mọi tiếp diễn bất đồng bộ còn
+ // treo tự bỏ qua, và cancel() mọi worker đang chạy để không lãng phí tính toán ngầm. KHÔNG gọi
+ // setLanes/setBusy ở đây — component đã unmount, gọi setState sẽ gây warning "state update on
+ // an unmounted component"; runGen+cancel là đủ, vì không còn gì để render nữa.
+ // Khi rời trang (unmount) giữa lúc đang so sánh: tăng runGen để mọi tiếp diễn bất đồng bộ còn
+ // treo tự bỏ qua, và cancel() mọi worker đang chạy để không lãng phí tính toán ngầm. KHÔNG gọi
+ // setLanes/setBusy ở đây — component đã unmount, gọi setState sẽ gây warning "state update on
+ // an unmounted component"; runGen+cancel là đủ, vì không còn gì để render nữa.
+ useEffect(()=>()=>{
+  runGen.current++;
+  for(const cancel of activeCancels.current)cancel();
+  activeCancels.current=[];
+ },[]);
  // Làn xuất hiện ngay khi trang tải / khi chọn lại thuật toán, ở trạng thái idle (chưa dispatch
  // run nào) — giữ lại làn đã có kết quả nếu id vẫn còn được chọn, để đổi lựa chọn không xoá kết
  // quả của các làn khác. Tách idsKey (chuỗi, ổn định) ra làm dep duy nhất thay vì mảng ids (đổi

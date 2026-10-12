@@ -153,4 +153,39 @@ describe('ComparePage — generation token bỏ qua kết quả của lượt ch
     await tick(() => pendingRuns.get('fake-problem/slow')!.resolve(okResult()));
     expect(status('lane-slow')).toBe('ok');
   });
+
+  it('rời trang (unmount) giữa lúc đang so sánh: huỷ hết worker đang chạy, kết quả muộn không gây setState sau unmount', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    let unmount!: () => void;
+    await tick(() => {
+      const result = render(
+        <MemoryRouter initialEntries={['/compare/fake-problem']}>
+          <ComparePage problemId="fake-problem" />
+        </MemoryRouter>,
+      );
+      unmount = result.unmount;
+    });
+    await tick(() => fireEvent.click(screen.getByRole('button', {name: 'Chạy tất cả'})));
+    expect(status('lane-slow')).toBe('running');
+    expect(status('lane-fast')).toBe('running');
+
+    const slowRun = pendingRuns.get('fake-problem/slow')!;
+    const fastRun = pendingRuns.get('fake-problem/fast')!;
+    const cancelledBefore = cancelledIds.length;
+
+    // Rời trang khi cả hai làn còn đang chạy: cleanup unmount phải cancel() cả hai task.
+    await tick(() => unmount());
+    const newlyCancelled = cancelledIds.slice(cancelledBefore);
+    expect(newlyCancelled).toEqual(expect.arrayContaining(['fake-problem/slow', 'fake-problem/fast']));
+
+    // Hai worker "đã tính xong trước khi bị huỷ" vẫn gửi kết quả muộn tới sau khi unmount —
+    // không được gây setState trên component đã unmount (không có console.error nào, kể cả
+    // warning "state update on an unmounted component" hay act() warning).
+    await tick(() => {
+      slowRun.resolve(okResult());
+      fastRun.resolve(okResult());
+    });
+    expect(errorSpy).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
 });
