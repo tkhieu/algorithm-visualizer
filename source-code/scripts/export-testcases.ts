@@ -19,6 +19,10 @@ for(const p of problems.filter(p=>p.status==='ready')){
  const mod=await import(`../src/problems/${p.id}/cases.ts`) as {cases:TestCase<unknown>[]};
  const cases=mod.cases;
  const dir=resolve(root,p.id);
+ // Xoá sạch rồi tạo lại để một lần chạy lại là một bản sinh sạch: nếu cases.ts đổi tên/xoá
+ // một ca, file .json cũ của ca đó không còn mồ côi trong thư mục. knapsack-01 được xoá ở
+ // đây cũng an toàn — khối bên dưới sinh lại đủ 8 ca hiệu năng bổ sung ngay sau vòng lặp này.
+ await rm(dir,{recursive:true,force:true});
  await mkdir(dir,{recursive:true});
  for(const c of cases)
   await writeFile(resolve(dir,`${c.id}.json`),JSON.stringify({id:c.id,name:c.name,group:c.group,input:c.input,expected:c.expected??null,note:c.note??null},null,2)+'\n');
@@ -47,9 +51,22 @@ for(const p of problems.filter(p=>p.status==='ready')){
 const readme=`# Bộ testcase toàn bộ catalog
 
 Mỗi bài toán \`ready\` trong \`src/catalog/manifest.ts\` có một thư mục \`testcases/<problemId>/\`
-chứa các file JSON, mỗi file một ca: \`{id, name, group, input, expected, note}\`. \`expected\` là
-kết quả tham chiếu tính từ \`checker.ts\` của bài toán đó (null khi không áp dụng, ví dụ ca
-\`invalid\`); \`group\` là một trong sáu nhóm dùng chung toàn catalog:
+chứa các file JSON, mỗi file một ca: \`{id, name, group, input, expected, note}\`.
+
+\`expected\`, khi không phải \`null\`, là kết quả tham chiếu tính sẵn từ \`checker.ts\` của bài toán
+đó (ví dụ ƯCLN, độ dài hành trình tối ưu) để so sánh trực tiếp với kết quả một thuật toán trả về.
+
+\`expected: null\` xảy ra ở hai trường hợp khác nhau — phân biệt bằng \`group\`:
+- \`group: "invalid"\` — input phải bị bộ parse (\`inputSchema\`) từ chối; không có "kết quả" vì
+  không được phép chạy.
+- Mọi \`group\` khác (ví dụ các ca của \`graph-coloring\`, \`subset-sum\`, \`n-queens\`) — bài toán
+  không có một đáp số cố định duy nhất để so khớp (nhiều cách tô màu/nhiều tập con/nhiều cách đặt
+  hậu đều đúng), nên \`checker.ts\` chấm bằng cách **kiểm tra tính hợp lệ của output** (ví dụ: có
+  đúng là một cách tô màu hợp lệ với số màu cho phép không) thay vì so với một giá trị cố định.
+  Dùng \`check(input, output)\` từ \`checker.ts\` của bài toán đó để chấm những ca này, không so
+  \`output\` với \`expected\`.
+
+\`group\` là một trong sáu nhóm dùng chung toàn catalog:
 
 - \`normal\` — dữ liệu điển hình
 - \`edge\` — trường hợp biên (rỗng, 0, một phần tử, …)
