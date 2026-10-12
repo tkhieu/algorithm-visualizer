@@ -18,9 +18,9 @@ describe('tsp/branch-and-bound', () => {
     }
   });
 
-  it('từ chối n vượt giới hạn an toàn', () => {
+  it('precondition từ chối n vượt giới hạn an toàn bằng lý do tiếng Việt, không phải lỗi ném ra', () => {
     const big = {points: Array.from({length: 11}, (_, i) => ({x: i, y: 0}))};
-    expect(() => algorithm.run(big, {rec: new MetricsRecorder(), signal: new AbortController().signal})).toThrow();
+    expect(algorithm.precondition?.(big)).toMatch(/10 điểm/);
   });
 
   it('trace tua lại đúng, cắt nhánh được ghi nhận và khớp output cuối', () => {

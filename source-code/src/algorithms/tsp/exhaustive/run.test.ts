@@ -18,9 +18,9 @@ describe('tsp/exhaustive', () => {
     }
   });
 
-  it('từ chối n vượt giới hạn an toàn', () => {
+  it('precondition từ chối n vượt giới hạn an toàn bằng lý do tiếng Việt, không phải lỗi ném ra', () => {
     const big = {points: Array.from({length: 10}, (_, i) => ({x: i, y: 0}))};
-    expect(() => algorithm.run(big, {rec: new MetricsRecorder(), signal: new AbortController().signal})).toThrow();
+    expect(algorithm.precondition?.(big)).toMatch(/9 điểm/);
   });
 
   it('trace tua lại đúng và khớp output cuối', () => {
