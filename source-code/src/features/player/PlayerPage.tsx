@@ -135,7 +135,7 @@ function LoadedPlayerPage({problemId,algoId,problem,algo}:{problemId:string;algo
     </CardContent></Card>
     <Card><CardHeader><CardTitle>Kết quả</CardTitle></CardHeader><CardContent data-testid="output">
      {result?.status==='ok'?(ui.OutputRenderer?<ui.OutputRenderer input={valid} output={result.output} verdict={result.verdict} truncated={result.truncated}/>:<OutputPanel output={result.output} verdict={result.verdict} truncated={result.truncated}/>)
-      :result?<p>{result.status==='invalid-input'?result.issues.join('; '):result.status==='timeout'?'Hết thời gian chạy':result.status==='cancelled'?'Đã dừng':result.status==='error'?result.message:'Không thể chạy'}</p>
+      :result?<p>{result.status==='invalid-input'?result.issues.join('; '):result.status==='not-applicable'?`Không áp dụng: ${result.reason}`:result.status==='timeout'?'Hết thời gian chạy':result.status==='cancelled'?'Đã dừng':result.status==='error'?result.message:'Không thể chạy'}</p>
       :<p className="muted">Chạy thuật toán để xem kết quả.</p>}
     </CardContent></Card>
    </div>

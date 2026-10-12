@@ -1,0 +1,30 @@
+import { z } from 'zod'
+export const inputSchema = z
+  .object({
+    n: z.number().int().min(1).max(60),
+    edges: z.array(z.tuple([z.number().int(), z.number().int()])).max(300),
+  })
+  .superRefine((v, ctx) => {
+    if (v.edges.some(([a, b]) => a < 0 || b < 0 || a >= v.n || b >= v.n || a === b))
+      ctx.addIssue({ code: 'custom', message: 'Cạnh ngoài phạm vi hoặc tự nối' })
+    const adj = Array.from({ length: v.n }, () => [] as number[])
+    for (const [a, b] of v.edges) if (a >= 0 && b >= 0 && a < v.n && b < v.n) adj[a].push(b)
+    const color = Array(v.n).fill(0) as number[]
+    function visit(x: number): boolean {
+      color[x] = 1
+      for (const y of adj[x]) {
+        if (color[y] === 1 || (color[y] === 0 && visit(y))) return true
+      }
+      color[x] = 2
+      return false
+    }
+    if (Array.from({ length: v.n }, (_, i) => i).some((i) => color[i] === 0 && visit(i)))
+      ctx.addIssue({ code: 'custom', message: 'Đồ thị phải không có chu trình' })
+  })
+export const outputSchema = z.object({ order: z.array(z.number().int()) })
+export type Input = z.infer<typeof inputSchema>
+export type Output = z.infer<typeof outputSchema>
+export const statement =
+  'Cho đồ thị có hướng không chu trình (DAG). Hãy liệt kê các đỉnh sao cho mọi cạnh u→v có u đứng ' +
+  'trước v. Ví dụ: cạnh 0→1 cho thứ tự 0,1; ba đỉnh không có cạnh có thể xếp theo thứ tự bất kỳ.'
+export const constraints = ['1 ≤ n ≤ 60', 'Tối đa 300 cạnh', 'Không có cạnh tự nối và chu trình']

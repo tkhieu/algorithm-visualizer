@@ -1,0 +1,39 @@
+import type { Verdict } from '../../core/contracts'
+import { inputSchema, outputSchema, type Input, type Output } from './definition'
+export function reference(input: Input): number {
+  const parent = Array.from({ length: input.n }, (_, i) => i)
+  function find(x: number): number {
+    return parent[x] === x ? x : (parent[x] = find(parent[x]))
+  }
+  let weight = 0
+  for (const [a, b, w] of [...input.edges].sort((x, y) => x[2] - y[2]))
+    if (find(a) !== find(b)) {
+      parent[find(a)] = find(b)
+      weight += w
+    }
+  return weight
+}
+export function check(input: Input, output: Output): Verdict {
+  if (!inputSchema.safeParse(input).success) return { ok: false, reason: 'Đầu vào không hợp lệ' }
+  if (!outputSchema.safeParse(output).success) return { ok: false, reason: 'Đầu ra sai định dạng' }
+  if (
+    output.edgeIndices.length !== input.n - 1 ||
+    new Set(output.edgeIndices).size !== output.edgeIndices.length ||
+    output.edgeIndices.some((i) => i < 0 || i >= input.edges.length)
+  )
+    return { ok: false, reason: 'Số cạnh hoặc chỉ số không hợp lệ' }
+  const parent = Array.from({ length: input.n }, (_, i) => i)
+  function find(x: number): number {
+    return parent[x] === x ? x : (parent[x] = find(parent[x]))
+  }
+  let weight = 0
+  for (const i of output.edgeIndices) {
+    const [a, b, w] = input.edges[i]
+    if (find(a) === find(b)) return { ok: false, reason: 'Có chu trình' }
+    parent[find(a)] = find(b)
+    weight += w
+  }
+  if (weight !== output.weight) return { ok: false, reason: 'Tổng trọng số sai' }
+  const best = reference(input)
+  return { ok: true, optimal: weight === best, score: weight, ratio: weight ? best / weight : 1 }
+}

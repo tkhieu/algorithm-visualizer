@@ -1,0 +1,18 @@
+import { z } from 'zod'
+export const inputSchema = z
+  .object({
+    n: z.number().int().min(1).max(35),
+    edges: z.array(z.tuple([z.number().int(), z.number().int()])).max(300),
+  })
+  .superRefine((v, ctx) => {
+    if (v.edges.some(([a, b]) => a < 0 || b < 0 || a >= v.n || b >= v.n))
+      ctx.addIssue({ code: 'custom', message: 'Đỉnh ngoài phạm vi' })
+  })
+export const outputSchema = z.object({ reachable: z.array(z.array(z.boolean())) })
+export type Input = z.infer<typeof inputSchema>
+export type Output = z.infer<typeof outputSchema>
+export const statement =
+  'Cho đồ thị có hướng. Hãy xác định với mỗi cặp đỉnh (u,v) liệu có đường đi từ u đến v; đường đi ' +
+  'độ dài 0 khiến mọi đỉnh đến được chính nó. Ví dụ: 0→1→2 thì 0 đến được 2; đồ thị một đỉnh có ma ' +
+  'trận [đúng].'
+export const constraints = ['1 ≤ n ≤ 35', 'Tối đa 300 cạnh', 'Đỉnh đánh số 0 đến n−1']
