@@ -1,1 +1,1 @@
-export {legend} from '../shared';
+export { legend } from '../shared';

@@ -1,46 +1,73 @@
-import type {RunContext} from '../../../core/contracts';
-import type {Input,Output} from '../../../problems/convex-hull/definition';
-import {assertActive,cross,pack,type VisualState} from '../shared';
+import type { RunContext } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/convex-hull/definition';
+import { assertActive, cross, pack, type VisualState } from '../shared';
 
-export function run(input:Input,{rec,signal}:RunContext<VisualState>):Output{
- const pts=input.points;const n=pts.length;
- const next=new Map<number,number>();
- rec.step('start','Kiểm tra từng cặp điểm xem có tạo thành cạnh của bao lồi hay không.',d=>{d.note='Bắt đầu kiểm tra từng cặp'},[],'start');
- for(let i=0;i<n;i++){
-  for(let j=0;j<n;j++){
-   if(i===j)continue;
-   assertActive(signal);
-   let allLeft=true,allRight=true;
-   for(let k=0;k<n;k++){
-    if(k===i||k===j)continue;
-    rec.count('compare');
-    const c=cross(pts[i],pts[j],pts[k]);
-    if(c<0)allLeft=false;
-    if(c>0)allRight=false;
-   }
-   const isEdge=allLeft||allRight;
-   rec.step('check',`Cặp (${i}, ${j}): ${isEdge?'tất cả điểm còn lại nằm một phía → là cạnh bao lồi':'không phải cạnh bao lồi'}.`,d=>{
-    d.segments=[{from:i,to:j,role:isEdge?'hull':'rejected'}];
-    d.note=isEdge?`Cạnh bao lồi (${i}, ${j})`:`Loại cặp (${i}, ${j})`;
-   },[],'check');
-   if(isEdge){
-    if(allLeft&&!allRight)next.set(i,j);
-    else if(allRight&&!allLeft)next.set(j,i);
-   }
+export function run(input: Input, { rec, signal }: RunContext<VisualState>): Output {
+  const pts = input.points;
+  const unique = new Map<string, number>();
+  pts.forEach((p, i) => {
+    const key = `${p.x},${p.y}`;
+    if (!unique.has(key)) unique.set(key, i);
+  });
+  const ids = [...unique.values()];
+  const extremes = new Set<number>();
+  rec.step(
+    'start',
+    'Bỏ điểm trùng; kiểm tra mọi cặp làm đường đỡ của bao lồi.',
+    (d) => {
+      d.note = 'Bắt đầu kiểm tra từng cặp';
+    },
+    [],
+    'start',
+  );
+  if (ids.length <= 2) ids.forEach((i) => extremes.add(i));
+  for (let a = 0; a < ids.length; a++)
+    for (let b = a + 1; b < ids.length; b++) {
+      assertActive(signal);
+      const i = ids[a],
+        j = ids[b];
+      let left = false,
+        right = false;
+      for (const k of ids) {
+        rec.count('compare');
+        const value = cross(pts[i], pts[j], pts[k]);
+        if (value > 0) left = true;
+        if (value < 0) right = true;
+      }
+      const supporting = !(left && right);
+      if (supporting) {
+        const collinear = ids.filter((k) => cross(pts[i], pts[j], pts[k]) === 0);
+        const axis = pts[i].x !== pts[j].x ? 'x' : 'y';
+        collinear.sort((u, v) => pts[u][axis] - pts[v][axis]);
+        extremes.add(collinear[0]);
+        extremes.add(collinear.at(-1)!);
+      }
+      rec.step(
+        'check',
+        `Cặp (${i}, ${j}): ${supporting ? 'đường đỡ bao lồi' : 'không phải đường đỡ'}.`,
+        (d) => {
+          d.segments = [{ from: i, to: j, role: supporting ? 'hull' : 'rejected' }];
+          d.note = supporting ? `Cạnh bao lồi (${i}, ${j})` : `Loại cặp (${i}, ${j})`;
+        },
+        [],
+        'check',
+      );
+    }
+  const order = [...extremes];
+  if (order.length > 2) {
+    const cx = order.reduce((sum, i) => sum + pts[i].x, 0) / order.length;
+    const cy = order.reduce((sum, i) => sum + pts[i].y, 0) / order.length;
+    order.sort((i, j) => Math.atan2(pts[i].y - cy, pts[i].x - cx) - Math.atan2(pts[j].y - cy, pts[j].x - cx));
   }
- }
- const order:number[]=[];
- if(next.size>0){
-  const start=[...next.keys()][0];
-  let cur=start;
-  const seen=new Set<number>();
-  while(!seen.has(cur)){
-   seen.add(cur);order.push(cur);
-   const nxt=next.get(cur);
-   if(nxt===undefined)break;
-   cur=nxt;
-  }
- }
- rec.step('done',`Hoàn tất: bao lồi có ${order.length} đỉnh.`,d=>{d.hull=order;d.note=`Bao lồi có ${order.length} đỉnh`},[],'done');
- return pack(order);
+  rec.step(
+    'done',
+    `Hoàn tất: bao lồi có ${order.length} đỉnh cực biên.`,
+    (d) => {
+      d.hull = order;
+      d.note = `Bao lồi có ${order.length} đỉnh`;
+    },
+    [],
+    'done',
+  );
+  return pack(order);
 }
