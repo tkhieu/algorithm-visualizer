@@ -108,3 +108,32 @@ test coverage sẽ tự xác nhận (chạy `npm run test`, xem `src/catalog/man
 Không bao giờ làm yếu, bỏ qua, hoặc xoá test đã có — kể cả test của người khác.
 
 Nếu bạn thêm e2e riêng, đặt ở `e2e/catalog-<nhóm>.spec.ts` và giữ các spec hiện có nguyên vẹn.
+
+## 7. Quy tắc chất lượng mã (bắt buộc, review sẽ kiểm tra)
+
+- **Mã dễ đọc, nhiều dòng, không minify**: không viết một dòng dài gộp nhiều câu lệnh bằng
+  dấu `;` để "cho ngắn". Mỗi dòng ≤ 160 ký tự. Đặt tên biến/hàm rõ nghĩa; thụt lề chuẩn theo
+  Prettier/ESLint của repo (`npm run lint` phải sạch). Review trước đây từng gặp các file
+  `run.ts` viết dồn toàn bộ logic trên 1–2 dòng cực dài — việc này làm trace/diff/review khó
+  theo dõi, không được lặp lại.
+- **Oracle kiểm thử phải độc lập với thuật toán đang kiểm tra**: khi `run.test.ts` hoặc
+  `checker.ts` đối chiếu kết quả với một "tham chiếu" (`reference`/`bruteForce...`/`optimum`),
+  tham chiếu đó phải dùng một cách tính **khác về cấu trúc** với thuật toán đang kiểm tra —
+  không phải bản sao gần như y nguyên cùng vòng lặp/điều kiện. Ví dụ: nếu thuật toán vét cạn
+  dùng hai vòng lặp lồng tích luỹ `best`, oracle nên dùng một cách biểu diễn khác (ví dụ
+  `flatMap` + `Math.min`, hoặc một công thức đóng, hoặc thuật toán thuộc kỹ thuật khác hẳn)
+  để một lỗi chung (sai dấu so sánh, sai công thức khoảng cách…) không lọt qua cả hai phía.
+  Xem `src/problems/closest-pair/oracle.test.ts` làm ví dụ.
+- **Không bao giờ format lại file chung**: khi sửa một file nhiều người cùng chạm tới
+  (`src/catalog/manifest.ts`, `src/core/contracts/index.ts`, các file cấu hình ở gốc
+  `source-code/`…), diff chỉ chứa đúng thay đổi về nội dung của bạn — không chạy formatter
+  toàn file, không đổi style thụt lề/dấu nháy của những dòng không liên quan. Diff lớn do
+  format lại khiến review không thấy được thay đổi thật và dễ xung đột với người khác đang
+  làm việc trên cùng file.
+- **Giới hạn/giả định an toàn phải báo bằng tiếng Việt, không ném lỗi**: nếu thuật toán chỉ
+  an toàn trong một phạm vi input nhỏ hơn schema (ví dụ vét cạn 2ⁿ chỉ chịu được n nhỏ), dùng
+  `algorithm.precondition(input): string | undefined` để trả lý do tiếng Việt (UI sẽ hiện
+  "Không áp dụng: …") — đừng `throw` trong `run()`. Tương tự, nếu một phương pháp lặp có thể
+  không hội tụ trong số lần lặp tối đa, ghi một bước trace tiếng Việt báo rõ điều đó (xem
+  `src/algorithms/root-finding/newton/run.ts`) thay vì âm thầm trả giá trị cuối như thể đã
+  đúng.
