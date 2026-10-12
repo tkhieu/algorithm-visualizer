@@ -75,6 +75,17 @@ describe('chèn cây B (bậc 4)', () => {
     expect(inv.sameLeafDepth).toBe(true);
     expect(output.height).toBeLessThanOrEqual(4);
   });
+  it('khóa trùng với khóa vừa được đẩy lên nút cha (sau tách) không bị chèn thêm lần nữa', () => {
+    // Chèn 1,2,3,4 làm nút lá tách (4 khóa > maxKeys 3), đưa khóa 3 lên làm gốc. Chèn lại 3:
+    // phải bị nhận ra là trùng ngay tại gốc, không phải chỉ kiểm tra trùng khi đã xuống tới lá.
+    const input = { keys: [1, 2, 3, 4, 3] };
+    const output = solve(input);
+    expect(output.values).toEqual([1, 2, 3, 4]);
+    expect(check(input, output)).toMatchObject({ ok: true });
+    const inv = checkMultiwayInvariant(traceFinal(input), 3);
+    expect(inv.ordered).toBe(true);
+    expect(inv.keyCountOk).toBe(true);
+  });
   it('bước "split" giải thích bằng tiếng Việt khi nút đầy', () => {
     const rec = new TraceRecorder(
       algorithm.initVisual({ keys: [1, 2, 3, 4] }),
