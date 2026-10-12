@@ -1,0 +1,10 @@
+import type { ComparisonAdapter } from '../../core/contracts'
+import type { Input, Output } from './definition'
+export const adapter: ComparisonAdapter<Input, Output> = {
+  problemId: 'bipartite-matching',
+  project: (_i, o) => ({ soCap: o.size, cap: o.pairs }),
+  metrics: [
+    { id: 'size', label: 'Số cặp', better: 'higher' },
+    { id: 'ms', label: 'Thời gian', better: 'lower' },
+  ],
+}

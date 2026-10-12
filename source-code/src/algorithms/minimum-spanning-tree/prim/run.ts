@@ -1,0 +1,50 @@
+import type { RunContext } from '../../../core/contracts'
+import type { Input, Output } from '../../../problems/minimum-spanning-tree/definition'
+import type { VisualState } from '../shared'
+export function run(input: Input, { rec, signal }: RunContext<VisualState>): Output {
+  const inside = new Set([0]),
+    edgeIndices: number[] = []
+  let weight = 0
+  rec.step('init', 'Bắt đầu cây khung từ đỉnh 0.', (d) => {
+    d.nodes[0].role = 'visited'
+    d.note = 'Đã chọn đỉnh 0.'
+  })
+  while (inside.size < input.n) {
+    if (signal.aborted) throw new DOMException('Đã hủy', 'AbortError')
+    let best = -1
+    for (let i = 0; i < input.edges.length; i++) {
+      const [a, b, w] = input.edges[i]
+      rec.count('compare')
+      if (
+        inside.has(a) !== inside.has(b) &&
+        (best < 0 || w < input.edges[best][2] || (w === input.edges[best][2] && i < best))
+      )
+        best = i
+    }
+    if (best < 0) throw new Error('Đồ thị không liên thông')
+    const [a, b, w] = input.edges[best],
+      v = inside.has(a) ? b : a
+    inside.add(v)
+    edgeIndices.push(best)
+    weight += w
+    rec.count('assign')
+    rec.step(
+      'take',
+      `Chọn cạnh ${a}–${b} trọng số ${w}; tổng ${weight}.`,
+      (d) => {
+        d.edgeIndices = [...edgeIndices]
+        d.weight = weight
+        d.edges[best].role = 'tree'
+        d.nodes[v].role = 'visited'
+        d.note = `Đã chọn ${inside.size} đỉnh.`
+      },
+      [{ target: `${a}-${b}`, role: 'tree' }],
+    )
+  }
+  rec.step('done', `Cây khung nhỏ nhất có trọng số ${weight}.`, (d) => {
+    d.edgeIndices = [...edgeIndices]
+    d.weight = weight
+    d.note = 'Hoàn tất.'
+  })
+  return { edgeIndices, weight }
+}

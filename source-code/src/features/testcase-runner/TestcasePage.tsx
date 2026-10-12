@@ -10,7 +10,7 @@ import {Button} from '../../components/ui/button';
 import {Card,CardContent,CardHeader,CardTitle} from '../../components/ui/card';
 import {Breadcrumbs} from '../nav/Breadcrumbs';
 
-type Row={id:string;pass:boolean;ms:number;message:string};
+type Row={id:string;pass:boolean;ms:number;message:string;notApplicable?:boolean};
 const groupNames:Record<string,string>={normal:'Thông thường',edge:'Biên',small:'Dữ liệu nhỏ',large:'Dữ liệu lớn',special:'Đặc biệt',invalid:'Không hợp lệ'};
 
 export function TestcasePage({problemId}:{problemId:string}){
@@ -49,8 +49,8 @@ function LoadedTestcasePage({problemId,problem}:{problemId:string;problem:AnyPro
    const actual=typeof c.expected==='number'&&score!==undefined?score:r.status==='ok'?r.output:undefined;
    const matches=c.expected===undefined||JSON.stringify(actual)===JSON.stringify(c.expected);
    const pass=r.status==='ok'&&r.verdict.ok&&matches;
-   const message=r.status==='ok'?(c.expected!==undefined?`Kết quả ${JSON.stringify(actual)}; kỳ vọng ${JSON.stringify(c.expected)}`:'Kết quả hợp lệ'):r.status;
-   setRows(prev=>[...prev,{id,pass,ms:response.medianMs,message}]);
+   const message=r.status==='ok'?(c.expected!==undefined?`Kết quả ${JSON.stringify(actual)}; kỳ vọng ${JSON.stringify(c.expected)}`:'Kết quả hợp lệ'):r.status==='not-applicable'?`Không áp dụng: ${r.reason}`:r.status;
+   setRows(prev=>[...prev,{id,pass,ms:response.medianMs,message,notApplicable:r.status==='not-applicable'}]);
   });
   setRunning(false);
  };
@@ -78,7 +78,7 @@ function LoadedTestcasePage({problemId,problem}:{problemId:string;problem:AnyPro
   </div>
   {(Object.keys(groupNames)).map(group=><Card key={group}><CardHeader><CardTitle>{groupNames[group]}</CardTitle></CardHeader><CardContent><div className="overflow-auto"><table className="data-table"><thead><tr><th>Ca kiểm thử</th><th>Kỳ vọng</th><th>Kết quả</th><th>Trung vị ms</th><th>Chi tiết</th></tr></thead><tbody>{cases.filter(c=>c.group===group).map(c=>{
    const row=rows.find(r=>r.id===c.id);
-   return <tr key={c.id}><td>{c.name}</td><td>{c.expected!==undefined?String(c.expected):'Từ chối'}</td><td>{row?(row.pass?'Đạt':'Không đạt'):'Chưa chạy'}</td><td>{row?.ms.toFixed(2)??'—'}</td><td>{row?.message??c.note??'—'}</td></tr>;
+   return <tr key={c.id}><td>{c.name}</td><td>{c.expected!==undefined?String(c.expected):'Từ chối'}</td><td>{row?(row.notApplicable?'Không áp dụng':row.pass?'Đạt':'Không đạt'):'Chưa chạy'}</td><td>{row?.ms.toFixed(2)??'—'}</td><td>{row?.message??c.note??'—'}</td></tr>;
   })}</tbody></table></div></CardContent></Card>)}
   <Card><CardHeader><CardTitle>Hiệu năng theo n</CardTitle></CardHeader><CardContent>
    <Button variant="outline" onClick={benchmark}>Đo thời gian</Button>

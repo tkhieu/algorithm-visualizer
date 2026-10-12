@@ -1,0 +1,23 @@
+import type { Algorithm } from '../../../core/contracts'
+import type { Input, Output } from '../../../problems/graph-traversal/definition'
+import { initVisual, limits, type VisualState } from '../shared'
+import { run } from './run'
+import { pseudocode } from './pseudocode'
+import { legend } from './legend'
+export const algorithm: Algorithm<Input, Output, VisualState> = {
+  id: 'graph-traversal/dfs',
+  problemId: 'graph-traversal',
+  title: 'Duyệt theo chiều sâu (DFS)',
+  chapter: 3,
+  section: '3.5',
+  page: 122,
+  technique: 'decrease-and-conquer',
+  exactness: 'exact',
+  complexity: { time: 'O(V+E log V)', space: 'O(V)' },
+  views: ['graph'],
+  pseudocode,
+  legend,
+  traceLimit: limits,
+  initVisual,
+  run,
+}

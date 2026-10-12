@@ -51,7 +51,7 @@ const b4Problems:ProblemSummary[]=[
 // Số mục/trang tham chiếu từ docs/levitin-thuat-toan-co-the-demo.md. Với biến thể mở rộng,
 // trang chỉ tới chủ đề gần nhất; Phase B sẽ ghi rõ nguồn riêng trong phần mô tả thuật toán.
 interface AlgoDef{id:string;title:string;technique:string;exactness?:'exact'|'approximate'|'heuristic';time:string;space:string}
-interface ProblemDef{id:string;title:string;views:VisualKind[];algos:AlgoDef[]}
+interface ProblemDef{id:string;title:string;views:VisualKind[];algos:AlgoDef[];status?:Status}
 
 type Citation={section:string;page:number};
 const citationByProblem:Record<string,Citation>={
@@ -90,6 +90,8 @@ const citationByAlgorithm:Record<string,Citation>={
  'element-uniqueness/brute-force':{section:'3.1',page:98},
  'single-source-shortest-path/bfs-unweighted':{section:'3.5',page:122},
  'minimum-spanning-tree/kruskal':{section:'9.2',page:325},
+ 'transitive-closure/dfs-each-vertex':{section:'3.5',page:122},
+ 'all-pairs-shortest-path/dijkstra-all-sources':{section:'9.3',page:333},
  'string-matching/brute-force':{section:'3.2',page:104},
  'closest-pair/brute-force':{section:'3.3',page:108},'convex-hull/brute-force':{section:'3.3',page:108},
  'tsp/exhaustive':{section:'3.4',page:115},'tsp/branch-and-bound':{section:'12.2',page:438},
@@ -200,43 +202,43 @@ const plannedDefs:ProblemDef[]=[
  ]},
 
  // B3 — Chương 3.5, 4.2, 8.4, 9.1–9.4, 10.2–10.4
- {id:'graph-traversal',title:'Duyệt đồ thị',views:['graph'],algos:[
-  {id:'dfs',title:'Duyệt theo chiều sâu (DFS)',technique:'decrease-and-conquer',time:'O(V+E)',space:'O(V)'},
-  {id:'bfs',title:'Duyệt theo chiều rộng (BFS)',technique:'decrease-and-conquer',time:'O(V+E)',space:'O(V)'},
+ {id:'graph-traversal',status:'ready',title:'Duyệt đồ thị',views:['graph'],algos:[
+  {id:'dfs',title:'Duyệt theo chiều sâu (DFS)',technique:'decrease-and-conquer',time:'O(V+E log V)',space:'O(V)'},
+  {id:'bfs',title:'Duyệt theo chiều rộng (BFS)',technique:'decrease-and-conquer',time:'O(V+E log V)',space:'O(V)'},
  ]},
- {id:'topological-sort',title:'Sắp xếp tô pô',views:['graph'],algos:[
+ {id:'topological-sort',status:'ready',title:'Sắp xếp tô pô',views:['graph'],algos:[
   {id:'dfs-based',title:'Dựa trên DFS',technique:'decrease-and-conquer',time:'O(V+E)',space:'O(V)'},
   {id:'source-removal',title:'Xoá dần đỉnh vào-0',technique:'decrease-and-conquer',time:'O(V+E)',space:'O(V)'},
  ]},
- {id:'transitive-closure',title:'Bao đóng bắc cầu',views:['matrix','graph'],algos:[
+ {id:'transitive-closure',status:'ready',title:'Bao đóng bắc cầu',views:['matrix','graph'],algos:[
   {id:'warshall',title:'Thuật toán Warshall',technique:'dp',time:'O(V³)',space:'O(V²)'},
   {id:'dfs-each-vertex',title:'DFS từ mỗi đỉnh',technique:'brute-force',time:'O(V(V+E))',space:'O(V²)'},
  ]},
- {id:'all-pairs-shortest-path',title:'Đường đi ngắn nhất mọi cặp',views:['matrix','graph'],algos:[
+ {id:'all-pairs-shortest-path',status:'ready',title:'Đường đi ngắn nhất mọi cặp',views:['matrix','graph'],algos:[
   {id:'floyd',title:'Thuật toán Floyd',technique:'dp',time:'O(V³)',space:'O(V²)'},
-  {id:'dijkstra-all-sources',title:'Dijkstra từ mọi đỉnh',technique:'greedy',time:'O(VE log V)',space:'O(V²)'},
+  {id:'dijkstra-all-sources',title:'Dijkstra từ mọi đỉnh',technique:'greedy',time:'O(V³+VE)',space:'O(V²)'},
  ]},
- {id:'single-source-shortest-path',title:'Đường đi ngắn nhất một nguồn',views:['graph'],algos:[
-  {id:'dijkstra',title:'Thuật toán Dijkstra',technique:'greedy',time:'O(E log V)',space:'O(V)'},
+ {id:'single-source-shortest-path',status:'ready',title:'Đường đi ngắn nhất một nguồn',views:['graph'],algos:[
+  {id:'dijkstra',title:'Thuật toán Dijkstra',technique:'greedy',time:'O(V²+E)',space:'O(V)'},
   {id:'bfs-unweighted',title:'BFS trên đồ thị không trọng số',technique:'decrease-and-conquer',time:'O(V+E)',space:'O(V)'},
  ]},
- {id:'minimum-spanning-tree',title:'Cây khung nhỏ nhất',views:['graph'],algos:[
-  {id:'prim',title:'Thuật toán Prim',technique:'greedy',time:'O(E log V)',space:'O(V)'},
+ {id:'minimum-spanning-tree',status:'ready',title:'Cây khung nhỏ nhất',views:['graph'],algos:[
+  {id:'prim',title:'Thuật toán Prim',technique:'greedy',time:'O(VE)',space:'O(V)'},
   {id:'kruskal',title:'Thuật toán Kruskal',technique:'greedy',time:'O(E log E)',space:'O(V)'},
  ]},
- {id:'huffman-coding',title:'Mã hoá Huffman',views:['tree'],algos:[
+ {id:'huffman-coding',status:'ready',title:'Mã hoá Huffman',views:['tree'],algos:[
   {id:'huffman',title:'Cây Huffman',technique:'greedy',time:'O(n log n)',space:'O(n)'},
-  {id:'fixed-length',title:'Mã hoá độ dài cố định (đối chiếu)',technique:'brute-force',time:'O(n)',space:'O(n)'},
+  {id:'fixed-length',title:'Mã hoá độ dài cố định (đối chiếu)',technique:'brute-force',exactness:'approximate',time:'O(n)',space:'O(n)'},
  ]},
- {id:'maximum-flow',title:'Luồng cực đại',views:['graph'],algos:[
+ {id:'maximum-flow',status:'ready',title:'Luồng cực đại',views:['graph'],algos:[
   {id:'shortest-augmenting-path',title:'Đường tăng luồng ngắn nhất (Edmonds–Karp)',technique:'iterative-improvement',time:'O(VE²)',space:'O(V+E)'},
   {id:'ford-fulkerson-dfs',title:'Ford–Fulkerson theo DFS',technique:'iterative-improvement',time:'O(E·f*)',space:'O(V+E)'},
  ]},
- {id:'bipartite-matching',title:'Ghép cặp trên đồ thị hai phía',views:['graph'],algos:[
+ {id:'bipartite-matching',status:'ready',title:'Ghép cặp trên đồ thị hai phía',views:['graph'],algos:[
   {id:'augmenting-path',title:'Đường tăng cường',technique:'iterative-improvement',time:'O(VE)',space:'O(V+E)'},
-  {id:'via-max-flow',title:'Quy về luồng cực đại',technique:'iterative-improvement',time:'O(VE)',space:'O(V+E)'},
+  {id:'via-max-flow',title:'Quy về luồng cực đại',technique:'iterative-improvement',time:'O(V³)',space:'O(V²)'},
  ]},
- {id:'stable-marriage',title:'Hôn nhân bền vững',views:['sequence','board'],algos:[
+ {id:'stable-marriage',status:'ready',title:'Hôn nhân bền vững',views:['sequence','board'],algos:[
   {id:'gale-shapley-men-propose',title:'Gale–Shapley (nam đề xuất)',technique:'iterative-improvement',time:'O(n²)',space:'O(n²)'},
   {id:'gale-shapley-women-propose',title:'Gale–Shapley (nữ đề xuất)',technique:'iterative-improvement',time:'O(n²)',space:'O(n²)'},
  ]},
@@ -295,10 +297,10 @@ const plannedAlgorithms:AlgorithmSummary[]=plannedDefs.flatMap(p=>p.algos.map(a=
  return {
   id:`${p.id}/${a.id}`,problemId:p.id,title:a.title,chapter,section:citation.section,page:citation.page,
   technique:a.technique,exactness:a.exactness??'exact',
-  complexity:{time:a.time,space:a.space},views:p.views,status:'planned',
+  complexity:{time:a.time,space:a.space},views:p.views,status:p.status??'planned',
  } satisfies AlgorithmSummary;
 }));
-const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({id:p.id,title:p.title,status:'planned'}));
+const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({id:p.id,title:p.title,status:p.status??'planned'}));
 
 export const problems:ProblemSummary[]=[knapsackProblem,...b4Problems,...plannedProblems];
 export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...b4Algorithms,...plannedAlgorithms];
