@@ -65,6 +65,14 @@ const assignmentAlgorithms:AlgorithmSummary[]=[
 ];
 const assignmentProblem:ProblemSummary={id:'assignment',title:'Bài toán phân công',status:'ready'};
 
+// --- B5: matrix-chain (đã triển khai, status ready) — khớp 1:1 với src/algorithms/matrix-chain/*.
+const matrixChainAlgorithms:AlgorithmSummary[]=[
+ {id:'matrix-chain/dp',problemId:'matrix-chain',title:'Quy hoạch động — bảng',chapter:8,section:'8.3',page:303,technique:'dp',exactness:'exact',complexity:{time:'O(n³)',space:'O(n²)'},views:['matrix','tree'],status:'ready'},
+ {id:'matrix-chain/memo',problemId:'matrix-chain',title:'Quy hoạch động — có nhớ',chapter:8,section:'8.3',page:303,technique:'dp',exactness:'exact',complexity:{time:'O(n³)',space:'O(n²)'},views:['matrix','tree'],status:'ready'},
+ {id:'matrix-chain/exhaustive',problemId:'matrix-chain',title:'Vét cạn mọi cách đặt ngoặc',chapter:8,section:'8.3',page:303,technique:'brute-force',exactness:'exact',complexity:{time:'O(4ⁿ/n^1.5)',space:'O(n)'},views:['matrix','tree'],status:'ready'},
+];
+const matrixChainProblem:ProblemSummary={id:'matrix-chain',title:'Nhân chuỗi ma trận',status:'ready'};
+
 // --- Toàn bộ catalog còn lại (Phase B sẽ lần lượt chuyển từng dòng sang status 'ready').
 // Số mục/trang tham chiếu từ docs/levitin-thuat-toan-co-the-demo.md. Với biến thể mở rộng,
 // trang chỉ tới chủ đề gần nhất; Phase B sẽ ghi rõ nguồn riêng trong phần mô tả thuật toán.
@@ -296,11 +304,6 @@ const plannedDefs:ProblemDef[]=[
  ]},
 
  // B5 — Chương 3.4, 12.1–12.3 + bài tập mở rộng
- {id:'matrix-chain',title:'Nhân chuỗi ma trận',views:['matrix','tree'],algos:[
-  {id:'dp',title:'Quy hoạch động — bảng',technique:'dp',time:'O(n³)',space:'O(n²)'},
-  {id:'memo',title:'Quy hoạch động — có nhớ',technique:'dp',time:'O(n³)',space:'O(n²)'},
-  {id:'exhaustive',title:'Vét cạn mọi cách đặt ngoặc',technique:'brute-force',time:'O(4ⁿ/n^1.5)',space:'O(n)'},
- ]},
  {id:'lcs',title:'Dãy con chung dài nhất',views:['matrix','string-align'],algos:[
   {id:'dp',title:'Quy hoạch động — bảng',technique:'dp',time:'O(nm)',space:'O(nm)'},
   {id:'memo',title:'Quy hoạch động — có nhớ',technique:'dp',time:'O(nm)',space:'O(nm)'},
@@ -320,5 +323,5 @@ const plannedAlgorithms:AlgorithmSummary[]=plannedDefs.flatMap(p=>p.algos.map(a=
 }));
 const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({id:p.id,title:p.title,status:'planned'}));
 
-export const problems:ProblemSummary[]=[knapsackProblem,nQueensProblem,hamiltonianProblem,subsetSumProblem,graphColoringProblem,tspProblem,assignmentProblem,...plannedProblems];
-export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...nQueensAlgorithms,...hamiltonianAlgorithms,...subsetSumAlgorithms,...graphColoringAlgorithms,...tspAlgorithms,...assignmentAlgorithms,...plannedAlgorithms];
+export const problems:ProblemSummary[]=[knapsackProblem,nQueensProblem,hamiltonianProblem,subsetSumProblem,graphColoringProblem,tspProblem,assignmentProblem,matrixChainProblem,...plannedProblems];
+export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...nQueensAlgorithms,...hamiltonianAlgorithms,...subsetSumAlgorithms,...graphColoringAlgorithms,...tspAlgorithms,...assignmentAlgorithms,...matrixChainAlgorithms,...plannedAlgorithms];
