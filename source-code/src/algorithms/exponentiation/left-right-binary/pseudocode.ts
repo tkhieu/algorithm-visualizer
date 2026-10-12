@@ -1,0 +1,5 @@
+export const pseudocode = [
+  { id: 'square', text: 'Đọc bit từ trái: bình phương tích', indent: 0 },
+  { id: 'multiply', text: 'Nếu bit là 1, nhân cơ số', indent: 0 },
+  { id: 'done', text: 'Trả về lũy thừa', indent: 0 }
+];

@@ -1,0 +1,63 @@
+import type { TestCase } from '../../core/contracts';
+import type { Input } from './definition';
+import { generate } from './generators';
+import { reference } from './checker';
+const raw: TestCase<Input>[] = [
+  {
+    id: 'normal-1',
+    name: 'Nhân ma trận 2×2',
+    group: 'normal',
+    input: {
+      a: [
+        [1, 2],
+        [3, 4]
+      ],
+      b: [
+        [2, 0],
+        [1, 2]
+      ]
+    }
+  },
+  {
+    id: 'normal-2',
+    name: 'Tích có số âm',
+    group: 'normal',
+    input: {
+      a: [
+        [1, -2],
+        [3, 4]
+      ],
+      b: [
+        [2, 1],
+        [-1, 2]
+      ]
+    }
+  },
+  { id: 'edge-one', name: 'Ma trận 1×1', group: 'edge', input: { a: [[2]], b: [[3]] } },
+  { id: 'small-1', name: 'Dữ liệu nhỏ', group: 'small', input: generate(7, 'small') },
+  { id: 'large-1', name: 'Dữ liệu lớn', group: 'large', input: generate(13, 'large') },
+  {
+    id: 'special-identity',
+    name: 'Nhân ma trận đơn vị',
+    group: 'special',
+    input: {
+      a: [
+        [1, 2],
+        [3, 4]
+      ],
+      b: [
+        [1, 0],
+        [0, 1]
+      ]
+    }
+  },
+  {
+    id: 'invalid-shape',
+    name: 'Hai ma trận khác cấp',
+    group: 'invalid',
+    input: { a: [[1, 2]], b: [[1]] }
+  }
+];
+export const cases = raw.map((c) =>
+  c.group === 'invalid' ? c : { ...c, expected: { matrix: reference(c.input as Input) } }
+);

@@ -1,0 +1,26 @@
+import type { RunContext } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/exponentiation/definition';
+import { record, finish, type VisualState } from '../shared';
+export function run({ base, exponent }: Input, { rec, signal }: RunContext<VisualState>): Output {
+  let value = 1n,
+    power = BigInt(base),
+    n = exponent;
+  while (n > 0) {
+    if (signal.aborted) throw new Error('Đã huỷ');
+    if (n % 2 === 1) {
+      value *= power;
+      rec.count('assign');
+      record(rec, 'multiply', `Bit thấp bằng 1, nhân tích với ${power}: ${value}.`, value);
+    }
+    power *= power;
+    n = Math.floor(n / 2);
+    rec.count('assign', 2);
+    record(
+      rec,
+      'square',
+      `Bình phương cơ số trung gian thành ${power}, chia số mũ còn ${n}.`,
+      power
+    );
+  }
+  return finish(rec, value);
+}

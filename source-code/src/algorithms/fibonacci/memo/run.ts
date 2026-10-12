@@ -1,0 +1,38 @@
+import type { RunContext } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/fibonacci/definition';
+import type { VisualState } from '../shared';
+export function run({ n }: Input, { rec, signal }: RunContext<VisualState>): Output {
+  const memo = new Map<number, number>([
+    [0, 0],
+    [1, 1]
+  ]);
+  function fib(k: number): number {
+    if (signal.aborted) throw new Error('Đã huỷ');
+    rec.count('recurse');
+    const hit = memo.get(k);
+    if (hit !== undefined) {
+      rec.step('hit', `Đọc F(${k}) = ${hit} từ bảng nhớ.`, (d) => {
+        d.items.push({ label: `F(${k})=${hit}` });
+        d.current = d.items.length - 1;
+        d.note = `Đã nhớ F(${k})`;
+      });
+      return hit;
+    }
+    const value = fib(k - 1) + fib(k - 2);
+    memo.set(k, value);
+    rec.count('assign');
+    rec.step('store', `Lưu F(${k}) = ${value} để dùng lại.`, (d) => {
+      d.items.push({ label: `F(${k})=${value}` });
+      d.current = d.items.length - 1;
+      d.note = `Đã lưu F(${k})`;
+    });
+    return value;
+  }
+  const value = fib(n);
+  rec.step('done', `Kết quả F(${n}) = ${value}.`, (d) => {
+    d.items.push({ label: String(value), role: 'done' });
+    d.current = d.items.length - 1;
+    d.note = `F(${n}) = ${value}`;
+  });
+  return { value };
+}

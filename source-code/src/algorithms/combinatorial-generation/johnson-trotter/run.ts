@@ -1,0 +1,30 @@
+import type { RunContext } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/combinatorial-generation/definition';
+import { emit, finish, type VisualState } from '../shared';
+export function run({ n }: Input, { rec, signal }: RunContext<VisualState>): Output {
+  const a = Array.from({ length: n }, (_, i) => i + 1),
+    direction = Array<number>(n + 1).fill(-1),
+    objects: number[][] = [];
+  while (true) {
+    if (signal.aborted) throw new Error('Đã huỷ');
+    objects.push([...a]);
+    emit(rec, a, `Sinh hoán vị ${a.join(', ')} bằng đổi chỗ kề nhau.`);
+    let mobile = 0,
+      pos = -1;
+    // Phần tử di động lớn nhất đổi chỗ với láng giềng theo hướng của nó.
+    for (let i = 0; i < n; i++) {
+      const next = i + direction[a[i]];
+      if (next >= 0 && next < n && a[i] > a[next] && a[i] > mobile) {
+        mobile = a[i];
+        pos = i;
+      }
+    }
+    if (mobile === 0) break;
+    const next = pos + direction[mobile];
+    [a[pos], a[next]] = [a[next], a[pos]];
+    // Sau khi đổi chỗ, mọi phần tử lớn hơn phải đảo hướng.
+    for (let value = mobile + 1; value <= n; value++) direction[value] *= -1;
+    rec.count('swap');
+  }
+  return finish(rec, 'permutations', objects);
+}

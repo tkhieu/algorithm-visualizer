@@ -1,0 +1,23 @@
+import type { Algorithm } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/search-sorted/definition';
+import { initVisual, type VisualState } from '../shared';
+import { run } from './run';
+import { pseudocode } from './pseudocode';
+import { legend } from './legend';
+export const algorithm: Algorithm<Input, Output, VisualState> = {
+  id: 'search-sorted/interpolation',
+  problemId: 'search-sorted',
+  title: 'Tìm kiếm nội suy',
+  chapter: 4,
+  section: '4.5',
+  page: 158,
+  technique: 'decrease-and-conquer',
+  exactness: 'exact',
+  complexity: { time: 'O(log log n) TB', space: 'O(1)' },
+  views: ['array-bars'],
+  pseudocode,
+  legend,
+  traceLimit: { maxInputSize: 200, maxSteps: 1000, maxBytes: 2000000 },
+  initVisual,
+  run
+};

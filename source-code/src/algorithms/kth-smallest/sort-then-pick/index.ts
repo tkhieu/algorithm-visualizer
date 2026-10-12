@@ -1,0 +1,23 @@
+import type { Algorithm } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/kth-smallest/definition';
+import { initVisual, type VisualState } from '../shared';
+import { run } from './run';
+import { pseudocode } from './pseudocode';
+import { legend } from './legend';
+export const algorithm: Algorithm<Input, Output, VisualState> = {
+  id: 'kth-smallest/sort-then-pick',
+  problemId: 'kth-smallest',
+  title: 'Sắp xếp rồi chọn',
+  chapter: 6,
+  section: '6.1',
+  page: 202,
+  technique: 'brute-force',
+  exactness: 'exact',
+  complexity: { time: 'O(n log n)', space: 'O(n)' },
+  views: ['array-bars'],
+  pseudocode,
+  legend,
+  traceLimit: { maxInputSize: 200, maxSteps: 20000, maxBytes: 20000000 },
+  initVisual,
+  run
+};

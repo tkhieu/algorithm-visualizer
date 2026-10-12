@@ -1,0 +1,23 @@
+import type { Algorithm } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/kth-smallest/definition';
+import { initVisual, type VisualState } from '../shared';
+import { run } from './run';
+import { pseudocode } from './pseudocode';
+import { legend } from './legend';
+export const algorithm: Algorithm<Input, Output, VisualState> = {
+  id: 'kth-smallest/quickselect-lomuto',
+  problemId: 'kth-smallest',
+  title: 'Quickselect (phân hoạch Lomuto)',
+  chapter: 4,
+  section: '4.5',
+  page: 158,
+  technique: 'divide-and-conquer',
+  exactness: 'exact',
+  complexity: { time: 'O(n) TB', space: 'O(log n)' },
+  views: ['array-bars'],
+  pseudocode,
+  legend,
+  traceLimit: { maxInputSize: 200, maxSteps: 20000, maxBytes: 20000000 },
+  initVisual,
+  run
+};

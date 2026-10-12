@@ -125,9 +125,12 @@ const plannedDefs:ProblemDef[]=[
   {id:'lu-decomposition',title:'Phân rã LU',technique:'transform-and-conquer',time:'O(n³)',space:'O(n²)'},
  ]},
  {id:'root-finding',title:'Tìm nghiệm phương trình phi tuyến',views:['numeric-plot'],algos:[
-  {id:'bisection',title:'Chia đôi',technique:'decrease-and-conquer',time:'O(log(1/ε))',space:'O(1)'},
-  {id:'false-position',title:'Dây cung (false position)',technique:'decrease-and-conquer',time:'O(log(1/ε))',space:'O(1)'},
-  {id:'newton',title:'Newton',technique:'numerical',time:'O(log log(1/ε))',space:'O(1)'},
+  {id:'bisection',title:'Chia đôi',exactness:'approximate',technique:'decrease-and-conquer',
+   time:'O(log(1/ε))',space:'O(1)'},
+  {id:'false-position',title:'Dây cung (false position)',exactness:'approximate',
+   technique:'decrease-and-conquer',time:'O(log(1/ε))',space:'O(1)'},
+  {id:'newton',title:'Newton',exactness:'approximate',technique:'numerical',
+   time:'O(log log(1/ε))',space:'O(1)'},
  ]},
  {id:'nim',title:'Trò chơi Nim',views:['sequence'],algos:[
   {id:'winning-strategy',title:'Chiến lược thắng bằng XOR',technique:'transform-and-conquer',time:'O(n log m)',space:'O(1)'},
@@ -292,6 +295,11 @@ const plannedDefs:ProblemDef[]=[
  ]},
 ];
 
+const readyB1Problems=new Set([
+ 'gcd','fibonacci','search-sorted','fake-coin','multiplication','josephus',
+ 'combinatorial-generation','kth-smallest','polynomial-eval','exponentiation',
+ 'matrix-multiplication','linear-system','root-finding','nim',
+]);
 const plannedAlgorithms:AlgorithmSummary[]=plannedDefs.flatMap(p=>p.algos.map(a=>{
  const citation=citationByAlgorithm[`${p.id}/${a.id}`]??citationByProblem[p.id];
  if(!citation)throw new Error(`Thiếu mục/trang cho ${p.id}/${a.id}`);
@@ -299,10 +307,13 @@ const plannedAlgorithms:AlgorithmSummary[]=plannedDefs.flatMap(p=>p.algos.map(a=
  return {
   id:`${p.id}/${a.id}`,problemId:p.id,title:a.title,chapter,section:citation.section,page:citation.page,
   technique:a.technique,exactness:a.exactness??'exact',
-  complexity:{time:a.time,space:a.space},views:p.views,status:p.status??'planned',
+  complexity:{time:a.time,space:a.space},views:p.views,
+  status:p.status??(readyB1Problems.has(p.id)?'ready':'planned'),
  } satisfies AlgorithmSummary;
 }));
-const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({id:p.id,title:p.title,status:p.status??'planned'}));
+const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({
+ id:p.id,title:p.title,status:p.status??(readyB1Problems.has(p.id)?'ready':'planned'),
+}));
 
 export const problems:ProblemSummary[]=[knapsackProblem,...plannedProblems];
 export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...plannedAlgorithms];

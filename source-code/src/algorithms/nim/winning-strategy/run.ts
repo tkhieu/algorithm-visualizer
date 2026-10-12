@@ -1,0 +1,49 @@
+import type { RunContext } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/nim/definition';
+export interface VisualState {
+  items: { label: string; role?: string }[];
+  current?: number;
+  note?: string;
+}
+export function initVisual(input: Input): VisualState {
+  return {
+    items: input.piles.map((v, i) => ({ label: `Đống ${i + 1}: ${v}` })),
+    note: 'Tính XOR của các đống'
+  };
+}
+export function run({ piles }: Input, { rec, signal }: RunContext<VisualState>): Output {
+  let xor = 0;
+  for (let i = 0; i < piles.length; i++) {
+    if (signal.aborted) throw new Error('Đã huỷ');
+    xor ^= piles[i];
+    rec.count('visit');
+    rec.step('xor', `XOR thêm đống ${i + 1} có ${piles[i]} vật, được ${xor}.`, (d) => {
+      d.current = i;
+      d.note = `XOR hiện tại ${xor}`;
+    });
+  }
+  if (xor === 0) {
+    rec.step('done', 'XOR bằng 0: người đi trước không có nước thắng.', (d) => {
+      d.note = 'Thế thua, không có nước thắng';
+    });
+    return { winning: false, pile: -1, remove: 0 };
+  }
+  // Đặt đống được chọn về piles[i] XOR xor để XOR toàn cục thành 0.
+  for (let i = 0; i < piles.length; i++) {
+    const target = piles[i] ^ xor;
+    if (target < piles[i]) {
+      const remove = piles[i] - target;
+      rec.step('move', `Lấy ${remove} vật từ đống ${i + 1}, còn ${target} vật.`, (d) => {
+        d.items[i].label = `Đống ${i + 1}: ${target}`;
+        d.items[i].role = 'done';
+        d.current = i;
+        d.note = `Nước thắng: lấy ${remove} vật`;
+      });
+      rec.step('done', 'Sau nước đi, XOR các đống bằng 0.', (d) => {
+        d.note = 'Đối thủ ở thế thua';
+      });
+      return { winning: true, pile: i, remove };
+    }
+  }
+  throw new Error('Không tìm được nước thắng');
+}

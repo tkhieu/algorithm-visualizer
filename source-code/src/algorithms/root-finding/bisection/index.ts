@@ -1,0 +1,23 @@
+import type { Algorithm } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/root-finding/definition';
+import { initVisual, type VisualState } from '../shared';
+import { run } from './run';
+import { pseudocode } from './pseudocode';
+import { legend } from './legend';
+export const algorithm: Algorithm<Input, Output, VisualState> = {
+  id: 'root-finding/bisection',
+  problemId: 'root-finding',
+  title: 'Chia đôi',
+  chapter: 12,
+  section: '12.4',
+  page: 460,
+  technique: 'decrease-and-conquer',
+  exactness: 'approximate',
+  complexity: { time: 'O(log(1/ε))', space: 'O(1)' },
+  views: ['numeric-plot'],
+  pseudocode,
+  legend,
+  traceLimit: { maxInputSize: 100, maxSteps: 2000, maxBytes: 5000000 },
+  initVisual,
+  run
+};

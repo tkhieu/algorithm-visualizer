@@ -1,0 +1,56 @@
+import type { TestCase } from '../../core/contracts';
+import type { Input } from './definition';
+import { generate } from './generators';
+export const cases: TestCase<Input>[] = [
+  {
+    id: 'normal-1',
+    name: 'Hệ chéo 2×2',
+    group: 'normal',
+    input: {
+      a: [
+        [2, 0],
+        [0, 3]
+      ],
+      b: [4, 9]
+    }
+  },
+  {
+    id: 'normal-2',
+    name: 'Hệ có hệ số ngoài đường chéo',
+    group: 'normal',
+    input: {
+      a: [
+        [4, 1],
+        [1, 5]
+      ],
+      b: [6, 11]
+    }
+  },
+  { id: 'edge-one', name: 'Một phương trình', group: 'edge', input: { a: [[5]], b: [10] } },
+  { id: 'small-1', name: 'Dữ liệu nhỏ', group: 'small', input: generate(7, 'small') },
+  { id: 'large-1', name: 'Dữ liệu lớn', group: 'large', input: generate(13, 'large') },
+  {
+    id: 'special-negative',
+    name: 'Nghiệm âm',
+    group: 'special',
+    input: {
+      a: [
+        [4, 1],
+        [1, 4]
+      ],
+      b: [-7, 2]
+    }
+  },
+  {
+    id: 'invalid-singular',
+    name: 'Ma trận suy biến',
+    group: 'invalid',
+    input: {
+      a: [
+        [1, 1],
+        [2, 2]
+      ],
+      b: [2, 4]
+    }
+  }
+];
