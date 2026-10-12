@@ -2,18 +2,24 @@ import type { RunContext } from '../../../core/contracts';
 import type { Input, Output } from '../../../problems/binary-tree-traversal/definition';
 type NodeT = Input['nodes'][number];
 export interface VisualState {
-  nodes: { id: string; parent: string | null; label: string; role?: string }[];
+  nodes: {
+    id: string;
+    parent: string | null;
+    label: string;
+    role?: string;
+    side?: 'L' | 'R';
+  }[];
   note: string;
 }
 function buildNodes(input: Input): VisualState['nodes'] {
   const byId = new Map(input.nodes.map(n => [n.id, n]));
   const out: VisualState['nodes'] = [];
-  const walk = (id: number | null, parent: string | null) => {
+  const walk = (id: number | null, parent: string | null, side?: 'L' | 'R') => {
     if (id === null) return;
     const node = byId.get(id)!;
-    out.push({ id: String(id), parent, label: String(node.value) });
-    walk(node.left, String(id));
-    walk(node.right, String(id));
+    out.push({ id: String(id), parent, label: String(node.value), side });
+    walk(node.left, String(id), 'L');
+    walk(node.right, String(id), 'R');
   };
   walk(input.root, null);
   return out;

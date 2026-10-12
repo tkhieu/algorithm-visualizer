@@ -45,6 +45,26 @@ describe('duyệt theo mức', () => {
     const final = store.seek(store.length);
     expect(final.nodes.every(n => n.role === 'best')).toBe(true);
   });
+  it('con duy nhất giữ đúng nhãn bên trái/phải (side) để không bị vẽ lẫn vị trí', () => {
+    const rightOnly: Input = {
+      nodes: [
+        { id: 0, value: 1, left: null, right: 1 },
+        { id: 1, value: 2, left: null, right: null },
+      ],
+      root: 0,
+    };
+    const leftOnly: Input = {
+      nodes: [
+        { id: 0, value: 1, left: 1, right: null },
+        { id: 1, value: 2, left: null, right: null },
+      ],
+      root: 0,
+    };
+    const rightChild = algorithm.initVisual(rightOnly).nodes.find(n => n.label === '2')!;
+    const leftChild = algorithm.initVisual(leftOnly).nodes.find(n => n.label === '2')!;
+    expect(rightChild.side).toBe('R');
+    expect(leftChild.side).toBe('L');
+  });
   it('bước "visit" giải thích bằng tiếng Việt', () => {
     const input = generate(1, 'tiny');
     const rec = new TraceRecorder(
