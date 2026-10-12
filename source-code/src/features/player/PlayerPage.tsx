@@ -43,6 +43,11 @@ function LoadedPlayerPage({problemId,algoId,problem,algo}:{problemId:string;algo
  const [running,setRunning]=useState(false);
  const cancel=useRef<null|(()=>void)>(null);
  const cursor=usePlayerStore(s=>s.cursor),playing=usePlayerStore(s=>s.playing),speed=usePlayerStore(s=>s.speed),view=usePlayerStore(s=>s.view),setCursor=usePlayerStore(s=>s.setCursor),setPlaying=usePlayerStore(s=>s.setPlaying),setSpeed=usePlayerStore(s=>s.setSpeed),setView=usePlayerStore(s=>s.setView),reset=usePlayerStore(s=>s.reset);
+ // view trong store toàn cục có thể còn mang giá trị của thuật toán trước đó ngay ở lần render đầu
+ // (useEffect dưới đây chỉ chạy SAU render) — dùng effectiveView để không bao giờ truyền kind không
+ // khớp views của algo hiện tại cho Visualizer, tránh các view component (đọc state.matrix/.../length
+ // không có optional chaining) crash khi state thực tế không có trường đó.
+ const effectiveView=algo.views.includes(view)?view:algo.views[0];
  useEffect(()=>{reset(algo.views[0]);return()=>cancel.current?.()},[algo,reset]);
  const parsed=problem.inputSchema.safeParse(input);
  const valid=parsed.success?parsed.data:null;
@@ -137,8 +142,8 @@ function LoadedPlayerPage({problemId,algoId,problem,algo}:{problemId:string;algo
     </CardContent></Card>
    </div>
    <Card className="min-w-0"><CardHeader><CardTitle>Trực quan hóa</CardTitle></CardHeader><CardContent>
-    <div className="flex gap-2 mb-3 flex-wrap">{algo.views.map(v=><Button key={v} size="sm" variant={view===v?'default':'outline'} onClick={()=>setView(v)}>{viewLabel[v]??v}</Button>)}</div>
-    <div data-testid="visual-state" data-step={cursor}>{current&&valid?<Visualizer kind={view} state={current} input={valid}/>:<p>Đầu vào chưa hợp lệ</p>}</div>
+    <div className="flex gap-2 mb-3 flex-wrap">{algo.views.map(v=><Button key={v} size="sm" variant={effectiveView===v?'default':'outline'} onClick={()=>setView(v)}>{viewLabel[v]??v}</Button>)}</div>
+    <div data-testid="visual-state" data-step={cursor}>{current&&valid?<Visualizer kind={effectiveView} state={current} input={valid}/>:<p>Đầu vào chưa hợp lệ</p>}</div>
    </CardContent></Card>
    <div className="space-y-3">
     <Card><CardHeader><CardTitle>Mã giả</CardTitle></CardHeader><CardContent><ol className="pseudo">{algo.pseudocode.map(line=><li key={line.id} data-testid={step?.lineId===line.id?'active-line':undefined} className={step?.lineId===line.id?'active':''} style={{paddingLeft:8+line.indent*16}}>{line.text}</li>)}</ol></CardContent></Card>
