@@ -57,6 +57,14 @@ const tspAlgorithms:AlgorithmSummary[]=[
 ];
 const tspProblem:ProblemSummary={id:'tsp',title:'Người du lịch (TSP)',status:'ready'};
 
+// --- B5: assignment (đã triển khai, status ready) — khớp 1:1 với src/algorithms/assignment/*.
+const assignmentAlgorithms:AlgorithmSummary[]=[
+ {id:'assignment/exhaustive',problemId:'assignment',title:'Vét cạn mọi phân công',chapter:3,section:'3.4',page:115,technique:'brute-force',exactness:'exact',complexity:{time:'O(n!)',space:'O(n)'},views:['board','state-space-tree'],status:'ready'},
+ {id:'assignment/branch-and-bound',problemId:'assignment',title:'Nhánh cận',chapter:12,section:'12.2',page:433,technique:'branch-and-bound',exactness:'exact',complexity:{time:'O(n!) xấu nhất',space:'O(n²)'},views:['board','state-space-tree'],status:'ready'},
+ {id:'assignment/hungarian',problemId:'assignment',title:'Thuật toán Hungary (mở rộng, không có trong giáo trình)',chapter:12,section:'12.2',page:433,technique:'iterative-improvement',exactness:'exact',complexity:{time:'O(n³)',space:'O(n²)'},views:['board','state-space-tree'],status:'ready'},
+];
+const assignmentProblem:ProblemSummary={id:'assignment',title:'Bài toán phân công',status:'ready'};
+
 // --- Toàn bộ catalog còn lại (Phase B sẽ lần lượt chuyển từng dòng sang status 'ready').
 // Số mục/trang tham chiếu từ docs/levitin-thuat-toan-co-the-demo.md. Với biến thể mở rộng,
 // trang chỉ tới chủ đề gần nhất; Phase B sẽ ghi rõ nguồn riêng trong phần mô tả thuật toán.
@@ -288,11 +296,6 @@ const plannedDefs:ProblemDef[]=[
  ]},
 
  // B5 — Chương 3.4, 12.1–12.3 + bài tập mở rộng
- {id:'assignment',title:'Bài toán phân công',views:['board','state-space-tree'],algos:[
-  {id:'exhaustive',title:'Vét cạn mọi phân công',technique:'brute-force',time:'O(n!)',space:'O(n)'},
-  {id:'branch-and-bound',title:'Nhánh cận',technique:'branch-and-bound',time:'O(n!) xấu nhất',space:'O(n²)'},
-  {id:'hungarian',title:'Thuật toán Hungary (mở rộng)',technique:'iterative-improvement',time:'O(n³)',space:'O(n²)'},
- ]},
  {id:'matrix-chain',title:'Nhân chuỗi ma trận',views:['matrix','tree'],algos:[
   {id:'dp',title:'Quy hoạch động — bảng',technique:'dp',time:'O(n³)',space:'O(n²)'},
   {id:'memo',title:'Quy hoạch động — có nhớ',technique:'dp',time:'O(n³)',space:'O(n²)'},
@@ -317,5 +320,5 @@ const plannedAlgorithms:AlgorithmSummary[]=plannedDefs.flatMap(p=>p.algos.map(a=
 }));
 const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({id:p.id,title:p.title,status:'planned'}));
 
-export const problems:ProblemSummary[]=[knapsackProblem,nQueensProblem,hamiltonianProblem,subsetSumProblem,graphColoringProblem,tspProblem,...plannedProblems];
-export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...nQueensAlgorithms,...hamiltonianAlgorithms,...subsetSumAlgorithms,...graphColoringAlgorithms,...tspAlgorithms,...plannedAlgorithms];
+export const problems:ProblemSummary[]=[knapsackProblem,nQueensProblem,hamiltonianProblem,subsetSumProblem,graphColoringProblem,tspProblem,assignmentProblem,...plannedProblems];
+export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...nQueensAlgorithms,...hamiltonianAlgorithms,...subsetSumAlgorithms,...graphColoringAlgorithms,...tspAlgorithms,...assignmentAlgorithms,...plannedAlgorithms];
