@@ -1,0 +1,22 @@
+import { z } from 'zod'
+export const inputSchema = z
+  .object({
+    n: z.number().int().min(1).max(35),
+    edges: z
+      .array(z.tuple([z.number().int(), z.number().int(), z.number().int().min(1).max(100)]))
+      .max(400),
+  })
+  .superRefine((v, ctx) => {
+    if (v.edges.some(([a, b]) => a < 0 || b < 0 || a >= v.n || b >= v.n))
+      ctx.addIssue({ code: 'custom', message: 'Đỉnh ngoài phạm vi' })
+  })
+export const outputSchema = z.object({
+  distance: z.array(z.array(z.number().nonnegative().nullable())),
+})
+export type Input = z.infer<typeof inputSchema>
+export type Output = z.infer<typeof outputSchema>
+export const statement =
+  'Cho đồ thị có hướng có trọng số dương. Tìm độ dài đường đi ngắn nhất cho mọi cặp đỉnh; giá trị ' +
+  'null biểu thị không có đường đi. Ví dụ: 0→1 trọng số 4 cho [[0,4],[null,0]]; đồ thị một đỉnh ' +
+  'cho [[0]].'
+export const constraints = ['1 ≤ n ≤ 35', 'Tối đa 400 cạnh', 'Trọng số từ 1 đến 100']

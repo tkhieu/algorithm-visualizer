@@ -13,6 +13,8 @@ export async function execute(algoId:string,raw:unknown,tracing:boolean,onStep?:
  const algo=await loadAlgorithm(algoId);
  if(!algo)return {status:'error',message:'Thuật toán không tồn tại'};
  const input=parsed.data;
+ const reason=algo.precondition?.(input);
+ if(reason)return {status:'not-applicable',reason};
  const rec=tracing
   ?new TraceRecorder(algo.initVisual(input),new Set(algo.pseudocode.map(x=>x.id)),algo.traceLimit,onStep)
   :new MetricsRecorder<ReturnType<typeof algo.initVisual>>();

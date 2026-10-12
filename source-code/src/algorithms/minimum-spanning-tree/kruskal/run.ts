@@ -1,0 +1,58 @@
+import type { RunContext } from '../../../core/contracts'
+import type { Input, Output } from '../../../problems/minimum-spanning-tree/definition'
+import type { VisualState } from '../shared'
+export function run(input: Input, { rec, signal }: RunContext<VisualState>): Output {
+  const parent = Array.from({ length: input.n }, (_, i) => i),
+    edgeIndices: number[] = []
+  // Nén đường đi giúp phép kiểm tra hai đỉnh cùng thành phần gần như hằng số.
+  function find(x: number): number {
+    return parent[x] === x ? x : (parent[x] = find(parent[x]))
+  }
+  let weight = 0
+  const sorted = input.edges
+    .map((_, i) => i)
+    .sort((i, j) => input.edges[i][2] - input.edges[j][2] || i - j)
+  rec.step('sort', 'Sắp cạnh theo trọng số tăng dần.', (d) => {
+    d.components = Array.from({ length: input.n }, (_, i) => i)
+    d.note = 'Đã sắp cạnh.'
+  })
+  for (const i of sorted) {
+    if (signal.aborted) throw new DOMException('Đã hủy', 'AbortError')
+    if (edgeIndices.length === input.n - 1) break
+    const [a, b, w] = input.edges[i],
+      ra = find(a),
+      rb = find(b)
+    rec.count('compare')
+    if (ra === rb) {
+      rec.step('skip', `Bỏ cạnh ${a}–${b} vì tạo chu trình.`, (d) => {
+        d.note = `Bỏ cạnh ${i}.`
+      })
+      continue
+    }
+    parent[ra] = rb
+    edgeIndices.push(i)
+    weight += w
+    rec.count('assign')
+    rec.step(
+      'take',
+      `Ghép hai thành phần bằng cạnh ${a}–${b}, tổng ${weight}.`,
+      (d) => {
+        d.components = parent.map((_, v) => find(v))
+        d.edgeIndices = [...edgeIndices]
+        d.weight = weight
+        d.edges[i].role = 'tree'
+        d.nodes[a].role = 'visited'
+        d.nodes[b].role = 'visited'
+        d.note = `Còn ${input.n - edgeIndices.length} thành phần.`
+      },
+      [{ target: `${a}-${b}`, role: 'tree' }],
+    )
+  }
+  rec.step('done', `Cây khung nhỏ nhất có trọng số ${weight}.`, (d) => {
+    d.components = parent.map((_, v) => find(v))
+    d.edgeIndices = [...edgeIndices]
+    d.weight = weight
+    d.note = 'Hoàn tất.'
+  })
+  return { edgeIndices, weight }
+}

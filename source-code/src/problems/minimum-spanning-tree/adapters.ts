@@ -1,0 +1,10 @@
+import type { ComparisonAdapter } from '../../core/contracts'
+import type { Input, Output } from './definition'
+export const adapter: ComparisonAdapter<Input, Output> = {
+  problemId: 'minimum-spanning-tree',
+  project: (_i, o) => ({ trongSo: o.weight, canh: o.edgeIndices }),
+  metrics: [
+    { id: 'weight', label: 'Trọng số', better: 'lower' },
+    { id: 'ms', label: 'Thời gian', better: 'lower' },
+  ],
+}
