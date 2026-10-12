@@ -30,7 +30,8 @@ export function run(input: Input, {rec, signal}: RunContext<VisualState>): Outpu
       rec.count('assign');
       rec.step(
         'cell',
-        `dp[${i}][${s}]: bỏ phần tử ${i} → ${without}; lấy phần tử ${i} (giá trị ${values[i - 1]}) → ${s >= values[i - 1] ? withTaken : 'không áp dụng'}; kết quả = ${dp[i][s]}.`,
+        `dp[${i}][${s}]: bỏ phần tử ${i} → ${without}; lấy phần tử ${i} (giá trị ${values[i - 1]}) → ` +
+          `${s >= values[i - 1] ? withTaken : 'không áp dụng'}; kết quả = ${dp[i][s]}.`,
         (d) => {
           d.matrix[i][s] = dp[i][s] ? 1 : 0;
           d.computed[i][s] = true;
