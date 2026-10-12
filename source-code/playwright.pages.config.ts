@@ -6,7 +6,7 @@ export default defineConfig({
   testDir:'./e2e-pages',
   use:{baseURL,browserName:'chromium'},
   webServer:{
-    command:`VITE_BASE=/kv-test/ npm run build:pages && npm run preview:pages -- --port ${port}`,
+    command:`VITE_BASE=/kv-test/ npm run build:pages && npm run preview:pages -- --port ${port} --strictPort`,
     url:baseURL,
     reuseExistingServer:false,
     timeout:120000,

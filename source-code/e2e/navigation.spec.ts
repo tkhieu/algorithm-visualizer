@@ -55,7 +55,7 @@ test('/algorithms lọc theo chương và theo trạng thái',async({page})=>{
  const afterStatusFilter=await rows.count();
  expect(afterStatusFilter).toBeLessThanOrEqual(afterChapterFilter);
  expect(afterStatusFilter).toBeGreaterThan(0);
- await expect(rows.getByText('Quy hoạch động — bảng',{exact:true}).first()).toBeVisible();
+ await expect(page.getByTestId('algo-row-knapsack-01/dp-table').getByText('Quy hoạch động — bảng',{exact:true})).toBeVisible();
 
  expect(errors).toEqual([]);
 });
@@ -67,7 +67,10 @@ test('/problems lọc theo chương, kỹ thuật và trạng thái',async({page
  await page.getByRole('combobox',{name:'Lọc trạng thái bài toán'}).selectOption('ready');
  await expect(page.getByRole('heading',{name:'Bài toán cái túi 0/1'})).toBeVisible();
  await expect(page.getByRole('heading',{name:'Sắp xếp'})).toHaveCount(0);
+ await expect(page.getByTestId('problems-grid').getByTestId(/^problem-row-/)).not.toHaveCount(0);
  await page.getByRole('combobox',{name:'Lọc trạng thái bài toán'}).selectOption('planned');
  await expect(page.getByRole('heading',{name:'Bài toán cái túi 0/1'})).toHaveCount(0);
- await expect(page.getByRole('heading',{name:'Nhân chuỗi ma trận'})).toBeVisible();
+ await expect(page.getByRole('heading',{level:2})).toHaveCount(0);
+ await expect(page.getByTestId(/^problem-row-/)).toHaveCount(0);
+ await expect(page.getByTestId('problems-empty')).toBeVisible();
 });

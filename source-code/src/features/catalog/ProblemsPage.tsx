@@ -35,13 +35,14 @@ export function ProblemsPage(){
     <option value="all">Mọi trạng thái</option><option value="ready">Đã có</option><option value="planned">Sắp có</option>
    </select>
   </div>
-  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{visible.map(p=>{
+  {visible.length===0?<p className="muted" data-testid="problems-empty">Không có bài toán nào khớp bộ lọc.</p>:
+  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3" data-testid="problems-grid">{visible.map(p=>{
    const count=algorithms.filter(a=>a.problemId===p.id).length;
    const ready=algorithms.filter(a=>a.problemId===p.id&&a.status==='ready').length;
-   return <Card key={p.id} className={p.status!=='ready'?'opacity-60':undefined}><CardHeader><CardTitle>{p.title}</CardTitle></CardHeader><CardContent>
+   return <Card key={p.id} data-testid={`problem-row-${p.id}`} className={p.status!=='ready'?'opacity-60':undefined}><CardHeader><CardTitle>{p.title}</CardTitle></CardHeader><CardContent>
     <p className="muted">{ready}/{count} cách giải sẵn sàng</p>
     {p.status==='ready'?<Button className="mt-2" variant="outline" asChild><Link to={`/problem/${p.id}`}>Xem bài toán</Link></Button>:<p className="muted mt-2">Sắp có</p>}
    </CardContent></Card>;
-  })}</div>
+  })}</div>}
  </div>;
 }

@@ -1,0 +1,23 @@
+import type {Algorithm} from '../../../core/contracts';
+import type {Input, Output} from '../../../problems/graph-coloring/definition';
+import {initVisual, limits, type VisualState} from '../shared';
+import {run} from './run';
+import {pseudocode} from './pseudocode';
+import {legend} from './legend';
+export const algorithm: Algorithm<Input, Output, VisualState> = {
+  id: 'graph-coloring/welsh-powell',
+  problemId: 'graph-coloring',
+  title: 'Welsh–Powell',
+  chapter: 12,
+  section: '12.1',
+  page: 425,
+  technique: 'greedy',
+  exactness: 'approximate',
+  complexity: {time: 'O(V²)', space: 'O(V)'},
+  views: ['graph', 'state-space-tree'],
+  pseudocode,
+  legend,
+  traceLimit: {...limits, maxInputSize: 10},
+  initVisual,
+  run,
+};

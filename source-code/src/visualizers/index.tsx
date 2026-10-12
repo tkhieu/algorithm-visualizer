@@ -26,7 +26,13 @@ export function Visualizer({kind,state,input,compact=false}:{kind:VisualKind;sta
  }
  switch(kind){
   case 'matrix':return <MatrixView state={state as MatrixVisualState} input={input as MatrixInput} compact={compact}/>;
-  case 'state-space-tree':return <StateSpaceTreeView state={state as StateSpaceTreeVisualState} compact={compact}/>;
+  case 'state-space-tree':{
+   // Thuật toán kết hợp view 'graph' (field `nodes`/`edges` của chính đồ thị) với 'state-space-tree'
+   // đặt cây duyệt ở field riêng `treeNodes` để tránh đụng tên với `nodes` của đồ thị; nếu không có
+   // `treeNodes`, dùng `nodes` như trước (tương thích ngược với các algorithm chỉ có một view cây).
+   const raw=state as {nodes?:StateSpaceTreeVisualState['nodes'];treeNodes?:StateSpaceTreeVisualState['nodes']};
+   return <StateSpaceTreeView state={{nodes:raw.treeNodes??raw.nodes??[]}} compact={compact}/>;
+  }
   case 'items':return <ItemsView state={state as ItemsVisualState} input={input as ItemsInput} compact={compact}/>;
   case 'array-bars':return <ArrayBarsView state={state as ArrayBarsVisualState} compact={compact}/>;
   case 'graph':return <GraphView state={state as GraphVisualState} compact={compact}/>;
