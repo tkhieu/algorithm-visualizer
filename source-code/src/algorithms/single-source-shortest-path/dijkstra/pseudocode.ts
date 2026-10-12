@@ -1,0 +1,1 @@
+export const pseudocode=[{id:'init',text:'Khởi tạo khoảng cách từ nguồn',indent:0},{id:'settle',text:'Chốt đỉnh có khoảng cách nhỏ nhất',indent:0},{id:'relax',text:'Cải thiện khoảng cách qua cạnh',indent:1},{id:'visit',text:'Lấy đỉnh đầu hàng đợi BFS',indent:0},{id:'discover',text:'Gán mức cho đỉnh chưa thăm',indent:1},{id:'done',text:'Trả mảng khoảng cách',indent:0}];
