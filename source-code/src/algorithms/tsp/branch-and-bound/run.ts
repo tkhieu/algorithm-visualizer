@@ -71,6 +71,9 @@ export function run(input: Input, {rec, signal}: RunContext<VisualState>): Outpu
       `Xét nút ${node.id}: đường đi ${node.path.join('-')}, cận dưới ${node.bound.toFixed(2)}.`,
       (d) => {
         markTour(d, node.path);
+        for (const previous of d.nodes) {
+          if (previous.id !== node.id && previous.status === 'current') previous.status = 'done';
+        }
         const vis = d.nodes.find((x) => x.id === node.id);
         if (vis) vis.status = 'current';
       },

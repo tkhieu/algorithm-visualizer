@@ -12,6 +12,17 @@ describe('matrix-chain definition', () => {
     expect(optimalCost([10, 100, 5, 50])).toBe(7500);
   });
 
+  it('tham chiếu thứ tự ghép không dựng bảng DP đoạn', () => {
+    const original = Array.from;
+    Array.from = (() => { throw new Error('Không dùng bảng DP đoạn'); }) as typeof Array.from;
+    try {
+      expect(optimalCost([10, 100, 5, 50])).toBe(7500);
+      expect(optimalCost([4, 7])).toBe(0);
+    } finally {
+      Array.from = original;
+    }
+  });
+
   it('check chấm đúng đặt ngoặc tối ưu tay', () => {
     const result = check({dims: [10, 100, 5, 50]}, {cost: 7500, parenthesization: '((A1A2)A3)'});
     expect(result.ok).toBe(true);

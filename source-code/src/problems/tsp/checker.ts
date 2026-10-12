@@ -16,27 +16,25 @@ export function tourLength(points: {x: number; y: number}[], tour: number[]): nu
   return total;
 }
 
-/** Vét cạn đầy đủ — chỉ dùng khi n nhỏ để làm nguồn tham chiếu tối ưu đáng tin cậy. */
-const BRUTE_FORCE_MAX = 8;
+/** Held–Karp theo tập đỉnh, độc lập với thuật toán vét cạn hoán vị. */
+const REFERENCE_MAX = 10;
 export function optimalLength(points: {x: number; y: number}[]): number | null {
   const n = points.length;
-  if (n > BRUTE_FORCE_MAX) return null;
+  if (n > REFERENCE_MAX) return null;
   if (n <= 1) return 0;
-  const rest = Array.from({length: n - 1}, (_, i) => i + 1);
-  let best = Infinity;
-  function permute(arr: number[], k: number) {
-    if (k === arr.length) {
-      best = Math.min(best, tourLength(points, [0, ...arr]));
-      return;
-    }
-    for (let i = k; i < arr.length; i++) {
-      [arr[k], arr[i]] = [arr[i], arr[k]];
-      permute(arr, k + 1);
-      [arr[k], arr[i]] = [arr[i], arr[k]];
+  const dp = Array.from({length: 1 << n}, () => new Array<number>(n).fill(Infinity));
+  dp[1][0] = 0;
+  for (let mask = 1; mask < 1 << n; mask += 2) {
+    for (let last = 0; last < n; last++) {
+      if (!Number.isFinite(dp[mask][last])) continue;
+      for (let next = 1; next < n; next++) {
+        if (mask & (1 << next)) continue;
+        const nextMask = mask | (1 << next);
+        dp[nextMask][next] = Math.min(dp[nextMask][next], dp[mask][last] + dist(points[last], points[next]));
+      }
     }
   }
-  permute(rest, 0);
-  return best;
+  return Math.min(...Array.from({length: n - 1}, (_, i) => dp[(1 << n) - 1][i + 1] + dist(points[i + 1], points[0])));
 }
 
 export function check(input: Input, output: Output): Verdict {

@@ -17,9 +17,17 @@ export interface VisualState {
 
 export function initVisual(input: Input): VisualState {
   const n = input.dims.length - 1;
+  const matrix = Array.from({length: 2 * n + 2}, () => new Array<number | string | null>(n + 1).fill(null));
+  const computed = Array.from({length: 2 * n + 2}, () => new Array<boolean>(n + 1).fill(false));
+  matrix[n + 1][0] = 's[i,j]';
+  computed[n + 1][0] = true;
+  for (let i = 1; i <= n; i++) {
+    matrix[n + 1 + i][0] = 's[' + i + ',j]';
+    computed[n + 1 + i][0] = true;
+  }
   return {
-    matrix: Array.from({length: n + 1}, () => new Array<number | string | null>(n + 1).fill(null)),
-    computed: Array.from({length: n + 1}, () => new Array<boolean>(n + 1).fill(false)),
+    matrix,
+    computed,
     current: null,
     dependencies: [],
     nodes: [],

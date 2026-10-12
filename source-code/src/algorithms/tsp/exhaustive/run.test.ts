@@ -45,4 +45,19 @@ describe('tsp/exhaustive', () => {
     expect(final.tour).toEqual(output.tour);
     expect(rec.steps.some((s) => s.explain.includes('tốt nhất hiện tại'))).toBe(true);
   });
+  it('mỗi bước cải thiện chỉ giữ một nút best trong cây', () => {
+    const input = {points: [
+      {x: 0, y: 0}, {x: 4, y: 0}, {x: 0, y: 4}, {x: 4, y: 4},
+    ]};
+    const rec = new TraceRecorder(
+      algorithm.initVisual(input),
+      new Set(algorithm.pseudocode.map((line) => line.id)),
+      algorithm.traceLimit,
+    );
+    algorithm.run(input, {rec, signal: new AbortController().signal});
+    const store = new TraceStore(algorithm.initVisual(input));
+    for (const step of rec.steps) store.append(step);
+    const bestCounts = rec.steps.map((_, i) => store.seek(i + 1).nodes.filter((node) => node.status === 'best').length);
+    expect(Math.max(...bestCounts)).toBe(1);
+  });
 });

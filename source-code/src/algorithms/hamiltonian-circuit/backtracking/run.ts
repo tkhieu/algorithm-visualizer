@@ -4,6 +4,12 @@ import {assertActive, markPath, pack, type VisualState} from '../shared';
 import {adjacency, connected} from '../../../problems/hamiltonian-circuit/checker';
 export function run(input: Input, {rec, signal}: RunContext<VisualState>): Output {
   const n = input.nodes.length;
+  if (n === 2) {
+    rec.step('done', 'Hai đỉnh chỉ tạo đường đi qua lại, không phải chu trình đơn.', (d) => {
+      d.note = 'Không có chu trình';
+    }, [], 'done');
+    return pack(null);
+  }
   if (n === 1) {
     rec.step(
       'done',

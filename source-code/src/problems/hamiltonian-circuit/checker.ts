@@ -49,6 +49,7 @@ export function check(input: Input, output: Output): Verdict {
   if (output.circuit.length !== n) return {ok: false, reason: 'Số đỉnh trong chu trình không khớp'};
   if (new Set(output.circuit).size !== n || output.circuit.some((v) => !input.nodes.includes(v)))
     return {ok: false, reason: 'Chu trình không phải hoán vị hợp lệ của các đỉnh'};
+  if (n === 1) return {ok: true, optimal: true};
   const adj = adjacency(input);
   for (let i = 0; i < n; i++) {
     const a = output.circuit[i],

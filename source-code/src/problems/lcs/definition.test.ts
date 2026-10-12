@@ -12,6 +12,17 @@ describe('lcs definition', () => {
     expect(optimalLength('ABCBDAB', 'BDCABA')).toBe(4);
   });
 
+  it('tham chiếu bitset hoạt động khi không dựng bảng DP', () => {
+    const original = Array.from;
+    Array.from = (() => { throw new Error('Không dùng bảng DP'); }) as typeof Array.from;
+    try {
+      expect(optimalLength('ABCBDAB', 'BDCABA')).toBe(4);
+      expect(optimalLength('', 'ABC')).toBe(0);
+    } finally {
+      Array.from = original;
+    }
+  });
+
   it('isSubsequence đúng', () => {
     expect(isSubsequence('BCA', 'ABCBDAB')).toBe(true);
     expect(isSubsequence('CC', 'ABCBDAB')).toBe(false);

@@ -21,6 +21,16 @@ describe('assignment definition', () => {
     expect(optimalCost(classic.cost)).toBe(13);
   });
 
+  it('tham chiếu tập việc chấm được ma trận 9×9', () => {
+    const cost = Array.from({length: 9}, (_, i) =>
+      Array.from({length: 9}, (_, j) => (i === j ? 1 : 10)),
+    );
+    expect(optimalCost(cost)).toBe(9);
+    const result = check({cost}, {assignment: [1, 0, 2, 3, 4, 5, 6, 7, 8], cost: 27});
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.optimal).toBe(false);
+  });
+
   it('check chấm đúng phân công tối ưu tay', () => {
     const result = check(classic, {assignment: [1, 0, 2, 3], cost: 13});
     expect(result.ok).toBe(true);

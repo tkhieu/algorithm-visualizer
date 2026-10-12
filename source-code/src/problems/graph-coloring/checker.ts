@@ -12,33 +12,44 @@ export function adjacency(input: Input): Set<string> {
 export function connected(adj: Set<string>, a: string, b: string): boolean {
   return adj.has(`${a}|${b}`);
 }
-/** Backtracking độc lập — n ≤ 10 nên luôn đủ nhanh để làm nguồn tham chiếu kiểm tra thuật toán và output. */
+/** Duyệt các phân hoạch đỉnh thành lớp màu, độc lập với phép mở rộng quay lui của thuật toán. */
 export function existsColoring(input: Input): boolean {
-  const n = input.nodes.length,
-    k = input.colors;
+  const n = input.nodes.length;
   const adj = adjacency(input);
-  const color = new Array<number>(n).fill(-1);
-  function safe(v: number, c: number): boolean {
-    for (let u = 0; u < v; u++) if (color[u] === c && connected(adj, input.nodes[u], input.nodes[v])) return false;
-    return true;
-  }
-  function solve(v: number): boolean {
-    if (v === n) return true;
-    for (let c = 0; c < k; c++) {
-      if (safe(v, c)) {
-        color[v] = c;
-        if (solve(v + 1)) return true;
-        color[v] = -1;
-      }
+  const classes: number[] = [];
+  function enumerate(v: number): boolean {
+    if (v === n) {
+      return classes.every((mask) => {
+        for (let i = 0; i < n; i++) {
+          if (!(mask & (1 << i))) continue;
+          for (let j = i + 1; j < n; j++) {
+            if ((mask & (1 << j)) && connected(adj, input.nodes[i], input.nodes[j])) return false;
+          }
+        }
+        return true;
+      });
+    }
+    for (let c = 0; c < Math.min(classes.length + 1, input.colors); c++) {
+      if (c === classes.length) classes.push(0);
+      classes[c] |= 1 << v;
+      if (enumerate(v + 1)) return true;
+      classes[c] &= ~(1 << v);
+      if (classes[c] === 0) classes.pop();
     }
     return false;
   }
-  return solve(0);
+  return enumerate(0);
 }
 export function check(input: Input, output: Output): Verdict {
   if (!inputSchema.safeParse(input).success) return {ok: false, reason: 'Đầu vào không hợp lệ'};
   if (!outputSchema.safeParse(output).success) return {ok: false, reason: 'Đầu ra sai định dạng'};
-  if (!output.found) return {ok: true};
+  if (!output.found) {
+    if (output.coloring.length) return {ok: false, reason: 'Không tìm được cách tô thì danh sách màu phải rỗng'};
+    if (output.heuristic) return {ok: true, optimal: false};
+    return existsColoring(input)
+      ? {ok: false, reason: 'Vẫn tồn tại cách tô hợp lệ với k màu'}
+      : {ok: true, optimal: true};
+  }
   const n = input.nodes.length;
   if (output.coloring.length !== n) return {ok: false, reason: 'Số màu gán không khớp số đỉnh'};
   if (output.coloring.some((c) => c < 0 || c >= input.colors)) return {ok: false, reason: 'Màu ngoài phạm vi [0,k)'};

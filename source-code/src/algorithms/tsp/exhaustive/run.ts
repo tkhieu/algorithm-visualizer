@@ -58,7 +58,12 @@ export function run(input: Input, {rec, signal}: RunContext<VisualState>): Outpu
             status: improved ? 'best' : 'done',
             value: length,
           });
-          if (improved) markTour(d, path);
+          if (improved) {
+            for (const node of d.nodes) {
+              if (node.id !== id && node.status === 'best') node.status = 'superseded';
+            }
+            markTour(d, path);
+          }
         },
         [],
         'leaf',

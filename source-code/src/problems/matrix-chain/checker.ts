@@ -3,19 +3,28 @@ import {inputSchema, outputSchema, type Input, type Output} from './definition';
 
 export function optimalCost(dims: number[]): number {
   const n = dims.length - 1;
-  const dp = Array.from({length: n + 1}, () => new Array<number>(n + 1).fill(0));
-  for (let len = 2; len <= n; len++) {
-    for (let i = 1; i <= n - len + 1; i++) {
-      const j = i + len - 1;
-      let best = Infinity;
-      for (let k = i; k < j; k++) {
-        const cost = dp[i][k] + dp[k + 1][j] + dims[i - 1] * dims[k] * dims[j];
-        if (cost < best) best = cost;
+  // Shortest path over sequences of adjacent block merges. A bit marks a boundary
+  // still present between matrices; this does not use the interval DP recurrence.
+  const full = (1 << (n - 1)) - 1;
+  const cost = new Array<number>(full + 1).fill(Infinity);
+  cost[full] = 0;
+  for (let mask = full; mask > 0; mask--) {
+    if (!Number.isFinite(cost[mask])) continue;
+    for (let boundary = 1; boundary < n; boundary++) {
+      const bit = 1 << (boundary - 1);
+      if (!(mask & bit)) continue;
+      let left = boundary;
+      while (left > 1 && !(mask & (1 << (left - 2)))) left--;
+      let right = boundary + 1;
+      while (right < n && !(mask & (1 << (right - 1)))) right++;
+      const next = mask & ~bit;
+      const merged = dims[left - 1] * dims[boundary] * dims[right];
+      if (cost[mask] + merged < cost[next]) {
+        cost[next] = cost[mask] + merged;
       }
-      dp[i][j] = best;
     }
   }
-  return dp[1][n];
+  return cost[0];
 }
 
 interface ParseResult {

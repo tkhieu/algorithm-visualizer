@@ -5,6 +5,13 @@ import {adjacency, connected} from '../../../problems/graph-coloring/checker';
 export function run(input: Input, {rec, signal}: RunContext<VisualState>): Output {
   const {nodes, colors: k} = input;
   const n = nodes.length;
+  if (n === 0) {
+    rec.step('done', 'Đồ thị rỗng có cách tô rỗng hợp lệ.', (d) => {
+      markColoring(d, []);
+      d.note = 'Tô thành công';
+    }, [], 'done');
+    return pack([]);
+  }
   const adj = adjacency(input);
   const coloring: (number | null)[] = new Array(n).fill(null);
   let nextId = 0;
@@ -70,6 +77,7 @@ export function run(input: Input, {rec, signal}: RunContext<VisualState>): Outpu
         (d) => {
           const node = d.treeNodes.find((x) => x.id === id);
           if (node) node.status = 'done';
+          markColoring(d, coloring);
         },
         [],
         'search',

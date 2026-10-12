@@ -36,4 +36,15 @@ describe('hamiltonian-circuit definition', () => {
   it('check từ chối chu trình sai cạnh', () => {
     expect(check(cycle4, {found: true, circuit: ['A', 'C', 'B', 'D']}).ok).toBe(false);
   });
+  it('quy ước một đỉnh là chu trình tầm thường', () => {
+    const single = {nodes: ['A'], edges: []};
+    expect(existsHamiltonianCircuit(single)).toBe(true);
+    expect(check(single, {found: true, circuit: ['A']})).toEqual({ok: true, optimal: true});
+  });
+  it('hai đỉnh nối một cạnh chỉ có đường đi qua lại, không có chu trình đơn', () => {
+    const pair = {nodes: ['A', 'B'], edges: [{from: 'A', to: 'B'}]};
+    expect(existsHamiltonianCircuit(pair)).toBe(false);
+    expect(check(pair, {found: true, circuit: ['A', 'B']}).ok).toBe(false);
+    expect(check(pair, {found: false, circuit: []}).ok).toBe(true);
+  });
 });

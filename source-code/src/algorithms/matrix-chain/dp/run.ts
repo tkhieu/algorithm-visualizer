@@ -45,9 +45,19 @@ export function run(input: Input, {rec, signal}: RunContext<VisualState>): Outpu
           d.matrix[i][j] = best;
           d.computed[i][j] = true;
           d.current = {i, w: j};
-          d.dependencies = Array.from({length: j - i}, (_, idx) => [i + idx, j] as [number, number]);
+          d.dependencies = [[i, bestK], [bestK + 1, j]];
         },
         [{target: `cell-${i}-${j}`, role: 'current'}],
+        'build-table',
+      );
+      rec.step(
+        'split',
+        's[' + i + '][' + j + '] = ' + bestK + ': chia thành [' + i + ',' + bestK + '] và [' + (bestK + 1) + ',' + j + '].',
+        (d) => {
+          d.matrix[n + 1 + i][j] = bestK;
+          d.computed[n + 1 + i][j] = true;
+        },
+        [],
         'build-table',
       );
     }

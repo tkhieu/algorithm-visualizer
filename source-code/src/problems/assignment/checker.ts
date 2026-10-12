@@ -5,26 +5,23 @@ export function assignmentCost(cost: number[][], assignment: number[]): number {
   return assignment.reduce((sum, job, worker) => sum + cost[worker][job], 0);
 }
 
-/** Vét cạn mọi hoán vị — chỉ dùng khi n nhỏ để làm nguồn tham chiếu tối ưu đáng tin cậy. */
-const BRUTE_FORCE_MAX = 8;
+/** Quy hoạch động theo tập việc đã gán, độc lập với vét cạn hoán vị. */
+const REFERENCE_MAX = 9;
 export function optimalCost(cost: number[][]): number | null {
   const n = cost.length;
-  if (n > BRUTE_FORCE_MAX) return null;
-  const jobs = Array.from({length: n}, (_, i) => i);
-  let best = Infinity;
-  function permute(arr: number[], k: number) {
-    if (k === arr.length) {
-      best = Math.min(best, assignmentCost(cost, arr));
-      return;
-    }
-    for (let i = k; i < arr.length; i++) {
-      [arr[k], arr[i]] = [arr[i], arr[k]];
-      permute(arr, k + 1);
-      [arr[k], arr[i]] = [arr[i], arr[k]];
+  if (n > REFERENCE_MAX) return null;
+  const dp = new Array<number>(1 << n).fill(Infinity);
+  dp[0] = 0;
+  for (let mask = 0; mask < 1 << n; mask++) {
+    const worker = mask.toString(2).replaceAll('0', '').length;
+    if (worker === n) continue;
+    for (let job = 0; job < n; job++) {
+      if (mask & (1 << job)) continue;
+      const next = mask | (1 << job);
+      dp[next] = Math.min(dp[next], dp[mask] + cost[worker][job]);
     }
   }
-  permute(jobs, 0);
-  return best;
+  return dp[(1 << n) - 1];
 }
 
 export function check(input: Input, output: Output): Verdict {

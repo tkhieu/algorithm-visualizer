@@ -1,12 +1,15 @@
 import type {Verdict} from '../../core/contracts';
 import {inputSchema, outputSchema, type Input, type Output} from './definition';
-/** DP tồn tại tổng — dùng làm nguồn tham chiếu đáng tin cậy để kiểm tra thuật toán và output. */
+/** Duyệt tập con bằng bitmask; độc lập với bảng DP và cây lấy/bỏ. */
 export function existsSubset(input: Input): boolean {
   const {values, target} = input;
-  const dp = new Array<boolean>(target + 1).fill(false);
-  dp[0] = true;
-  for (const v of values) for (let s = target; s >= v; s--) if (dp[s - v]) dp[s] = true;
-  return dp[target];
+  if (target === 0) return true;
+  for (let mask = 1; mask < 1 << values.length; mask++) {
+    let sum = 0;
+    for (let i = 0; i < values.length; i++) if (mask & (1 << i)) sum += values[i];
+    if (sum === target) return true;
+  }
+  return false;
 }
 export function check(input: Input, output: Output): Verdict {
   if (!inputSchema.safeParse(input).success) return {ok: false, reason: 'Đầu vào không hợp lệ'};

@@ -43,4 +43,21 @@ describe('matrix-chain/memo', () => {
     expect(final.matrix[1][6]).toBe(output.cost);
     expect(rec.steps.some((s) => s.explain.includes('đã có trong bảng nhớ'))).toBe(true);
   });
+  it('ghi dòng split, bảng s và hai đoạn phụ thuộc được chọn', () => {
+    const input = {dims: [10, 100, 5, 50]};
+    const rec = new TraceRecorder(
+      algorithm.initVisual(input),
+      new Set(algorithm.pseudocode.map((line) => line.id)),
+      algorithm.traceLimit,
+    );
+    algorithm.run(input, {rec, signal: new AbortController().signal});
+    const store = new TraceStore(algorithm.initVisual(input));
+    for (const step of rec.steps) store.append(step);
+    const index = rec.steps.findIndex((step) => step.lineId === 'split' && step.explain.includes('s[1][3]'));
+    expect(index).toBeGreaterThan(0);
+    const state = store.seek(index + 1);
+    expect(state.matrix[5][3]).toBe(2);
+    expect(state.dependencies).toEqual([[1, 2], [3, 3]]);
+    expect(state.dependencies).not.toContainEqual([1, 3]);
+  });
 });

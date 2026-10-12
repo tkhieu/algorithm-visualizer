@@ -10,6 +10,16 @@ describe('subset-sum definition', () => {
     expect(existsSubset({values: [3, 34, 4, 12, 5, 2], target: 9})).toBe(true);
     expect(existsSubset({values: [3, 34, 4, 12, 5, 2], target: 61})).toBe(false);
   });
+  it('tham chiếu bitmask không dùng mảng tổng DP', () => {
+    const original = Array.prototype.fill;
+    Array.prototype.fill = (() => { throw new Error('Không dùng bảng DP tổng'); }) as typeof Array.prototype.fill;
+    try {
+      expect(existsSubset({values: [3, 34, 4, 12, 5, 2], target: 9})).toBe(true);
+      expect(existsSubset({values: [3, 34, 4, 12, 5, 2], target: 61})).toBe(false);
+    } finally {
+      Array.prototype.fill = original;
+    }
+  });
   it('check chấm đúng tập con tay', () => {
     expect(check({values: [3, 34, 4, 12, 5, 2], target: 9}, {found: true, indices: [0, 2, 5]}).ok).toBe(true);
   });

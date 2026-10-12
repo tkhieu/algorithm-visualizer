@@ -22,6 +22,18 @@ describe('matrix-chain/exhaustive', () => {
     expect(output.cost).toBe(7500);
     expect(output.parenthesization).toBe('((A1A2)A3)');
   });
+  it('sinh đủ năm cách đặt ngoặc đầy đủ cho bốn ma trận', () => {
+    const input = {dims: [10, 20, 30, 40, 50]};
+    const rec = new TraceRecorder(
+      algorithm.initVisual(input),
+      new Set(algorithm.pseudocode.map((line) => line.id)),
+      algorithm.traceLimit,
+    );
+    algorithm.run(input, {rec, signal: new AbortController().signal});
+    const candidates = rec.steps.filter((step) => step.lineId === 'try');
+    expect(candidates).toHaveLength(5);
+    expect(new Set(candidates.map((step) => step.explain))).toHaveProperty('size', 5);
+  });
 
   it('từ chối n vượt giới hạn an toàn', () => {
     const big = {dims: Array.from({length: 12}, () => 5)};

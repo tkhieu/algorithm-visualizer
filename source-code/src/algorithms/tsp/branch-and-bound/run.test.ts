@@ -46,4 +46,20 @@ describe('tsp/branch-and-bound', () => {
     expect(final.tour).toEqual(output.tour);
     expect(rec.steps.some((s) => s.lineId === 'bound')).toBe(true);
   });
+  it('pop nút kế tiếp kết thúc trạng thái current của nút trước', () => {
+    const input = {points: [{x: 0, y: 0}, {x: 0, y: 3}, {x: 4, y: 0}, {x: 4, y: 3}]};
+    const rec = new TraceRecorder(
+      algorithm.initVisual(input),
+      new Set(algorithm.pseudocode.map((line) => line.id)),
+      algorithm.traceLimit,
+    );
+    algorithm.run(input, {rec, signal: new AbortController().signal});
+    const store = new TraceStore(algorithm.initVisual(input));
+    for (const step of rec.steps) store.append(step);
+    const popIndices = rec.steps.flatMap((step, index) => step.lineId === 'pop' ? [index] : []);
+    expect(popIndices.length).toBeGreaterThan(1);
+    for (const index of popIndices) {
+      expect(store.seek(index + 1).nodes.filter((node) => node.status === 'current')).toHaveLength(1);
+    }
+  });
 });

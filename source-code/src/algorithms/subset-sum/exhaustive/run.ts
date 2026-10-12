@@ -1,10 +1,16 @@
 import type {RunContext} from '../../../core/contracts';
 import type {Input, Output} from '../../../problems/subset-sum/definition';
 import {assertActive, pack, type VisualState} from '../shared';
-const SAFE_MAX = 22;
+const SAFE_MAX = 12;
 export function run(input: Input, {rec, signal}: RunContext<VisualState>): Output {
   const {values, target} = input;
   const n = values.length;
+  if (target === 0) {
+    rec.step('done', 'Tập con rỗng có tổng bằng 0.', (d) => {
+      d.note = 'Tìm được tập con rỗng';
+    }, [], 'done');
+    return pack([]);
+  }
   if (n > SAFE_MAX)
     throw new Error(
       `Vét cạn 2ⁿ chỉ hỗ trợ n ≤ ${SAFE_MAX} (nhận n=${n}); hãy dùng quy hoạch động hoặc quay lui cho n lớn hơn.`,

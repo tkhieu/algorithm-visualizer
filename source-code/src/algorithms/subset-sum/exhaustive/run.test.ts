@@ -18,6 +18,22 @@ describe('subset-sum/exhaustive', () => {
     const big = {values: Array.from({length: 23}, () => 1), target: 10};
     expect(() => algorithm.run(big, {rec: new MetricsRecorder(), signal: new AbortController().signal})).toThrow();
   });
+  it('S=0 trả ngay tập rỗng dù n bằng giới hạn schema', () => {
+    const input = {values: Array.from({length: 20}, () => 1), target: 0};
+    const rec = new TraceRecorder(
+      algorithm.initVisual(input),
+      new Set(algorithm.pseudocode.map((line) => line.id)),
+      algorithm.traceLimit,
+    );
+    expect(algorithm.run(input, {rec, signal: new AbortController().signal}))
+      .toEqual({found: true, indices: []});
+    expect(rec.steps).toHaveLength(1);
+  });
+  it('chặn trường hợp n hợp lệ nhưng cần hơn giới hạn công việc vét cạn', () => {
+    const input = {values: Array.from({length: 20}, () => 1), target: 100};
+    expect(() => algorithm.run(input, {rec: new MetricsRecorder(), signal: new AbortController().signal}))
+      .toThrow('12');
+  });
   it('trace tua lại đúng và khớp output cuối', () => {
     const input = {values: [3, 34, 4, 12, 5, 2], target: 9};
     const rec = new TraceRecorder(

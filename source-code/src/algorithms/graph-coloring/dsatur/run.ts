@@ -78,12 +78,12 @@ export function run(input: Input, {rec, signal}: RunContext<VisualState>): Outpu
   }
   rec.step(
     'done',
-    ok ? `Tô thành công với tối đa ${k} màu.` : 'Không thể tô với số màu đã cho.',
+    ok ? `Tô thành công với tối đa ${k} màu.` : 'Cách chọn màu này chưa tìm được cách tô với số màu đã cho.',
     (d) => {
       d.note = ok ? 'Tô thành công' : 'Thất bại';
     },
     [],
     'done',
   );
-  return pack(ok ? (coloring as number[]) : null);
+  return {...pack(ok ? (coloring as number[]) : null), heuristic: true};
 }

@@ -6,6 +6,13 @@ const SAFE_LIMIT = 200000;
 export function run(input: Input, {rec, signal}: RunContext<VisualState>): Output {
   const {nodes, colors: k} = input;
   const n = nodes.length;
+  if (n === 0) {
+    rec.step('done', 'Đồ thị rỗng có cách tô rỗng hợp lệ.', (d) => {
+      markColoring(d, []);
+      d.note = 'Tô thành công';
+    }, [], 'done');
+    return pack([]);
+  }
   const adj = adjacency(input);
   if (Math.pow(k, n) > SAFE_LIMIT)
     throw new Error(`Vét cạn kⁿ = ${k}^${n} quá lớn; hãy dùng thuật toán quay lui cho trường hợp này.`);

@@ -5,6 +5,12 @@ import {adjacency, connected} from '../../../problems/hamiltonian-circuit/checke
 const SAFE_MAX = 8;
 export function run(input: Input, {rec, signal}: RunContext<VisualState>): Output {
   const n = input.nodes.length;
+  if (n === 2) {
+    rec.step('done', 'Hai đỉnh chỉ tạo đường đi qua lại, không phải chu trình đơn.', (d) => {
+      d.note = 'Không có chu trình';
+    }, [], 'done');
+    return pack(null);
+  }
   if (n > SAFE_MAX)
     throw new Error(
       `Vét cạn chỉ hỗ trợ đến ${SAFE_MAX} đỉnh (nhận ${n}); hãy dùng thuật toán quay lui cho đồ thị lớn hơn.`,
