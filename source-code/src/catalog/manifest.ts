@@ -73,6 +73,14 @@ const matrixChainAlgorithms:AlgorithmSummary[]=[
 ];
 const matrixChainProblem:ProblemSummary={id:'matrix-chain',title:'Nhân chuỗi ma trận',status:'ready'};
 
+// --- B5: lcs (đã triển khai, status ready) — khớp 1:1 với src/algorithms/lcs/*.
+const lcsAlgorithms:AlgorithmSummary[]=[
+ {id:'lcs/dp',problemId:'lcs',title:'Quy hoạch động — bảng',chapter:8,section:'8.2',page:292,technique:'dp',exactness:'exact',complexity:{time:'O(nm)',space:'O(nm)'},views:['matrix','string-align'],status:'ready'},
+ {id:'lcs/memo',problemId:'lcs',title:'Quy hoạch động — có nhớ',chapter:8,section:'8.2',page:292,technique:'dp',exactness:'exact',complexity:{time:'O(nm)',space:'O(nm)'},views:['matrix','string-align'],status:'ready'},
+ {id:'lcs/brute-force',problemId:'lcs',title:'Vét cạn mọi dãy con',chapter:8,section:'8.2',page:292,technique:'brute-force',exactness:'exact',complexity:{time:'O(2^(n+m))',space:'O(n+m)'},views:['matrix','string-align'],status:'ready'},
+];
+const lcsProblem:ProblemSummary={id:'lcs',title:'Dãy con chung dài nhất',status:'ready'};
+
 // --- Toàn bộ catalog còn lại (Phase B sẽ lần lượt chuyển từng dòng sang status 'ready').
 // Số mục/trang tham chiếu từ docs/levitin-thuat-toan-co-the-demo.md. Với biến thể mở rộng,
 // trang chỉ tới chủ đề gần nhất; Phase B sẽ ghi rõ nguồn riêng trong phần mô tả thuật toán.
@@ -302,13 +310,6 @@ const plannedDefs:ProblemDef[]=[
   {id:'simplex',title:'Thuật toán Simplex',technique:'iterative-improvement',time:'O(2ⁿ) xấu nhất',space:'O(n²)'},
   {id:'vertex-enumeration',title:'Liệt kê đỉnh miền khả thi',technique:'brute-force',time:'O(C(m,n))',space:'O(n)'},
  ]},
-
- // B5 — Chương 3.4, 12.1–12.3 + bài tập mở rộng
- {id:'lcs',title:'Dãy con chung dài nhất',views:['matrix','string-align'],algos:[
-  {id:'dp',title:'Quy hoạch động — bảng',technique:'dp',time:'O(nm)',space:'O(nm)'},
-  {id:'memo',title:'Quy hoạch động — có nhớ',technique:'dp',time:'O(nm)',space:'O(nm)'},
-  {id:'brute-force',title:'Vét cạn mọi dãy con',technique:'brute-force',time:'O(2^(n+m))',space:'O(n+m)'},
- ]},
 ];
 
 const plannedAlgorithms:AlgorithmSummary[]=plannedDefs.flatMap(p=>p.algos.map(a=>{
@@ -323,5 +324,5 @@ const plannedAlgorithms:AlgorithmSummary[]=plannedDefs.flatMap(p=>p.algos.map(a=
 }));
 const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({id:p.id,title:p.title,status:'planned'}));
 
-export const problems:ProblemSummary[]=[knapsackProblem,nQueensProblem,hamiltonianProblem,subsetSumProblem,graphColoringProblem,tspProblem,assignmentProblem,matrixChainProblem,...plannedProblems];
-export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...nQueensAlgorithms,...hamiltonianAlgorithms,...subsetSumAlgorithms,...graphColoringAlgorithms,...tspAlgorithms,...assignmentAlgorithms,...matrixChainAlgorithms,...plannedAlgorithms];
+export const problems:ProblemSummary[]=[knapsackProblem,nQueensProblem,hamiltonianProblem,subsetSumProblem,graphColoringProblem,tspProblem,assignmentProblem,matrixChainProblem,lcsProblem,...plannedProblems];
+export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...nQueensAlgorithms,...hamiltonianAlgorithms,...subsetSumAlgorithms,...graphColoringAlgorithms,...tspAlgorithms,...assignmentAlgorithms,...matrixChainAlgorithms,...lcsAlgorithms,...plannedAlgorithms];
