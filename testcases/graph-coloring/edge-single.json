@@ -1,0 +1,14 @@
+{
+  "id": "edge-single",
+  "name": "Một đỉnh, một màu",
+  "group": "edge",
+  "input": {
+    "nodes": [
+      "A"
+    ],
+    "edges": [],
+    "colors": 1
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,16 @@
+{
+  "id": "small-2",
+  "name": "Tập nhỏ 2",
+  "group": "small",
+  "input": {
+    "amount": 18,
+    "coins": [
+      1,
+      3,
+      5,
+      25
+    ]
+  },
+  "expected": 4,
+  "note": null
+}

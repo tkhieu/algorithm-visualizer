@@ -1,0 +1,17 @@
+{
+  "id": "special-negative",
+  "name": "Có số âm",
+  "group": "special",
+  "input": {
+    "values": [
+      -3,
+      5,
+      -8,
+      0,
+      2,
+      -1
+    ]
+  },
+  "expected": null,
+  "note": null
+}

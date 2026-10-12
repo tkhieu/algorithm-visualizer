@@ -1,0 +1,12 @@
+{
+  "id": "large-1",
+  "name": "Dữ liệu lớn",
+  "group": "large",
+  "input": {
+    "n": 18
+  },
+  "expected": {
+    "value": 2584
+  },
+  "note": null
+}

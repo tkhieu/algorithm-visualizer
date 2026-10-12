@@ -1,0 +1,11 @@
+{
+  "id": "edge-empty-both",
+  "name": "Cả hai chuỗi rỗng",
+  "group": "edge",
+  "input": {
+    "a": "",
+    "b": ""
+  },
+  "expected": null,
+  "note": null
+}

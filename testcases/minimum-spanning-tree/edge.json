@@ -1,0 +1,11 @@
+{
+  "id": "edge",
+  "name": "Một đỉnh",
+  "group": "edge",
+  "input": {
+    "n": 1,
+    "edges": []
+  },
+  "expected": null,
+  "note": null
+}

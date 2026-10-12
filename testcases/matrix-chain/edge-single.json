@@ -1,0 +1,13 @@
+{
+  "id": "edge-single",
+  "name": "Một ma trận duy nhất",
+  "group": "edge",
+  "input": {
+    "dims": [
+      4,
+      7
+    ]
+  },
+  "expected": null,
+  "note": null
+}

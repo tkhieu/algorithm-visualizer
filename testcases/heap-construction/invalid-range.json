@@ -1,0 +1,12 @@
+{
+  "id": "invalid-range",
+  "name": "Giá trị ngoài phạm vi",
+  "group": "invalid",
+  "input": {
+    "values": [
+      1000
+    ]
+  },
+  "expected": null,
+  "note": null
+}

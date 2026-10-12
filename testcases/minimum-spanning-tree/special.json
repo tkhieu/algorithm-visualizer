@@ -1,0 +1,27 @@
+{
+  "id": "special",
+  "name": "Nhiều cây tối ưu",
+  "group": "special",
+  "input": {
+    "n": 3,
+    "edges": [
+      [
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        2,
+        1
+      ],
+      [
+        0,
+        2,
+        1
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

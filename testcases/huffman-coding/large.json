@@ -1,0 +1,107 @@
+{
+  "id": "large",
+  "name": "Nhiều ký hiệu",
+  "group": "large",
+  "input": {
+    "symbols": [
+      {
+        "label": "K1",
+        "frequency": 5
+      },
+      {
+        "label": "K2",
+        "frequency": 19
+      },
+      {
+        "label": "K3",
+        "frequency": 10
+      },
+      {
+        "label": "K4",
+        "frequency": 21
+      },
+      {
+        "label": "K5",
+        "frequency": 18
+      },
+      {
+        "label": "K6",
+        "frequency": 14
+      },
+      {
+        "label": "K7",
+        "frequency": 25
+      },
+      {
+        "label": "K8",
+        "frequency": 8
+      },
+      {
+        "label": "K9",
+        "frequency": 16
+      },
+      {
+        "label": "K10",
+        "frequency": 2
+      },
+      {
+        "label": "K11",
+        "frequency": 16
+      },
+      {
+        "label": "K12",
+        "frequency": 3
+      },
+      {
+        "label": "K13",
+        "frequency": 18
+      },
+      {
+        "label": "K14",
+        "frequency": 7
+      },
+      {
+        "label": "K15",
+        "frequency": 5
+      },
+      {
+        "label": "K16",
+        "frequency": 29
+      },
+      {
+        "label": "K17",
+        "frequency": 21
+      },
+      {
+        "label": "K18",
+        "frequency": 3
+      },
+      {
+        "label": "K19",
+        "frequency": 4
+      },
+      {
+        "label": "K20",
+        "frequency": 2
+      },
+      {
+        "label": "K21",
+        "frequency": 17
+      },
+      {
+        "label": "K22",
+        "frequency": 14
+      },
+      {
+        "label": "K23",
+        "frequency": 23
+      },
+      {
+        "label": "K24",
+        "frequency": 24
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

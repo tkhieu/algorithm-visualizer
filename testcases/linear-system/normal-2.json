@@ -1,0 +1,23 @@
+{
+  "id": "normal-2",
+  "name": "Hệ có hệ số ngoài đường chéo",
+  "group": "normal",
+  "input": {
+    "a": [
+      [
+        4,
+        1
+      ],
+      [
+        1,
+        5
+      ]
+    ],
+    "b": [
+      6,
+      11
+    ]
+  },
+  "expected": null,
+  "note": null
+}

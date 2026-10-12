@@ -1,0 +1,12 @@
+{
+  "id": "special-single",
+  "name": "Một đống",
+  "group": "special",
+  "input": {
+    "piles": [
+      7
+    ]
+  },
+  "expected": null,
+  "note": null
+}

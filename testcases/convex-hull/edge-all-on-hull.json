@@ -1,0 +1,31 @@
+{
+  "id": "edge-all-on-hull",
+  "name": "Mọi điểm đều ở biên (ngũ giác lồi)",
+  "group": "edge",
+  "input": {
+    "points": [
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 6,
+        "y": 1
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 2,
+        "y": 6
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

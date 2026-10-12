@@ -1,0 +1,15 @@
+{
+  "id": "edge-zero",
+  "name": "Đích bằng 0 (tập rỗng)",
+  "group": "edge",
+  "input": {
+    "values": [
+      1,
+      2,
+      3
+    ],
+    "target": 0
+  },
+  "expected": null,
+  "note": null
+}

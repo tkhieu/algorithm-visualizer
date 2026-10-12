@@ -1,0 +1,13 @@
+{
+  "id": "special-equal",
+  "name": "Hai số bằng nhau",
+  "group": "special",
+  "input": {
+    "a": 144,
+    "b": 144
+  },
+  "expected": {
+    "gcd": 144
+  },
+  "note": null
+}

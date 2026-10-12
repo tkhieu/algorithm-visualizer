@@ -1,0 +1,17 @@
+{
+  "id": "edge-zero",
+  "name": "Túi không có chỗ",
+  "group": "edge",
+  "input": {
+    "capacity": 0,
+    "items": [
+      {
+        "name": "A",
+        "weight": 1,
+        "value": 5
+      }
+    ]
+  },
+  "expected": 0,
+  "note": null
+}

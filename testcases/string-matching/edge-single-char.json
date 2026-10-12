@@ -1,0 +1,16 @@
+{
+  "id": "edge-single-char",
+  "name": "Mẫu một ký tự",
+  "group": "edge",
+  "input": {
+    "text": "ABCABC",
+    "pattern": "A"
+  },
+  "expected": {
+    "positions": [
+      0,
+      3
+    ]
+  },
+  "note": null
+}

@@ -1,0 +1,42 @@
+{
+  "id": "small-1",
+  "name": "Tập nhỏ 1",
+  "group": "small",
+  "input": {
+    "nodes": [
+      {
+        "id": 0,
+        "value": -98,
+        "left": null,
+        "right": 1
+      },
+      {
+        "id": 1,
+        "value": 95,
+        "left": 2,
+        "right": 4
+      },
+      {
+        "id": 2,
+        "value": 4,
+        "left": null,
+        "right": 3
+      },
+      {
+        "id": 3,
+        "value": -7,
+        "left": null,
+        "right": null
+      },
+      {
+        "id": 4,
+        "value": 10,
+        "left": null,
+        "right": null
+      }
+    ],
+    "root": 0
+  },
+  "expected": null,
+  "note": null
+}

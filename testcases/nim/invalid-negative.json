@@ -1,0 +1,13 @@
+{
+  "id": "invalid-negative",
+  "name": "Số vật âm",
+  "group": "invalid",
+  "input": {
+    "piles": [
+      -1,
+      2
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,10 @@
+{
+  "id": "small-2",
+  "name": "Cỡ nhỏ 2",
+  "group": "small",
+  "input": {
+    "n": 6
+  },
+  "expected": null,
+  "note": null
+}

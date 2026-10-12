@@ -1,0 +1,12 @@
+{
+  "id": "edge-zero",
+  "name": "F(0)",
+  "group": "edge",
+  "input": {
+    "n": 0
+  },
+  "expected": {
+    "value": 0
+  },
+  "note": null
+}

@@ -1,0 +1,16 @@
+{
+  "id": "edge-sorted",
+  "name": "Đã sắp sẵn",
+  "group": "edge",
+  "input": {
+    "values": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "expected": null,
+  "note": null
+}

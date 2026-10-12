@@ -1,0 +1,10 @@
+{
+  "id": "edge-single",
+  "name": "Bàn cờ 1×1",
+  "group": "edge",
+  "input": {
+    "n": 1
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,13 @@
+{
+  "id": "edge-zero",
+  "name": "Số mũ bằng không",
+  "group": "edge",
+  "input": {
+    "base": 0,
+    "exponent": 0
+  },
+  "expected": {
+    "value": "1"
+  },
+  "note": null
+}

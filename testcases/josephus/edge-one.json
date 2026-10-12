@@ -1,0 +1,13 @@
+{
+  "id": "edge-one",
+  "name": "Một người",
+  "group": "edge",
+  "input": {
+    "n": 1,
+    "k": 5
+  },
+  "expected": {
+    "survivor": 1
+  },
+  "note": null
+}

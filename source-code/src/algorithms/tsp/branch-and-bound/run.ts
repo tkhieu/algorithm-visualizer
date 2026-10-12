@@ -3,7 +3,8 @@ import type {Input, Output} from '../../../problems/tsp/definition';
 import {dist} from '../../../problems/tsp/checker';
 import {assertActive, markTour, pack, type VisualState} from '../shared';
 
-const SAFE_MAX = 10;
+// n > SAFE_MAX bị chặn trước khi tới đây bằng precondition của algorithm (index.ts).
+export const SAFE_MAX = 10;
 
 interface Node {
   id: number;
@@ -16,9 +17,6 @@ interface Node {
 export function run(input: Input, {rec, signal}: RunContext<VisualState>): Output {
   const {points} = input;
   const n = points.length;
-  if (n > SAFE_MAX) {
-    throw new Error(`Nhánh cận chỉ hỗ trợ đến ${SAFE_MAX} điểm (nhận ${n}); hãy dùng thuật toán xấp xỉ cho n lớn hơn.`);
-  }
   if (n <= 1) {
     const tour = n === 1 ? [0] : [];
     rec.step('done', 'Chỉ có tối đa một điểm — hành trình tầm thường.', (d) => markTour(d, tour), [], 'done');

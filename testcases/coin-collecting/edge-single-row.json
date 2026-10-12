@@ -1,0 +1,17 @@
+{
+  "id": "edge-single-row",
+  "name": "Một hàng",
+  "group": "edge",
+  "input": {
+    "grid": [
+      [
+        true,
+        false,
+        true,
+        true
+      ]
+    ]
+  },
+  "expected": 3,
+  "note": null
+}

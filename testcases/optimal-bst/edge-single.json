@@ -1,0 +1,12 @@
+{
+  "id": "edge-single",
+  "name": "Một khoá",
+  "group": "edge",
+  "input": {
+    "freq": [
+      7
+    ]
+  },
+  "expected": 7,
+  "note": null
+}

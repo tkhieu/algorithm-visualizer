@@ -1,4 +1,4 @@
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {useSearchParams} from 'react-router-dom';
 import {LineChart,Line,CartesianGrid,XAxis,YAxis,Tooltip,Legend,ResponsiveContainer} from 'recharts';
 import {algorithms} from '../../catalog/manifest';
@@ -15,7 +15,11 @@ import {Card,CardContent,CardHeader,CardTitle} from '../../components/ui/card';
 import {Breadcrumbs} from '../nav/Breadcrumbs';
 import {estimateSize} from '../../lib/utils';
 
-type Lane={id:string;trace:TraceStore<object>;cursor:number;result:RunResult<unknown>|null;medianMs:number};
+// running phân biệt 'đang chạy' (task đã dispatch, chưa có result) với 'idle' (làn tồn tại —
+// đã chọn thuật toán — nhưng chưa bấm "Chạy tất cả" nên chưa có trace thật): trace=null khi
+// chưa chạy, vì initVisual cần algorithm đã tải và input hợp lệ, cả hai chỉ có tại thời điểm
+// dispatch, không có sẵn lúc tải trang.
+type Lane={id:string;trace:TraceStore<object>|null;cursor:number;result:RunResult<unknown>|null;medianMs:number;running:boolean};
 
 export function ComparePage({problemId}:{problemId:string}){
  const [problem,setProblem]=useState<AnyProblem|null>(null);
@@ -39,6 +43,48 @@ function LoadedComparePage({problemId,problem}:{problemId:string;problem:AnyProb
  const sync=useCompareStore(s=>s.sync),setSync=useCompareStore(s=>s.setSync);
  const problemAlgos=algorithms.filter(a=>a.problemId===problemId&&a.status==='ready');
  const ids=(params.get('algos')||problemAlgos.map(a=>a.id.split('/')[1]).join(',')).split(',').filter(x=>problemAlgos.some(a=>a.id===`${problemId}/${x}`));
+ const idsKey=ids.join(',');
+ // Mã thế hệ (generation): mỗi lần đổi lựa chọn hoặc bấm "Chạy tất cả" tăng runGen lên một.
+ // Mọi tiếp diễn bất đồng bộ của một lượt chạy (sau mỗi await trong runAll, và mỗi callback
+ // worker) tự so runGen.current với giá trị đã chụp lúc lượt chạy đó bắt đầu — nếu khác thì bỏ
+ // qua kết quả, vì lượt chạy đó đã bị một lượt mới hơn (đổi lựa chọn hoặc bấm chạy lại) thay
+ // thế. Nhờ vậy không còn chuyện kết quả "muộn" của id đã bị bỏ chọn rồi chọn lại ghi đè lên
+ // làn mới (idle) vừa tạo cho đúng id đó.
+ const runGen=useRef(0);
+ const activeCancels=useRef<(()=>void)[]>([]);
+ // Khi rời trang (unmount) giữa lúc đang so sánh: tăng runGen để mọi tiếp diễn bất đồng bộ còn
+ // treo tự bỏ qua, và cancel() mọi worker đang chạy để không lãng phí tính toán ngầm. KHÔNG gọi
+ // setLanes/setBusy ở đây — component đã unmount, gọi setState sẽ gây warning "state update on
+ // an unmounted component"; runGen+cancel là đủ, vì không còn gì để render nữa.
+ // Khi rời trang (unmount) giữa lúc đang so sánh: tăng runGen để mọi tiếp diễn bất đồng bộ còn
+ // treo tự bỏ qua, và cancel() mọi worker đang chạy để không lãng phí tính toán ngầm. KHÔNG gọi
+ // setLanes/setBusy ở đây — component đã unmount, gọi setState sẽ gây warning "state update on
+ // an unmounted component"; runGen+cancel là đủ, vì không còn gì để render nữa.
+ useEffect(()=>()=>{
+  runGen.current++;
+  for(const cancel of activeCancels.current)cancel();
+  activeCancels.current=[];
+ },[]);
+ // Làn xuất hiện ngay khi trang tải / khi chọn lại thuật toán, ở trạng thái idle (chưa dispatch
+ // run nào) — giữ lại làn đã có kết quả nếu id vẫn còn được chọn, để đổi lựa chọn không xoá kết
+ // quả của các làn khác. Tách idsKey (chuỗi, ổn định) ra làm dep duy nhất thay vì mảng ids (đổi
+ // tham chiếu mỗi lần render) để effect chỉ chạy lại khi tập thuật toán được chọn thật sự đổi.
+ useEffect(()=>{
+  runGen.current++;
+  for(const cancel of activeCancels.current)cancel();
+  activeCancels.current=[];
+  setBusy(false);
+  const currentIds=idsKey?idsKey.split(','):[];
+  setLanes(prev=>currentIds.map(id=>{
+   const existing=prev.find(l=>l.id===id);
+   // Làn vẫn đang running (chưa có result) vừa bị cancel() ở trên — lượt chạy của nó không
+   // bao giờ hoàn tất nữa (kết quả, nếu tới muộn, sẽ bị runGen chặn), nên phải đưa về idle
+   // ngay, không được để running:true mãi. Làn đã có result (xong, bất kể trạng thái nào) thì
+   // giữ nguyên để đổi lựa chọn không xoá kết quả của làn chưa đổi.
+   if(existing&&!existing.running)return existing;
+   return {id,trace:null,cursor:0,result:null,medianMs:0,running:false};
+  }));
+ },[idsKey]);
  const parsed=problem.inputSchema.safeParse(input);
  const valid=parsed.success?parsed.data:null;
  const canCompare=problemAlgos.length<2||adapter?.problemId===problemId;
@@ -50,30 +96,42 @@ function LoadedComparePage({problemId,problem}:{problemId:string;problem:AnyProb
  const updateLane=(id:string,patch:Partial<Lane>)=>setLanes(prev=>prev.map(l=>l.id===id?{...l,...patch}:l));
  const runAll=async()=>{
   if(!valid||!canCompare||!queryValid)return;
+  const myGen=++runGen.current;
+  activeCancels.current=[];
   setBusy(true);
   const algos=await Promise.all(ids.map(id=>loadAlgorithm(`${problemId}/${id}`)));
-  const initial:Lane[]=ids.map((id,i)=>({id,trace:new TraceStore((algos[i]?.initVisual(valid)??{}) as object),cursor:0,result:null,medianMs:0}));
+  if(runGen.current!==myGen)return; // lựa chọn đã đổi khi đang tải algorithm — bỏ lượt này
+  const initial:Lane[]=ids.map((id,i)=>({id,trace:new TraceStore((algos[i]?.initVisual(valid)??{}) as object),cursor:0,result:null,medianMs:0,running:true}));
   setLanes(initial);
   await Promise.all(initial.map(async lane=>{
-   const task=runWorker(`${problemId}/${lane.id}`,valid,steps=>{for(const step of steps)lane.trace.append(step);updateLane(lane.id,{trace:lane.trace})});
+   const task=runWorker(`${problemId}/${lane.id}`,valid,steps=>{
+    if(runGen.current!==myGen)return;
+    for(const step of steps)lane.trace!.append(step);
+    updateLane(lane.id,{trace:lane.trace});
+   });
+   activeCancels.current.push(task.cancel);
    const result=await task.promise;
+   if(runGen.current!==myGen)return;
    const bench=result.status==='ok'?await benchWorker(`${problemId}/${lane.id}`,valid):null;
-   updateLane(lane.id,{result,medianMs:bench?.medianMs??0});
+   if(runGen.current!==myGen)return;
+   updateLane(lane.id,{result,medianMs:bench?.medianMs??0,running:false});
   }));
-  setBusy(false);
+  if(runGen.current===myGen)setBusy(false);
  };
  const setCursor=(id:string,cursor:number)=>{
   const source=lanes.find(l=>l.id===id);
   if(!source)return;
-  const target=Math.max(0,Math.min(source.trace.length,cursor));
-  const sourcePhase=source.trace.steps[Math.max(0,target-1)]?.phase;
+  const sourceLength=source.trace?.length??0;
+  const target=Math.max(0,Math.min(sourceLength,cursor));
+  const sourcePhase=source.trace?.steps[Math.max(0,target-1)]?.phase;
   setLanes(prev=>prev.map(l=>{
+   const laneLength=l.trace?.length??0;
    let next=l.cursor;
    if(l.id===id)next=target;
    else if(sync==='step')next=target;
-   else if(sync==='progress')next=Math.round((source.trace.length?target/source.trace.length:0)*l.trace.length);
-   else if(sync==='phase'&&sourcePhase){const i=l.trace.steps.findIndex(s=>s.phase===sourcePhase);if(i>=0)next=i+1}
-   return {...l,cursor:Math.max(0,Math.min(l.trace.length,next))};
+   else if(sync==='progress')next=Math.round((sourceLength?target/sourceLength:0)*laneLength);
+   else if(sync==='phase'&&sourcePhase){const i=l.trace?.steps.findIndex(s=>s.phase===sourcePhase)??-1;if(i>=0)next=i+1}
+   return {...l,cursor:Math.max(0,Math.min(laneLength,next))};
   }));
  };
  const benchmark=async()=>{
@@ -105,13 +163,14 @@ function LoadedComparePage({problemId,problem}:{problemId:string;problem:AnyProb
   </CardContent></Card>
   <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">{lanes.map(l=>{
    const a=problemAlgos.find(x=>x.id.endsWith(`/${l.id}`))!;
-   const state=l.trace.seek(Math.min(l.cursor,l.trace.length));
+   const traceLength=l.trace?.length??0;
+   const state=l.trace?l.trace.seek(Math.min(l.cursor,traceLength)):null;
    return <Card key={l.id}><CardHeader><CardTitle>{a.title}</CardTitle></CardHeader><CardContent>
     <p className="text-sm muted">{a.exactness==='exact'?'Chính xác':a.exactness==='approximate'?'Xấp xỉ':'Thực nghiệm'} · {a.complexity.time}</p>
-    <div data-testid={`lane-${l.id}`} className="my-3 min-h-40">{valid?<Visualizer kind={a.views[0]} state={state} input={valid} compact/>:null}</div>
-    <input aria-label={`Bước ${a.title}`} type="range" min="0" max={l.trace.length} value={l.cursor} onChange={e=>setCursor(l.id,Number(e.target.value))}/>
-    <p className="text-sm">Bước {l.cursor}/{l.trace.length} · {l.trace.steps[l.cursor-1]?.phase||'—'}</p>
-    <p>{l.result?.status==='ok'?`Giá trị ${problem.objective?problem.objective.score(valid!,l.result.output):'—'}`:l.result?.status==='not-applicable'?`Không áp dụng: ${l.result.reason}`:l.result?.status==='timeout'?'Hết thời gian':l.result?.status==='error'?l.result.message:'Đang chờ'}</p>
+    <div data-testid={`lane-${l.id}`} data-status={l.running?'running':l.result?l.result.status:'idle'} className="my-3 min-h-40">{valid&&state?<Visualizer kind={a.views[0]} state={state} input={valid} compact/>:<p className="muted">Chưa chạy.</p>}</div>
+    <input aria-label={`Bước ${a.title}`} type="range" min="0" max={traceLength} value={l.cursor} disabled={!l.trace} onChange={e=>setCursor(l.id,Number(e.target.value))}/>
+    <p className="text-sm">Bước {l.cursor}/{traceLength} · {l.trace?.steps[l.cursor-1]?.phase||'—'}</p>
+    <p>{l.result?.status==='ok'?`Giá trị ${problem.objective?problem.objective.score(valid!,l.result.output):'—'}`:l.result?.status==='not-applicable'?`Không áp dụng: ${l.result.reason}`:l.result?.status==='timeout'?'Hết thời gian':l.result?.status==='error'?l.result.message:l.running?'Đang chạy…':'Đang chờ'}</p>
    </CardContent></Card>;
   })}</div>
   <Card><CardHeader><CardTitle>Bảng kết quả</CardTitle></CardHeader><CardContent><div className="overflow-auto"><table className="data-table" data-testid="results-table"><thead><tr><th>Thuật toán</th><th>Loại</th><th>Giá trị</th><th>Tối ưu?</th><th>Tỷ lệ</th><th>Bước</th><th>Phép toán</th><th>Trung vị ms</th><th>Kết quả chung</th></tr></thead><tbody>{lanes.map(l=>{
@@ -119,7 +178,7 @@ function LoadedComparePage({problemId,problem}:{problemId:string;problem:AnyProb
    const a=problemAlgos.find(x=>x.id.endsWith(`/${l.id}`));
    const value=r?.status==='ok'&&valid&&problem.objective?problem.objective.score(valid,r.output):null;
    const projected=r?.status==='ok'&&valid&&adapter?adapter.project(valid,r.output,query):undefined;
-   return <tr key={l.id}><td>{a?.title}</td><td>{a?.exactness==='exact'?'Chính xác':a?.exactness==='approximate'?'Xấp xỉ':'Thực nghiệm'}</td><td>{value??'—'}</td><td>{r?.status==='ok'&&r.verdict.ok?(r.verdict.optimal?'Có':r.verdict.optimal===false?'Không':'—'):'—'}</td><td>{r?.status==='ok'&&r.verdict.ok&&r.verdict.ratio!==undefined?`${(r.verdict.ratio*100).toFixed(1)}%`:'—'}</td><td>{l.trace.length}</td><td>{r?.status==='ok'?Object.values(r.counters).reduce((a,b)=>a+b,0):'—'}</td><td>{l.medianMs.toFixed(2)}</td><td><code>{projected===undefined?'—':JSON.stringify(projected)}</code></td></tr>;
+   return <tr key={l.id} data-testid={`result-row-${l.id}`}><td>{a?.title}</td><td>{a?.exactness==='exact'?'Chính xác':a?.exactness==='approximate'?'Xấp xỉ':'Thực nghiệm'}</td><td>{value??'—'}</td><td>{r?.status==='ok'&&r.verdict.ok?(r.verdict.optimal?'Có':r.verdict.optimal===false?'Không':'—'):'—'}</td><td>{r?.status==='ok'&&r.verdict.ok&&r.verdict.ratio!==undefined?`${(r.verdict.ratio*100).toFixed(1)}%`:'—'}</td><td>{l.trace?.length??0}</td><td>{r?.status==='ok'?Object.values(r.counters).reduce((a,b)=>a+b,0):'—'}</td><td>{l.medianMs.toFixed(2)}</td><td><code>{projected===undefined?'—':JSON.stringify(projected)}</code></td></tr>;
   })}</tbody></table></div></CardContent></Card>
   <Card><CardHeader><CardTitle>Thời gian theo kích thước n</CardTitle></CardHeader><CardContent>
    <Button variant="outline" onClick={benchmark}>Đo hiệu năng theo n</Button>

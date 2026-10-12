@@ -1,0 +1,17 @@
+{
+  "id": "edge-one",
+  "name": "Một phương trình",
+  "group": "edge",
+  "input": {
+    "a": [
+      [
+        5
+      ]
+    ],
+    "b": [
+      10
+    ]
+  },
+  "expected": null,
+  "note": null
+}

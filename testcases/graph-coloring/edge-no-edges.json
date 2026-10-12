@@ -1,0 +1,16 @@
+{
+  "id": "edge-no-edges",
+  "name": "Không có cạnh nào — luôn khả thi với 1 màu",
+  "group": "edge",
+  "input": {
+    "nodes": [
+      "A",
+      "B",
+      "C"
+    ],
+    "edges": [],
+    "colors": 1
+  },
+  "expected": null,
+  "note": null
+}

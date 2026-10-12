@@ -1,0 +1,52 @@
+{
+  "id": "small-2",
+  "name": "Tập nhỏ 2",
+  "group": "small",
+  "input": {
+    "capacity": 48,
+    "items": [
+      {
+        "name": "Vật 1",
+        "weight": 2,
+        "value": 33
+      },
+      {
+        "name": "Vật 2",
+        "weight": 9,
+        "value": 76
+      },
+      {
+        "name": "Vật 3",
+        "weight": 18,
+        "value": 33
+      },
+      {
+        "name": "Vật 4",
+        "weight": 12,
+        "value": 54
+      },
+      {
+        "name": "Vật 5",
+        "weight": 10,
+        "value": 83
+      },
+      {
+        "name": "Vật 6",
+        "weight": 3,
+        "value": 49
+      },
+      {
+        "name": "Vật 7",
+        "weight": 11,
+        "value": 40
+      },
+      {
+        "name": "Vật 8",
+        "weight": 11,
+        "value": 9
+      }
+    ]
+  },
+  "expected": 335,
+  "note": null
+}

@@ -1,0 +1,10 @@
+{
+  "id": "special-two",
+  "name": "Hai phần tử",
+  "group": "special",
+  "input": {
+    "n": 2
+  },
+  "expected": null,
+  "note": null
+}

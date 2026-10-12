@@ -1,0 +1,17 @@
+{
+  "id": "small-1",
+  "name": "Cỡ nhỏ 1",
+  "group": "small",
+  "input": {
+    "dims": [
+      19,
+      1,
+      16,
+      30,
+      30,
+      9
+    ]
+  },
+  "expected": null,
+  "note": null
+}

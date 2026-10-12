@@ -1,0 +1,36 @@
+{
+  "id": "edge-left-chain",
+  "name": "Chuỗi lệch trái",
+  "group": "edge",
+  "input": {
+    "nodes": [
+      {
+        "id": 0,
+        "value": 4,
+        "left": 1,
+        "right": null
+      },
+      {
+        "id": 1,
+        "value": 3,
+        "left": 2,
+        "right": null
+      },
+      {
+        "id": 2,
+        "value": 2,
+        "left": 3,
+        "right": null
+      },
+      {
+        "id": 3,
+        "value": 1,
+        "left": null,
+        "right": null
+      }
+    ],
+    "root": 0
+  },
+  "expected": null,
+  "note": null
+}

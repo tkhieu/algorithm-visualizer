@@ -1,0 +1,19 @@
+{
+  "id": "normal-1",
+  "name": "Va chạm cơ bản",
+  "group": "normal",
+  "input": {
+    "tableSize": 7,
+    "keys": [
+      10,
+      22,
+      31,
+      4,
+      15,
+      28,
+      17
+    ]
+  },
+  "expected": null,
+  "note": null
+}

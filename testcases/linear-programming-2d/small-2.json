@@ -1,0 +1,35 @@
+{
+  "id": "small-2",
+  "name": "Tập nhỏ 2",
+  "group": "small",
+  "input": {
+    "objective": {
+      "cx": 6,
+      "cy": 8
+    },
+    "constraints": [
+      {
+        "a": 1,
+        "b": 0,
+        "c": 15
+      },
+      {
+        "a": 0,
+        "b": 1,
+        "c": 13
+      },
+      {
+        "a": 1,
+        "b": 1,
+        "c": 8
+      },
+      {
+        "a": 1,
+        "b": 1,
+        "c": 13
+      }
+    ]
+  },
+  "expected": 64,
+  "note": null
+}

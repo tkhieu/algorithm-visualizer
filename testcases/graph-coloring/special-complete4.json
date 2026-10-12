@@ -1,0 +1,42 @@
+{
+  "id": "special-complete4",
+  "name": "Đồ thị đủ K4 cần đúng 4 màu",
+  "group": "special",
+  "input": {
+    "nodes": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "edges": [
+      {
+        "from": "A",
+        "to": "B"
+      },
+      {
+        "from": "A",
+        "to": "C"
+      },
+      {
+        "from": "A",
+        "to": "D"
+      },
+      {
+        "from": "B",
+        "to": "C"
+      },
+      {
+        "from": "B",
+        "to": "D"
+      },
+      {
+        "from": "C",
+        "to": "D"
+      }
+    ],
+    "colors": 4
+  },
+  "expected": null,
+  "note": null
+}

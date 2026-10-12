@@ -1,0 +1,13 @@
+{
+  "id": "edge-single-coin",
+  "name": "Chỉ một mệnh giá",
+  "group": "edge",
+  "input": {
+    "amount": 7,
+    "coins": [
+      1
+    ]
+  },
+  "expected": 7,
+  "note": null
+}

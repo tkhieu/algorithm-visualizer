@@ -1,0 +1,16 @@
+{
+  "id": "edge-all-same",
+  "name": "Tất cả giống nhau",
+  "group": "edge",
+  "input": {
+    "values": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,19 @@
+{
+  "id": "edge-zero",
+  "name": "Chi phí toàn 0",
+  "group": "edge",
+  "input": {
+    "cost": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

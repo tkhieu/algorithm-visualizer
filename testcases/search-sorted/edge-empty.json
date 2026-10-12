@@ -1,0 +1,13 @@
+{
+  "id": "edge-empty",
+  "name": "Dãy rỗng",
+  "group": "edge",
+  "input": {
+    "values": [],
+    "target": 2
+  },
+  "expected": {
+    "index": -1
+  },
+  "note": null
+}

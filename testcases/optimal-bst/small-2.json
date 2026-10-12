@@ -1,0 +1,16 @@
+{
+  "id": "small-2",
+  "name": "Tập nhỏ 2",
+  "group": "small",
+  "input": {
+    "freq": [
+      12,
+      8,
+      2,
+      1,
+      1
+    ]
+  },
+  "expected": 43,
+  "note": null
+}

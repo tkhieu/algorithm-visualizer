@@ -1,0 +1,19 @@
+{
+  "id": "edge",
+  "name": "Một cặp",
+  "group": "edge",
+  "input": {
+    "men": [
+      [
+        0
+      ]
+    ],
+    "women": [
+      [
+        0
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,76 @@
+{
+  "id": "large-1",
+  "name": "Cỡ lớn 1",
+  "group": "large",
+  "input": {
+    "nodes": [
+      "V0",
+      "V1",
+      "V2",
+      "V3",
+      "V4",
+      "V5",
+      "V6"
+    ],
+    "edges": [
+      {
+        "from": "V0",
+        "to": "V2"
+      },
+      {
+        "from": "V0",
+        "to": "V3"
+      },
+      {
+        "from": "V0",
+        "to": "V6"
+      },
+      {
+        "from": "V1",
+        "to": "V4"
+      },
+      {
+        "from": "V1",
+        "to": "V6"
+      },
+      {
+        "from": "V2",
+        "to": "V3"
+      },
+      {
+        "from": "V2",
+        "to": "V4"
+      },
+      {
+        "from": "V2",
+        "to": "V5"
+      },
+      {
+        "from": "V2",
+        "to": "V6"
+      },
+      {
+        "from": "V3",
+        "to": "V4"
+      },
+      {
+        "from": "V3",
+        "to": "V5"
+      },
+      {
+        "from": "V3",
+        "to": "V6"
+      },
+      {
+        "from": "V4",
+        "to": "V5"
+      },
+      {
+        "from": "V5",
+        "to": "V6"
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,13 @@
+{
+  "id": "edge-single-match",
+  "name": "Một số bằng đích",
+  "group": "edge",
+  "input": {
+    "values": [
+      7
+    ],
+    "target": 7
+  },
+  "expected": null,
+  "note": null
+}

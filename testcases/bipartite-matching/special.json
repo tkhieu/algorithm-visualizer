@@ -1,0 +1,25 @@
+{
+  "id": "special",
+  "name": "Cần đổi cặp",
+  "group": "special",
+  "input": {
+    "left": 2,
+    "right": 2,
+    "edges": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,28 @@
+{
+  "id": "large-2",
+  "name": "Cỡ lớn 2",
+  "group": "large",
+  "input": {
+    "values": [
+      23,
+      10,
+      9,
+      17,
+      27,
+      19,
+      15,
+      11,
+      24,
+      4,
+      24,
+      7,
+      13,
+      26,
+      18,
+      5
+    ],
+    "target": 92
+  },
+  "expected": null,
+  "note": null
+}

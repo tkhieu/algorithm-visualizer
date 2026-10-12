@@ -1,0 +1,21 @@
+{
+  "id": "large-1",
+  "name": "Dữ liệu lớn",
+  "group": "large",
+  "input": {
+    "piles": [
+      566,
+      360,
+      70,
+      48,
+      36,
+      6,
+      91,
+      354,
+      558,
+      871
+    ]
+  },
+  "expected": null,
+  "note": null
+}

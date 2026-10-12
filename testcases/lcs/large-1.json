@@ -1,0 +1,11 @@
+{
+  "id": "large-1",
+  "name": "Cỡ lớn 1",
+  "group": "large",
+  "input": {
+    "a": "CACDDBCCBDBBABAA",
+    "b": "BABDBAABCDBACCDA"
+  },
+  "expected": null,
+  "note": null
+}

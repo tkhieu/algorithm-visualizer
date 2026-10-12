@@ -1,0 +1,25 @@
+{
+  "id": "edge-box-only",
+  "name": "Chỉ ràng buộc hộp",
+  "group": "edge",
+  "input": {
+    "objective": {
+      "cx": 2,
+      "cy": 1
+    },
+    "constraints": [
+      {
+        "a": 1,
+        "b": 0,
+        "c": 5
+      },
+      {
+        "a": 0,
+        "b": 1,
+        "c": 5
+      }
+    ]
+  },
+  "expected": 15,
+  "note": null
+}

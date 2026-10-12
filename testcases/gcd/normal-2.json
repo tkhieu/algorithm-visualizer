@@ -1,0 +1,13 @@
+{
+  "id": "normal-2",
+  "name": "Hai số nguyên tố cùng nhau",
+  "group": "normal",
+  "input": {
+    "a": 35,
+    "b": 64
+  },
+  "expected": {
+    "gcd": 1
+  },
+  "note": null
+}

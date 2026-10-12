@@ -1,0 +1,11 @@
+{
+  "id": "invalid-no-coins",
+  "name": "Không có mệnh giá",
+  "group": "invalid",
+  "input": {
+    "amount": 5,
+    "coins": []
+  },
+  "expected": null,
+  "note": null
+}

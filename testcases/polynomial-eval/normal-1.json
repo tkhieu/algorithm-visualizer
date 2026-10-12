@@ -1,0 +1,17 @@
+{
+  "id": "normal-1",
+  "name": "Đa thức bậc hai",
+  "group": "normal",
+  "input": {
+    "coefficients": [
+      2,
+      3,
+      1
+    ],
+    "x": 2
+  },
+  "expected": {
+    "value": 12
+  },
+  "note": null
+}

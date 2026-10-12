@@ -1,0 +1,11 @@
+{
+  "id": "invalid-negative-power",
+  "name": "Số mũ âm",
+  "group": "invalid",
+  "input": {
+    "base": 2,
+    "exponent": -1
+  },
+  "expected": null,
+  "note": null
+}

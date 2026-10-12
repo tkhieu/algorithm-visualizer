@@ -1,0 +1,30 @@
+{
+  "id": "small-1",
+  "name": "Tập nhỏ 1",
+  "group": "small",
+  "input": {
+    "objective": {
+      "cx": 4,
+      "cy": 5
+    },
+    "constraints": [
+      {
+        "a": 1,
+        "b": 0,
+        "c": 10
+      },
+      {
+        "a": 0,
+        "b": 1,
+        "c": 10
+      },
+      {
+        "a": 4,
+        "b": 3,
+        "c": 39
+      }
+    ]
+  },
+  "expected": 59,
+  "note": null
+}

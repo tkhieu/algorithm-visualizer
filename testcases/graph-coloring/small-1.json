@@ -1,0 +1,31 @@
+{
+  "id": "small-1",
+  "name": "Cỡ nhỏ 1",
+  "group": "small",
+  "input": {
+    "nodes": [
+      "V0",
+      "V1",
+      "V2",
+      "V3",
+      "V4"
+    ],
+    "edges": [
+      {
+        "from": "V0",
+        "to": "V2"
+      },
+      {
+        "from": "V1",
+        "to": "V3"
+      },
+      {
+        "from": "V2",
+        "to": "V4"
+      }
+    ],
+    "colors": 3
+  },
+  "expected": null,
+  "note": null
+}

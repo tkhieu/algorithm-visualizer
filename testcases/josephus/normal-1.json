@@ -1,0 +1,13 @@
+{
+  "id": "normal-1",
+  "name": "Bảy người đếm ba",
+  "group": "normal",
+  "input": {
+    "n": 7,
+    "k": 3
+  },
+  "expected": {
+    "survivor": 4
+  },
+  "note": null
+}

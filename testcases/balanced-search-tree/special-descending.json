@@ -1,0 +1,19 @@
+{
+  "id": "special-descending",
+  "name": "Dãy giảm dần",
+  "group": "special",
+  "input": {
+    "keys": [
+      8,
+      7,
+      6,
+      5,
+      4,
+      3,
+      2,
+      1
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,12 @@
+{
+  "id": "edge",
+  "name": "Không có cạnh",
+  "group": "edge",
+  "input": {
+    "left": 2,
+    "right": 2,
+    "edges": []
+  },
+  "expected": null,
+  "note": null
+}

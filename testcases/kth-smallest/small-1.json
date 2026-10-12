@@ -1,0 +1,29 @@
+{
+  "id": "small-1",
+  "name": "Dữ liệu nhỏ",
+  "group": "small",
+  "input": {
+    "values": [
+      0,
+      1,
+      29,
+      20,
+      15,
+      12,
+      13,
+      7,
+      16,
+      21,
+      7,
+      4,
+      22,
+      15,
+      5
+    ],
+    "k": 6
+  },
+  "expected": {
+    "value": 7
+  },
+  "note": null
+}

@@ -1,0 +1,13 @@
+{
+  "id": "invalid-key",
+  "name": "Khóa âm",
+  "group": "invalid",
+  "input": {
+    "tableSize": 5,
+    "keys": [
+      -1
+    ]
+  },
+  "expected": null,
+  "note": null
+}

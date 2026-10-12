@@ -1,0 +1,14 @@
+{
+  "id": "large-1",
+  "name": "Độ chính xác cao",
+  "group": "large",
+  "input": {
+    "c": 6,
+    "d": -6,
+    "left": -10,
+    "right": 10,
+    "tolerance": 1e-8
+  },
+  "expected": null,
+  "note": null
+}

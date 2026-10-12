@@ -1,0 +1,13 @@
+{
+  "id": "edge-no-match",
+  "name": "Không xuất hiện",
+  "group": "edge",
+  "input": {
+    "text": "AAAAAAAA",
+    "pattern": "BB"
+  },
+  "expected": {
+    "positions": []
+  },
+  "note": null
+}

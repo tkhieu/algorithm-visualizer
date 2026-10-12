@@ -1,0 +1,29 @@
+{
+  "id": "invalid",
+  "name": "Ưu tiên trùng",
+  "group": "invalid",
+  "input": {
+    "men": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "women": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

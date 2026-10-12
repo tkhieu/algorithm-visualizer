@@ -38,9 +38,9 @@ describe('catalog (status ready)',()=>{
  });
 });
 
-// Chỉ chạy đầy đủ khi Phase B hoàn tất tất cả problems/algorithms (COVERAGE=strict).
-// Mặc định (không strict) bài test này được bỏ qua để Phase F không chờ các phase sau.
-describe.skipIf(process.env.COVERAGE!=='strict')('catalog (COVERAGE=strict — toàn bộ manifest)',()=>{
+// Phase B đã hoàn tất: COVERAGE=strict là mặc định (npm test, CI). Đặt COVERAGE=off
+// để bỏ qua tạm thời khi phát triển một problem/algorithm mới chưa xong.
+describe.skipIf(process.env.COVERAGE==='off')('catalog (COVERAGE=strict — toàn bộ manifest)',()=>{
  it('mọi algorithm trong manifest đều ready và đã đăng ký',()=>{
   const planned=algorithms.filter(a=>a.status!=='ready');
   expect(planned.map(a=>a.id)).toEqual([]);

@@ -1,0 +1,10 @@
+{
+  "id": "invalid-zero",
+  "name": "n bằng không",
+  "group": "invalid",
+  "input": {
+    "n": 0
+  },
+  "expected": null,
+  "note": null
+}

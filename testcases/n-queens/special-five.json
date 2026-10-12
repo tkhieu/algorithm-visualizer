@@ -1,0 +1,10 @@
+{
+  "id": "special-five",
+  "name": "n = 5",
+  "group": "special",
+  "input": {
+    "n": 5
+  },
+  "expected": null,
+  "note": null
+}

@@ -96,6 +96,28 @@ describe('chèn cây AVL', () => {
     const rootLeft = afterInner.nodes.find(n => n.parent === root.id)!;
     expect(rootLeft.label).toBe('2');
   });
+  it('xoay kép (phải-trái) hiển thị trạng thái sau lần xoay đơn đầu tiên như một bước riêng', () => {
+    // Đối xứng gương của trường hợp kép trái-phải ở trên: chèn 1,3,2 gây mất cân bằng tại gốc
+    // (1), con phải (3) lại lệch trái. Ngay sau lần xoay phải đơn đầu tiên (tại con phải), con
+    // phải của gốc phải đổi từ khóa 3 sang khóa 2 — bước "rebalance-inner" phải tự vẽ lại cây để
+    // thể hiện đúng trạng thái này, không chỉ thông báo rồi để trạng thái cũ nguyên vẹn.
+    const input = { keys: [1, 3, 2] };
+    const rec = new TraceRecorder(
+      algorithm.initVisual(input),
+      new Set(algorithm.pseudocode.map(l => l.id)),
+      algorithm.traceLimit,
+    );
+    algorithm.run(input, { rec, signal: new AbortController().signal });
+    const store = new TraceStore(algorithm.initVisual(input));
+    for (const step of rec.steps) store.append(step);
+    const innerIdx = rec.steps.findIndex(s => s.lineId === 'rebalance-inner');
+    expect(innerIdx).toBeGreaterThanOrEqual(0);
+    const afterInner = store.seek(innerIdx + 1);
+    const root = afterInner.nodes.find(n => n.parent === null)!;
+    expect(root.label).toBe('1');
+    const rootRight = afterInner.nodes.find(n => n.parent === root.id)!;
+    expect(rootRight.label).toBe('2');
+  });
   it('hiển thị đúng hệ số cân bằng (cao trái − cao phải) trên mỗi đỉnh', () => {
     const balanced = traceFinal({ keys: [1, 2, 3] });
     // Cây cân bằng hoàn chỉnh [1,2,3]: mọi đỉnh có bf = 0.

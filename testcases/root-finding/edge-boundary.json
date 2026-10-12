@@ -1,0 +1,14 @@
+{
+  "id": "edge-boundary",
+  "name": "Nghiệm tại biên",
+  "group": "edge",
+  "input": {
+    "c": 1,
+    "d": 0,
+    "left": 0,
+    "right": 2,
+    "tolerance": 0.000001
+  },
+  "expected": null,
+  "note": null
+}

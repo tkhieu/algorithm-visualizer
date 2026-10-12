@@ -1,0 +1,14 @@
+{
+  "id": "invalid-zero-colors",
+  "name": "k bằng 0",
+  "group": "invalid",
+  "input": {
+    "nodes": [
+      "A"
+    ],
+    "edges": [],
+    "colors": 0
+  },
+  "expected": null,
+  "note": null
+}

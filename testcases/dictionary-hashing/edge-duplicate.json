@@ -1,0 +1,15 @@
+{
+  "id": "edge-duplicate",
+  "name": "Khóa trùng lặp",
+  "group": "edge",
+  "input": {
+    "tableSize": 7,
+    "keys": [
+      9,
+      9,
+      9
+    ]
+  },
+  "expected": null,
+  "note": null
+}

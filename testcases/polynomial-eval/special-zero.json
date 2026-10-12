@@ -1,0 +1,17 @@
+{
+  "id": "special-zero",
+  "name": "Tính tại 0",
+  "group": "special",
+  "input": {
+    "coefficients": [
+      7,
+      9,
+      3
+    ],
+    "x": 0
+  },
+  "expected": {
+    "value": 7
+  },
+  "note": null
+}

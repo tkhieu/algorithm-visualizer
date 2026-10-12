@@ -1,0 +1,15 @@
+{
+  "id": "invalid-one-point",
+  "name": "Chỉ một điểm",
+  "group": "invalid",
+  "input": {
+    "points": [
+      {
+        "x": 0,
+        "y": 0
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

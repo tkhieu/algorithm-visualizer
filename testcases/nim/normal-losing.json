@@ -1,0 +1,14 @@
+{
+  "id": "normal-losing",
+  "name": "Nhiều đống ở thế thua",
+  "group": "normal",
+  "input": {
+    "piles": [
+      1,
+      2,
+      3
+    ]
+  },
+  "expected": null,
+  "note": null
+}

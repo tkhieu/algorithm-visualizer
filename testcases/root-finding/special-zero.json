@@ -1,0 +1,14 @@
+{
+  "id": "special-zero",
+  "name": "Nghiệm bằng không",
+  "group": "special",
+  "input": {
+    "c": 3,
+    "d": 0,
+    "left": -1,
+    "right": 1,
+    "tolerance": 1e-8
+  },
+  "expected": null,
+  "note": null
+}

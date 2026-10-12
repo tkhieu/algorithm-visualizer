@@ -1,0 +1,23 @@
+{
+  "id": "normal-1",
+  "name": "Hệ chéo 2×2",
+  "group": "normal",
+  "input": {
+    "a": [
+      [
+        2,
+        0
+      ],
+      [
+        0,
+        3
+      ]
+    ],
+    "b": [
+      4,
+      9
+    ]
+  },
+  "expected": null,
+  "note": null
+}

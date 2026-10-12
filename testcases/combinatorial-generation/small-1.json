@@ -1,0 +1,10 @@
+{
+  "id": "small-1",
+  "name": "Dữ liệu nhỏ",
+  "group": "small",
+  "input": {
+    "n": 1
+  },
+  "expected": null,
+  "note": null
+}

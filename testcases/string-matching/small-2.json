@@ -1,0 +1,15 @@
+{
+  "id": "small-2",
+  "name": "Tập nhỏ 2",
+  "group": "small",
+  "input": {
+    "text": "CBAAAAABCDCDBACB",
+    "pattern": "CDC"
+  },
+  "expected": {
+    "positions": [
+      8
+    ]
+  },
+  "note": null
+}

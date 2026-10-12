@@ -1,0 +1,13 @@
+{
+  "id": "edge-single",
+  "name": "Một khóa",
+  "group": "edge",
+  "input": {
+    "tableSize": 7,
+    "keys": [
+      5
+    ]
+  },
+  "expected": null,
+  "note": null
+}

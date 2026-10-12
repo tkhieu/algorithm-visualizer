@@ -1,0 +1,17 @@
+{
+  "id": "special-last",
+  "name": "Xu giả cuối dãy",
+  "group": "special",
+  "input": {
+    "weights": [
+      10,
+      10,
+      10,
+      9
+    ]
+  },
+  "expected": {
+    "index": 3
+  },
+  "note": null
+}

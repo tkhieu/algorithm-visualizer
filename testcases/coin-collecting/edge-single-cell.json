@@ -1,0 +1,14 @@
+{
+  "id": "edge-single-cell",
+  "name": "Lưới 1x1",
+  "group": "edge",
+  "input": {
+    "grid": [
+      [
+        true
+      ]
+    ]
+  },
+  "expected": 1,
+  "note": null
+}

@@ -1,0 +1,18 @@
+{
+  "id": "invalid-uneven",
+  "name": "Các hàng không cùng độ dài",
+  "group": "invalid",
+  "input": {
+    "grid": [
+      [
+        true,
+        false
+      ],
+      [
+        true
+      ]
+    ]
+  },
+  "expected": null,
+  "note": null
+}

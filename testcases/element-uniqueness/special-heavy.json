@@ -1,0 +1,19 @@
+{
+  "id": "special-heavy",
+  "name": "Trùng lặp dày đặc (mode)",
+  "group": "special",
+  "input": {
+    "values": [
+      1,
+      2,
+      2,
+      3,
+      2,
+      4,
+      2,
+      5
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,14 @@
+{
+  "id": "invalid-bracket",
+  "name": "Khoảng không kẹp nghiệm",
+  "group": "invalid",
+  "input": {
+    "c": 1,
+    "d": 2,
+    "left": 2,
+    "right": 3,
+    "tolerance": 0.000001
+  },
+  "expected": null,
+  "note": null
+}

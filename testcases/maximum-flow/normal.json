@@ -1,0 +1,34 @@
+{
+  "id": "normal",
+  "name": "Hai đường tăng",
+  "group": "normal",
+  "input": {
+    "n": 4,
+    "edges": [
+      [
+        0,
+        1,
+        3
+      ],
+      [
+        0,
+        2,
+        2
+      ],
+      [
+        1,
+        3,
+        3
+      ],
+      [
+        2,
+        3,
+        2
+      ]
+    ],
+    "source": 0,
+    "sink": 3
+  },
+  "expected": null,
+  "note": null
+}

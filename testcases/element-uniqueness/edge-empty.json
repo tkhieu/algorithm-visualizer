@@ -1,0 +1,10 @@
+{
+  "id": "edge-empty",
+  "name": "Dãy rỗng",
+  "group": "edge",
+  "input": {
+    "values": []
+  },
+  "expected": null,
+  "note": null
+}

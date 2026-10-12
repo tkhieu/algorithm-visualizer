@@ -1,0 +1,10 @@
+{
+  "id": "large-1",
+  "name": "Dữ liệu lớn",
+  "group": "large",
+  "input": {
+    "n": 5
+  },
+  "expected": null,
+  "note": null
+}

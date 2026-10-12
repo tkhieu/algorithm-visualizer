@@ -1,0 +1,13 @@
+{
+  "id": "edge-single-miss",
+  "name": "Một số khác đích",
+  "group": "edge",
+  "input": {
+    "values": [
+      7
+    ],
+    "target": 3
+  },
+  "expected": null,
+  "note": null
+}

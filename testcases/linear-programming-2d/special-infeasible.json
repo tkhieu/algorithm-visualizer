@@ -1,0 +1,20 @@
+{
+  "id": "special-infeasible",
+  "name": "Miền khả thi rỗng",
+  "group": "special",
+  "input": {
+    "objective": {
+      "cx": 1,
+      "cy": 1
+    },
+    "constraints": [
+      {
+        "a": 1,
+        "b": 0,
+        "c": -1
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

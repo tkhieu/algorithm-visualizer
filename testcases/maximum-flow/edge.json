@@ -1,0 +1,13 @@
+{
+  "id": "edge",
+  "name": "Không có đường đến đích",
+  "group": "edge",
+  "input": {
+    "n": 2,
+    "edges": [],
+    "source": 0,
+    "sink": 1
+  },
+  "expected": null,
+  "note": null
+}

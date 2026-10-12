@@ -1,0 +1,19 @@
+{
+  "id": "invalid",
+  "name": "Ký hiệu trùng",
+  "group": "invalid",
+  "input": {
+    "symbols": [
+      {
+        "label": "A",
+        "frequency": 1
+      },
+      {
+        "label": "A",
+        "frequency": 2
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,17 @@
+{
+  "id": "edge-full",
+  "name": "Bảng đầy vừa khít",
+  "group": "edge",
+  "input": {
+    "tableSize": 5,
+    "keys": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "expected": null,
+  "note": null
+}

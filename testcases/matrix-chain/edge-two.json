@@ -1,0 +1,14 @@
+{
+  "id": "edge-two",
+  "name": "Hai ma trận",
+  "group": "edge",
+  "input": {
+    "dims": [
+      2,
+      3,
+      4
+    ]
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,18 @@
+{
+  "id": "normal-2",
+  "name": "Ví dụ 6 ma trận",
+  "group": "normal",
+  "input": {
+    "dims": [
+      30,
+      35,
+      15,
+      5,
+      10,
+      20,
+      25
+    ]
+  },
+  "expected": null,
+  "note": null
+}

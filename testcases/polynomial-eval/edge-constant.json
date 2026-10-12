@@ -1,0 +1,15 @@
+{
+  "id": "edge-constant",
+  "name": "Đa thức hằng",
+  "group": "edge",
+  "input": {
+    "coefficients": [
+      5
+    ],
+    "x": -2
+  },
+  "expected": {
+    "value": 5
+  },
+  "note": null
+}

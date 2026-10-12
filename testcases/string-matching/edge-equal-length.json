@@ -1,0 +1,15 @@
+{
+  "id": "edge-equal-length",
+  "name": "Mẫu bằng độ dài văn bản",
+  "group": "edge",
+  "input": {
+    "text": "ABCD",
+    "pattern": "ABCD"
+  },
+  "expected": {
+    "positions": [
+      0
+    ]
+  },
+  "note": null
+}

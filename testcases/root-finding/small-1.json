@@ -1,0 +1,14 @@
+{
+  "id": "small-1",
+  "name": "Dữ liệu nhỏ",
+  "group": "small",
+  "input": {
+    "c": 1,
+    "d": -18,
+    "left": -10,
+    "right": 10,
+    "tolerance": 0.00001
+  },
+  "expected": null,
+  "note": null
+}

@@ -1,0 +1,11 @@
+{
+  "id": "edge-identical",
+  "name": "Hai chuỗi giống nhau",
+  "group": "edge",
+  "input": {
+    "a": "ABCDE",
+    "b": "ABCDE"
+  },
+  "expected": null,
+  "note": null
+}

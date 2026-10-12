@@ -1,0 +1,35 @@
+{
+  "id": "normal-2",
+  "name": "Ngẫu nhiên nhỏ",
+  "group": "normal",
+  "input": {
+    "objective": {
+      "cx": 4,
+      "cy": 9
+    },
+    "constraints": [
+      {
+        "a": 1,
+        "b": 0,
+        "c": 16
+      },
+      {
+        "a": 0,
+        "b": 1,
+        "c": 10
+      },
+      {
+        "a": 3,
+        "b": 4,
+        "c": 69
+      },
+      {
+        "a": 2,
+        "b": 3,
+        "c": 40
+      }
+    ]
+  },
+  "expected": 110,
+  "note": null
+}

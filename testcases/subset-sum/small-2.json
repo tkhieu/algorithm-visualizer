@@ -1,0 +1,18 @@
+{
+  "id": "small-2",
+  "name": "Cỡ nhỏ 2",
+  "group": "small",
+  "input": {
+    "values": [
+      23,
+      10,
+      9,
+      17,
+      27,
+      19
+    ],
+    "target": 78
+  },
+  "expected": null,
+  "note": null
+}

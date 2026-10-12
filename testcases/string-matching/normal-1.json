@@ -1,0 +1,16 @@
+{
+  "id": "normal-1",
+  "name": "Ví dụ Horspool",
+  "group": "normal",
+  "input": {
+    "text": "ABCABCDABABCD",
+    "pattern": "ABCD"
+  },
+  "expected": {
+    "positions": [
+      3,
+      9
+    ]
+  },
+  "note": null
+}

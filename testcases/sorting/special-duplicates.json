@@ -1,0 +1,20 @@
+{
+  "id": "special-duplicates",
+  "name": "Nhiều trùng lặp (đếm phân phối)",
+  "group": "special",
+  "input": {
+    "values": [
+      2,
+      1,
+      2,
+      3,
+      1,
+      2,
+      3,
+      3,
+      1
+    ]
+  },
+  "expected": null,
+  "note": null
+}

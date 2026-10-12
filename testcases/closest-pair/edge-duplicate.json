@@ -1,0 +1,23 @@
+{
+  "id": "edge-duplicate",
+  "name": "Hai điểm trùng nhau",
+  "group": "edge",
+  "input": {
+    "points": [
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 2
+      },
+      {
+        "x": 10,
+        "y": 10
+      }
+    ]
+  },
+  "expected": 0,
+  "note": null
+}

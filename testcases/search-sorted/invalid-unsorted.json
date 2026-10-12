@@ -1,0 +1,14 @@
+{
+  "id": "invalid-unsorted",
+  "name": "Dãy chưa sắp xếp",
+  "group": "invalid",
+  "input": {
+    "values": [
+      2,
+      1
+    ],
+    "target": 1
+  },
+  "expected": null,
+  "note": null
+}

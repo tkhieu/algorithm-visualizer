@@ -1,0 +1,13 @@
+{
+  "id": "edge-single",
+  "name": "Một đỉnh duy nhất",
+  "group": "edge",
+  "input": {
+    "nodes": [
+      "A"
+    ],
+    "edges": []
+  },
+  "expected": null,
+  "note": null
+}

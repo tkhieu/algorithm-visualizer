@@ -1,0 +1,11 @@
+{
+  "id": "invalid-table",
+  "name": "Kích thước bảng không hợp lệ",
+  "group": "invalid",
+  "input": {
+    "tableSize": 0,
+    "keys": []
+  },
+  "expected": null,
+  "note": null
+}

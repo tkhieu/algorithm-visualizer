@@ -1,0 +1,11 @@
+{
+  "id": "normal-2",
+  "name": "Cỡ nhỏ ngẫu nhiên",
+  "group": "normal",
+  "input": {
+    "a": "CACDDB",
+    "b": "CCBDBB"
+  },
+  "expected": null,
+  "note": null
+}

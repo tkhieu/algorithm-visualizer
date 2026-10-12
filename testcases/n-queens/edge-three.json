@@ -1,0 +1,10 @@
+{
+  "id": "edge-three",
+  "name": "Bàn cờ 3×3 — vô nghiệm",
+  "group": "edge",
+  "input": {
+    "n": 3
+  },
+  "expected": null,
+  "note": null
+}

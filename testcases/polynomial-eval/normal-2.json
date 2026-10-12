@@ -1,0 +1,17 @@
+{
+  "id": "normal-2",
+  "name": "Giá trị âm",
+  "group": "normal",
+  "input": {
+    "coefficients": [
+      1,
+      2,
+      3
+    ],
+    "x": -2
+  },
+  "expected": {
+    "value": 9
+  },
+  "note": null
+}

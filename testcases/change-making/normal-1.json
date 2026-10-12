@@ -1,0 +1,16 @@
+{
+  "id": "normal-1",
+  "name": "Hệ tiền chuẩn (tham lam đúng)",
+  "group": "normal",
+  "input": {
+    "amount": 63,
+    "coins": [
+      1,
+      5,
+      10,
+      25
+    ]
+  },
+  "expected": 6,
+  "note": null
+}

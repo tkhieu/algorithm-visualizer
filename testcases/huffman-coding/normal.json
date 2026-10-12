@@ -1,0 +1,27 @@
+{
+  "id": "normal",
+  "name": "Bốn ký hiệu",
+  "group": "normal",
+  "input": {
+    "symbols": [
+      {
+        "label": "A",
+        "frequency": 5
+      },
+      {
+        "label": "B",
+        "frequency": 7
+      },
+      {
+        "label": "C",
+        "frequency": 10
+      },
+      {
+        "label": "D",
+        "frequency": 15
+      }
+    ]
+  },
+  "expected": null,
+  "note": null
+}

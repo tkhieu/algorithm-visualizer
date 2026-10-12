@@ -1,0 +1,13 @@
+{
+  "id": "edge-zero",
+  "name": "Nhân với không",
+  "group": "edge",
+  "input": {
+    "a": "0",
+    "b": "987"
+  },
+  "expected": {
+    "product": "0"
+  },
+  "note": null
+}

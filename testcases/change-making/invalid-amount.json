@@ -1,0 +1,14 @@
+{
+  "id": "invalid-amount",
+  "name": "Số tiền âm",
+  "group": "invalid",
+  "input": {
+    "amount": -5,
+    "coins": [
+      1,
+      5
+    ]
+  },
+  "expected": null,
+  "note": null
+}

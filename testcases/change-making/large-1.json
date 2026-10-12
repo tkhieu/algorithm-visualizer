@@ -1,0 +1,18 @@
+{
+  "id": "large-1",
+  "name": "Tập lớn 1",
+  "group": "large",
+  "input": {
+    "amount": 104,
+    "coins": [
+      1,
+      2,
+      4,
+      10,
+      20,
+      25
+    ]
+  },
+  "expected": 5,
+  "note": null
+}

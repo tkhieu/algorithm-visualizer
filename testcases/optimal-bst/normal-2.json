@@ -1,0 +1,16 @@
+{
+  "id": "normal-2",
+  "name": "Ngẫu nhiên nhỏ",
+  "group": "normal",
+  "input": {
+    "freq": [
+      13,
+      1,
+      11,
+      20,
+      20
+    ]
+  },
+  "expected": 123,
+  "note": null
+}

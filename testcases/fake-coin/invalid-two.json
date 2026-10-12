@@ -1,0 +1,14 @@
+{
+  "id": "invalid-two",
+  "name": "Hai xu giả",
+  "group": "invalid",
+  "input": {
+    "weights": [
+      9,
+      10,
+      9
+    ]
+  },
+  "expected": null,
+  "note": null
+}

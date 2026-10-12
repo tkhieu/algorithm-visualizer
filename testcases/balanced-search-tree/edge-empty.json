@@ -1,0 +1,10 @@
+{
+  "id": "edge-empty",
+  "name": "Không có khóa",
+  "group": "edge",
+  "input": {
+    "keys": []
+  },
+  "expected": null,
+  "note": null
+}

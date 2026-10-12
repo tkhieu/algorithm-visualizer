@@ -1,7 +1,7 @@
 import type {Algorithm} from '../../../core/contracts';
 import type {Input, Output} from '../../../problems/tsp/definition';
 import {initVisual, limits, type VisualState} from '../shared';
-import {run} from './run';
+import {run, SAFE_MAX} from './run';
 import {pseudocode} from './pseudocode';
 import {legend} from './legend';
 
@@ -19,6 +19,10 @@ export const algorithm: Algorithm<Input, Output, VisualState> = {
   pseudocode,
   legend,
   traceLimit: {...limits, maxInputSize: 8},
+  precondition: (input) =>
+    input.points.length > SAFE_MAX
+      ? `Vét cạn chỉ hỗ trợ đến ${SAFE_MAX} điểm (nhận ${input.points.length}); hãy dùng nhánh cận hoặc xấp xỉ cho n lớn hơn.`
+      : undefined,
   initVisual,
   run,
 };

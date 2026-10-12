@@ -1,0 +1,13 @@
+{
+  "id": "normal-1",
+  "name": "Hai số có ước chung",
+  "group": "normal",
+  "input": {
+    "a": 18,
+    "b": 12
+  },
+  "expected": {
+    "gcd": 6
+  },
+  "note": null
+}
