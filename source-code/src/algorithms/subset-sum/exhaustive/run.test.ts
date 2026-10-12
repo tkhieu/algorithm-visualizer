@@ -4,6 +4,7 @@ import {MetricsRecorder, TraceRecorder} from '../../../core/recorder';
 import {TraceStore} from '../../../core/trace/TraceStore';
 import {check, existsSubset} from '../../../problems/subset-sum/checker';
 import {generate} from '../../../problems/subset-sum/generators';
+import {execute} from '../../../core/worker-protocol/execute';
 describe('subset-sum/exhaustive', () => {
   it('đúng so với tham chiếu trên nhiều seed cỡ nhỏ/trung', () => {
     for (let seed = 1; seed <= 40; seed++)
@@ -14,12 +15,19 @@ describe('subset-sum/exhaustive', () => {
         expect(output.found).toBe(existsSubset(input));
       }
   });
-  it('từ chối n vượt giới hạn an toàn', () => {
+  it('precondition từ chối n vượt giới hạn an toàn bằng lý do tiếng Việt, không phải lỗi ném ra', () => {
     const big = {values: Array.from({length: 23}, () => 1), target: 10};
-    expect(() => algorithm.run(big, {rec: new MetricsRecorder(), signal: new AbortController().signal})).toThrow();
+    expect(algorithm.precondition?.(big)).toMatch(/n ≤ 12/);
   });
-  it('S=0 trả ngay tập rỗng dù n bằng giới hạn schema', () => {
+  it('execute() trả "không áp dụng" (không phải "error") khi vượt giới hạn an toàn', async () => {
+    const big = {values: Array.from({length: 20}, () => 1), target: 10};
+    const result = await execute(algorithm.id, big, true);
+    expect(result).toMatchObject({status: 'not-applicable'});
+    expect(result.status === 'not-applicable' && result.reason).toMatch(/n ≤ 12/);
+  });
+  it('S=0 trả ngay tập rỗng dù n bằng giới hạn schema, precondition không chặn trường hợp này', () => {
     const input = {values: Array.from({length: 20}, () => 1), target: 0};
+    expect(algorithm.precondition?.(input)).toBeUndefined();
     const rec = new TraceRecorder(
       algorithm.initVisual(input),
       new Set(algorithm.pseudocode.map((line) => line.id)),
@@ -29,10 +37,9 @@ describe('subset-sum/exhaustive', () => {
       .toEqual({found: true, indices: []});
     expect(rec.steps).toHaveLength(1);
   });
-  it('chặn trường hợp n hợp lệ nhưng cần hơn giới hạn công việc vét cạn', () => {
+  it('precondition chặn n hợp lệ theo schema (≤ 20) nhưng vượt giới hạn công việc vét cạn, target ≠ 0', () => {
     const input = {values: Array.from({length: 20}, () => 1), target: 100};
-    expect(() => algorithm.run(input, {rec: new MetricsRecorder(), signal: new AbortController().signal}))
-      .toThrow('12');
+    expect(algorithm.precondition?.(input)).toMatch(/n ≤ 12/);
   });
   it('trace tua lại đúng và khớp output cuối', () => {
     const input = {values: [3, 34, 4, 12, 5, 2], target: 9};

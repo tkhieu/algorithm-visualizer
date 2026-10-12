@@ -1,7 +1,9 @@
 import type {RunContext} from '../../../core/contracts';
 import type {Input, Output} from '../../../problems/subset-sum/definition';
 import {assertActive, pack, type VisualState} from '../shared';
-const SAFE_MAX = 12;
+// n > SAFE_MAX bị chặn trước khi tới đây bằng precondition của algorithm (index.ts), nên hiện
+// Vietnamese "Không áp dụng" trên UI thay vì ném lỗi; run() không tự kiểm tra lại giới hạn này.
+export const SAFE_MAX = 12;
 export function run(input: Input, {rec, signal}: RunContext<VisualState>): Output {
   const {values, target} = input;
   const n = values.length;
@@ -11,10 +13,6 @@ export function run(input: Input, {rec, signal}: RunContext<VisualState>): Outpu
     }, [], 'done');
     return pack([]);
   }
-  if (n > SAFE_MAX)
-    throw new Error(
-      `Vét cạn 2ⁿ chỉ hỗ trợ n ≤ ${SAFE_MAX} (nhận n=${n}); hãy dùng quy hoạch động hoặc quay lui cho n lớn hơn.`,
-    );
   let nextId = 0;
   let found: number[] | null = null;
   const rootId = nextId++;
