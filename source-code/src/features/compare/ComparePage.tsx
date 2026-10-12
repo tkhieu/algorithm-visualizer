@@ -1,4 +1,4 @@
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {useSearchParams} from 'react-router-dom';
 import {LineChart,Line,CartesianGrid,XAxis,YAxis,Tooltip,Legend,ResponsiveContainer} from 'recharts';
 import {algorithms} from '../../catalog/manifest';
@@ -44,11 +44,23 @@ function LoadedComparePage({problemId,problem}:{problemId:string;problem:AnyProb
  const problemAlgos=algorithms.filter(a=>a.problemId===problemId&&a.status==='ready');
  const ids=(params.get('algos')||problemAlgos.map(a=>a.id.split('/')[1]).join(',')).split(',').filter(x=>problemAlgos.some(a=>a.id===`${problemId}/${x}`));
  const idsKey=ids.join(',');
+ // Mã thế hệ (generation): mỗi lần đổi lựa chọn hoặc bấm "Chạy tất cả" tăng runGen lên một.
+ // Mọi tiếp diễn bất đồng bộ của một lượt chạy (sau mỗi await trong runAll, và mỗi callback
+ // worker) tự so runGen.current với giá trị đã chụp lúc lượt chạy đó bắt đầu — nếu khác thì bỏ
+ // qua kết quả, vì lượt chạy đó đã bị một lượt mới hơn (đổi lựa chọn hoặc bấm chạy lại) thay
+ // thế. Nhờ vậy không còn chuyện kết quả "muộn" của id đã bị bỏ chọn rồi chọn lại ghi đè lên
+ // làn mới (idle) vừa tạo cho đúng id đó.
+ const runGen=useRef(0);
+ const activeCancels=useRef<(()=>void)[]>([]);
  // Làn xuất hiện ngay khi trang tải / khi chọn lại thuật toán, ở trạng thái idle (chưa dispatch
  // run nào) — giữ lại làn đã có kết quả nếu id vẫn còn được chọn, để đổi lựa chọn không xoá kết
  // quả của các làn khác. Tách idsKey (chuỗi, ổn định) ra làm dep duy nhất thay vì mảng ids (đổi
  // tham chiếu mỗi lần render) để effect chỉ chạy lại khi tập thuật toán được chọn thật sự đổi.
  useEffect(()=>{
+  runGen.current++;
+  for(const cancel of activeCancels.current)cancel();
+  activeCancels.current=[];
+  setBusy(false);
   const currentIds=idsKey?idsKey.split(','):[];
   setLanes(prev=>currentIds.map(id=>prev.find(l=>l.id===id)??{id,trace:null,cursor:0,result:null,medianMs:0,running:false}));
  },[idsKey]);
@@ -63,17 +75,27 @@ function LoadedComparePage({problemId,problem}:{problemId:string;problem:AnyProb
  const updateLane=(id:string,patch:Partial<Lane>)=>setLanes(prev=>prev.map(l=>l.id===id?{...l,...patch}:l));
  const runAll=async()=>{
   if(!valid||!canCompare||!queryValid)return;
+  const myGen=++runGen.current;
+  activeCancels.current=[];
   setBusy(true);
   const algos=await Promise.all(ids.map(id=>loadAlgorithm(`${problemId}/${id}`)));
+  if(runGen.current!==myGen)return; // lựa chọn đã đổi khi đang tải algorithm — bỏ lượt này
   const initial:Lane[]=ids.map((id,i)=>({id,trace:new TraceStore((algos[i]?.initVisual(valid)??{}) as object),cursor:0,result:null,medianMs:0,running:true}));
   setLanes(initial);
   await Promise.all(initial.map(async lane=>{
-   const task=runWorker(`${problemId}/${lane.id}`,valid,steps=>{for(const step of steps)lane.trace!.append(step);updateLane(lane.id,{trace:lane.trace})});
+   const task=runWorker(`${problemId}/${lane.id}`,valid,steps=>{
+    if(runGen.current!==myGen)return;
+    for(const step of steps)lane.trace!.append(step);
+    updateLane(lane.id,{trace:lane.trace});
+   });
+   activeCancels.current.push(task.cancel);
    const result=await task.promise;
+   if(runGen.current!==myGen)return;
    const bench=result.status==='ok'?await benchWorker(`${problemId}/${lane.id}`,valid):null;
+   if(runGen.current!==myGen)return;
    updateLane(lane.id,{result,medianMs:bench?.medianMs??0,running:false});
   }));
-  setBusy(false);
+  if(runGen.current===myGen)setBusy(false);
  };
  const setCursor=(id:string,cursor:number)=>{
   const source=lanes.find(l=>l.id===id);
