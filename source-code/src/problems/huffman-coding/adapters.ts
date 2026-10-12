@@ -1,0 +1,10 @@
+import type { ComparisonAdapter } from '../../core/contracts'
+import type { Input, Output } from './definition'
+export const adapter: ComparisonAdapter<Input, Output> = {
+  problemId: 'huffman-coding',
+  project: (_i, o) => ({ soBit: o.weightedBits, ma: o.codes }),
+  metrics: [
+    { id: 'weightedBits', label: 'Số bit có trọng số', better: 'lower' },
+    { id: 'ms', label: 'Thời gian', better: 'lower' },
+  ],
+}
