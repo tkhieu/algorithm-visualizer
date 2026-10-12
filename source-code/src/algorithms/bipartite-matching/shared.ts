@@ -1,1 +1,39 @@
-import type {Input} from '../../problems/bipartite-matching/definition';import type {GraphVisualState} from '../../visualizers/graph';export interface VisualState extends GraphVisualState{pairs:[number,number][];size:number;path:string[]}export function initVisual(input:Input):VisualState{return {nodes:[...Array.from({length:input.left},(_,i)=>({id:`L${i}`,label:`T${i}`,partition:'left' as const})),...Array.from({length:input.right},(_,i)=>({id:`R${i}`,label:`P${i}`,partition:'right' as const}))],edges:input.edges.map(([a,b])=>({from:`L${a}`,to:`R${b}`})),pairs:[],size:0,path:[],note:''}}export const legend={'Cạnh được ghép':'Nét đậm','Đường tăng':'Đang xét'};export const limits={maxInputSize:25,maxSteps:5000,maxBytes:6000000};export function syncPairs(input:Input,pairs:[number,number][],d:VisualState){d.pairs=pairs.map(p=>[...p] as [number,number]);d.size=pairs.length;d.edges.forEach(e=>{e.role=pairs.some(([a,b])=>e.from===`L${a}`&&e.to===`R${b}`)?'tree':undefined});d.note=`Đã ghép ${pairs.length} cặp.`;void input}
+import type { Input } from '../../problems/bipartite-matching/definition'
+import type { GraphVisualState } from '../../visualizers/graph'
+export interface VisualState extends GraphVisualState {
+  pairs: [number, number][]
+  size: number
+  path: string[]
+}
+export function initVisual(input: Input): VisualState {
+  return {
+    nodes: [
+      ...Array.from({ length: input.left }, (_, i) => ({
+        id: `L${i}`,
+        label: `T${i}`,
+        partition: 'left' as const,
+      })),
+      ...Array.from({ length: input.right }, (_, i) => ({
+        id: `R${i}`,
+        label: `P${i}`,
+        partition: 'right' as const,
+      })),
+    ],
+    edges: input.edges.map(([a, b]) => ({ from: `L${a}`, to: `R${b}` })),
+    pairs: [],
+    size: 0,
+    path: [],
+    note: '',
+  }
+}
+export const legend = { 'Cạnh được ghép': 'Nét đậm', 'Đường tăng': 'Đang xét' }
+export const limits = { maxInputSize: 25, maxSteps: 5000, maxBytes: 6000000 }
+export function syncPairs(input: Input, pairs: [number, number][], d: VisualState) {
+  d.pairs = pairs.map((p) => [...p] as [number, number])
+  d.size = pairs.length
+  d.edges.forEach((e) => {
+    e.role = pairs.some(([a, b]) => e.from === `L${a}` && e.to === `R${b}`) ? 'tree' : undefined
+  })
+  d.note = `Đã ghép ${pairs.length} cặp.`
+  void input
+}

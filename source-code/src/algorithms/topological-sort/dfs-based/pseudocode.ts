@@ -1,1 +1,9 @@
-export const pseudocode=[{id:'init',text:'Tạo danh sách kề và bậc vào',indent:0},{id:'source',text:'Tìm các đỉnh nguồn',indent:0},{id:'emit',text:'Lấy một đỉnh nguồn vào kết quả',indent:1},{id:'remove',text:'Xóa cạnh đi ra và cập nhật bậc vào',indent:1},{id:'visit',text:'DFS vào một đỉnh chưa xét',indent:0},{id:'finish',text:'Ghi đỉnh khi DFS hoàn tất',indent:1},{id:'done',text:'Trả thứ tự tô pô',indent:0}];
+export const pseudocode = [
+  { id: 'init', text: 'Tạo danh sách kề và bậc vào', indent: 0 },
+  { id: 'source', text: 'Tìm các đỉnh nguồn', indent: 0 },
+  { id: 'emit', text: 'Lấy một đỉnh nguồn vào kết quả', indent: 1 },
+  { id: 'remove', text: 'Xóa cạnh đi ra và cập nhật bậc vào', indent: 1 },
+  { id: 'visit', text: 'DFS vào một đỉnh chưa xét', indent: 0 },
+  { id: 'finish', text: 'Ghi đỉnh khi DFS hoàn tất', indent: 1 },
+  { id: 'done', text: 'Trả thứ tự tô pô', indent: 0 },
+]

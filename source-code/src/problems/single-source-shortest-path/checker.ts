@@ -1,1 +1,23 @@
-import type {Verdict} from '../../core/contracts';import {inputSchema,outputSchema,type Input,type Output} from './definition';export function reference(input:Input):(number|null)[]{const dist=Array(input.n).fill(Infinity) as number[];dist[input.source]=0;for(let pass=0;pass<input.n-1;pass++){let changed=false;for(const [a,b,w] of input.edges)if(dist[a]+w<dist[b]){dist[b]=dist[a]+w;changed=true}if(!changed)break}return dist.map(x=>Number.isFinite(x)?x:null)}export function check(input:Input,output:Output):Verdict{if(!inputSchema.safeParse(input).success)return {ok:false,reason:'Đầu vào không hợp lệ'};if(!outputSchema.safeParse(output).success)return {ok:false,reason:'Đầu ra sai định dạng'};return JSON.stringify(output.distance)===JSON.stringify(reference(input))?{ok:true}:{ok:false,reason:'Khoảng cách sai'}}
+import type { Verdict } from '../../core/contracts'
+import { inputSchema, outputSchema, type Input, type Output } from './definition'
+export function reference(input: Input): (number | null)[] {
+  const dist = Array(input.n).fill(Infinity) as number[]
+  dist[input.source] = 0
+  for (let pass = 0; pass < input.n - 1; pass++) {
+    let changed = false
+    for (const [a, b, w] of input.edges)
+      if (dist[a] + w < dist[b]) {
+        dist[b] = dist[a] + w
+        changed = true
+      }
+    if (!changed) break
+  }
+  return dist.map((x) => (Number.isFinite(x) ? x : null))
+}
+export function check(input: Input, output: Output): Verdict {
+  if (!inputSchema.safeParse(input).success) return { ok: false, reason: 'Đầu vào không hợp lệ' }
+  if (!outputSchema.safeParse(output).success) return { ok: false, reason: 'Đầu ra sai định dạng' }
+  return JSON.stringify(output.distance) === JSON.stringify(reference(input))
+    ? { ok: true }
+    : { ok: false, reason: 'Khoảng cách sai' }
+}

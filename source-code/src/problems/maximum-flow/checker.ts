@@ -1,1 +1,64 @@
-import type {Verdict} from '../../core/contracts';import {inputSchema,outputSchema,type Input,type Output} from './definition';export function reference(input:Input):number{if(input.n<=12){let best=Infinity;for(let mask=0;mask<1<<input.n;mask++)if(mask&(1<<input.source)&&!(mask&(1<<input.sink))){let cap=0;for(const [a,b,c] of input.edges)if(mask&(1<<a)&&!(mask&(1<<b)))cap+=c;best=Math.min(best,cap)}return best}const cap=Array.from({length:input.n},()=>Array(input.n).fill(0) as number[]);for(const [a,b,c] of input.edges)cap[a][b]+=c;let value=0;while(true){const parent=Array(input.n).fill(-1) as number[],q=[input.source];parent[input.source]=input.source;for(let h=0;h<q.length&&parent[input.sink]<0;h++)for(let v=0;v<input.n;v++)if(parent[v]<0&&cap[q[h]][v]>0){parent[v]=q[h];q.push(v)}if(parent[input.sink]<0)break;let delta=Infinity;for(let v=input.sink;v!==input.source;v=parent[v])delta=Math.min(delta,cap[parent[v]][v]);for(let v=input.sink;v!==input.source;v=parent[v]){cap[parent[v]][v]-=delta;cap[v][parent[v]]+=delta}value+=delta}return value}export function check(input:Input,output:Output):Verdict{if(!inputSchema.safeParse(input).success)return {ok:false,reason:'Đầu vào không hợp lệ'};if(!outputSchema.safeParse(output).success||output.flow.length!==input.edges.length)return {ok:false,reason:'Đầu ra sai định dạng'};const balance=Array(input.n).fill(0) as number[];for(let i=0;i<input.edges.length;i++){const [a,b,c]=input.edges[i],f=output.flow[i];if(f>c)return {ok:false,reason:'Luồng vượt dung lượng'};balance[a]-=f;balance[b]+=f}if(balance.some((x,i)=>i!==input.source&&i!==input.sink&&x!==0)||-balance[input.source]!==output.value||balance[input.sink]!==output.value)return {ok:false,reason:'Vi phạm bảo toàn luồng'};const best=reference(input);return {ok:true,optimal:output.value===best,score:output.value,ratio:best?output.value/best:1}}
+import type { Verdict } from '../../core/contracts'
+import { inputSchema, outputSchema, type Input, type Output } from './definition'
+export function reference(input: Input): number {
+  if (input.n <= 12) {
+    let best = Infinity
+    for (let mask = 0; mask < 1 << input.n; mask++)
+      if (mask & (1 << input.source) && !(mask & (1 << input.sink))) {
+        let cap = 0
+        for (const [a, b, c] of input.edges) if (mask & (1 << a) && !(mask & (1 << b))) cap += c
+        best = Math.min(best, cap)
+      }
+    return best
+  }
+  const cap = Array.from({ length: input.n }, () => Array(input.n).fill(0) as number[])
+  for (const [a, b, c] of input.edges) cap[a][b] += c
+  let value = 0
+  while (true) {
+    const parent = Array(input.n).fill(-1) as number[],
+      q = [input.source]
+    parent[input.source] = input.source
+    for (let h = 0; h < q.length && parent[input.sink] < 0; h++)
+      for (let v = 0; v < input.n; v++)
+        if (parent[v] < 0 && cap[q[h]][v] > 0) {
+          parent[v] = q[h]
+          q.push(v)
+        }
+    if (parent[input.sink] < 0) break
+    let delta = Infinity
+    for (let v = input.sink; v !== input.source; v = parent[v])
+      delta = Math.min(delta, cap[parent[v]][v])
+    for (let v = input.sink; v !== input.source; v = parent[v]) {
+      cap[parent[v]][v] -= delta
+      cap[v][parent[v]] += delta
+    }
+    value += delta
+  }
+  return value
+}
+export function check(input: Input, output: Output): Verdict {
+  if (!inputSchema.safeParse(input).success) return { ok: false, reason: 'Đầu vào không hợp lệ' }
+  if (!outputSchema.safeParse(output).success || output.flow.length !== input.edges.length)
+    return { ok: false, reason: 'Đầu ra sai định dạng' }
+  const balance = Array(input.n).fill(0) as number[]
+  for (let i = 0; i < input.edges.length; i++) {
+    const [a, b, c] = input.edges[i],
+      f = output.flow[i]
+    if (f > c) return { ok: false, reason: 'Luồng vượt dung lượng' }
+    balance[a] -= f
+    balance[b] += f
+  }
+  if (
+    balance.some((x, i) => i !== input.source && i !== input.sink && x !== 0) ||
+    -balance[input.source] !== output.value ||
+    balance[input.sink] !== output.value
+  )
+    return { ok: false, reason: 'Vi phạm bảo toàn luồng' }
+  const best = reference(input)
+  return {
+    ok: true,
+    optimal: output.value === best,
+    score: output.value,
+    ratio: best ? output.value / best : 1,
+  }
+}

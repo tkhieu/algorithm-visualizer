@@ -1,1 +1,28 @@
-import {z} from 'zod';export const inputSchema=z.object({men:z.array(z.array(z.number().int())).min(1).max(20),women:z.array(z.array(z.number().int())).min(1).max(20)}).superRefine((v,ctx)=>{const n=v.men.length,valid=(row:number[])=>row.length===n&&new Set(row).size===n&&row.every(x=>x>=0&&x<n);if(v.women.length!==n||!v.men.every(valid)||!v.women.every(valid))ctx.addIssue({code:'custom',message:'Mỗi hàng phải là hoán vị của 0..n−1 và hai phía cùng kích thước'})});export const outputSchema=z.object({wifeOfMen:z.array(z.number().int().nonnegative())});export type Input=z.infer<typeof inputSchema>;export type Output=z.infer<typeof outputSchema>;export const statement='Cho n nam và n nữ, mỗi người xếp hạng đầy đủ người phía kia từ thích nhất đến ít thích nhất. Tìm ghép cặp bền vững: không tồn tại nam và nữ cùng thích nhau hơn bạn đời hiện tại. Ví dụ: n=1 cho [0]; khi cả hai nam thích nữ 0, nữ 0 chọn người cô thích hơn.';export const constraints=['1 ≤ n ≤ 20','Mỗi danh sách ưu tiên là hoán vị 0..n−1','Hai phía có cùng n người'];
+import { z } from 'zod'
+export const inputSchema = z
+  .object({
+    men: z.array(z.array(z.number().int())).min(1).max(20),
+    women: z.array(z.array(z.number().int())).min(1).max(20),
+  })
+  .superRefine((v, ctx) => {
+    const n = v.men.length,
+      valid = (row: number[]) =>
+        row.length === n && new Set(row).size === n && row.every((x) => x >= 0 && x < n)
+    if (v.women.length !== n || !v.men.every(valid) || !v.women.every(valid))
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Mỗi hàng phải là hoán vị của 0..n−1 và hai phía cùng kích thước',
+      })
+  })
+export const outputSchema = z.object({ wifeOfMen: z.array(z.number().int().nonnegative()) })
+export type Input = z.infer<typeof inputSchema>
+export type Output = z.infer<typeof outputSchema>
+export const statement =
+  'Cho n nam và n nữ, mỗi người xếp hạng đầy đủ người phía kia từ thích nhất đến ít thích nhất. ' +
+  'Tìm ghép cặp bền vững: không tồn tại nam và nữ cùng thích nhau hơn bạn đời hiện tại. Ví dụ: n=1 ' +
+  'cho [0]; khi cả hai nam thích nữ 0, nữ 0 chọn người cô thích hơn.'
+export const constraints = [
+  '1 ≤ n ≤ 20',
+  'Mỗi danh sách ưu tiên là hoán vị 0..n−1',
+  'Hai phía có cùng n người',
+]

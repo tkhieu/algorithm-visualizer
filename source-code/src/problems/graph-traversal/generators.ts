@@ -1,2 +1,11 @@
-import type {SizeClass} from '../../core/contracts';import {rng} from '../../lib/random';import type {Input} from './definition';
-export function generate(seed:number,size:SizeClass):Input{const r=rng(seed),n={tiny:4,small:7,medium:14,large:30}[size];const edges:[number,number][]=[];for(let a=0;a<n;a++)for(let b=0;b<n;b++)if(a!==b&&r()<0.16)edges.push([a,b]);return {n,edges:edges.slice(0,300),start:Math.floor(r()*n)}}
+import type { SizeClass } from '../../core/contracts'
+import { rng } from '../../lib/random'
+import type { Input } from './definition'
+export function generate(seed: number, size: SizeClass): Input {
+  const r = rng(seed),
+    n = { tiny: 4, small: 7, medium: 14, large: 30 }[size]
+  const edges: [number, number][] = []
+  for (let a = 0; a < n; a++)
+    for (let b = 0; b < n; b++) if (a !== b && r() < 0.16) edges.push([a, b])
+  return { n, edges: edges.slice(0, 300), start: Math.floor(r() * n) }
+}

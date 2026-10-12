@@ -1,1 +1,23 @@
-import type {Algorithm} from '../../../core/contracts';import type {Input,Output} from '../../../problems/transitive-closure/definition';import {initVisual,limits,type VisualState} from '../shared';import {run} from './run';import {pseudocode} from './pseudocode';import {legend} from './legend';export const algorithm:Algorithm<Input,Output,VisualState>={id:'transitive-closure/dfs-each-vertex',problemId:'transitive-closure',title:'DFS từ mỗi đỉnh',chapter:3,section:'3.5',page:122,technique:'brute-force',exactness:'exact',complexity:{time:'O(V(V+E))',space:'O(V²)'},views:['matrix','graph'],pseudocode,legend,traceLimit:limits,initVisual,run};
+import type { Algorithm } from '../../../core/contracts'
+import type { Input, Output } from '../../../problems/transitive-closure/definition'
+import { initVisual, limits, type VisualState } from '../shared'
+import { run } from './run'
+import { pseudocode } from './pseudocode'
+import { legend } from './legend'
+export const algorithm: Algorithm<Input, Output, VisualState> = {
+  id: 'transitive-closure/dfs-each-vertex',
+  problemId: 'transitive-closure',
+  title: 'DFS từ mỗi đỉnh',
+  chapter: 3,
+  section: '3.5',
+  page: 122,
+  technique: 'brute-force',
+  exactness: 'exact',
+  complexity: { time: 'O(V(V+E))', space: 'O(V²)' },
+  views: ['matrix', 'graph'],
+  pseudocode,
+  legend,
+  traceLimit: limits,
+  initVisual,
+  run,
+}

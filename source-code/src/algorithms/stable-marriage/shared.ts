@@ -1,2 +1,109 @@
-import type {RunContext} from '../../core/contracts';import type {Input,Output} from '../../problems/stable-marriage/definition';import type {SequenceVisualState} from '../../visualizers/sequence';import type {BoardVisualState} from '../../visualizers/board';export interface VisualState extends SequenceVisualState,BoardVisualState{wifeOfMen:number[];free:number[];proposals:number;menPreferences:number[][];womenPreferences:number[][]}export function initVisual(input:Input):VisualState{const n=input.men.length;return {items:Array.from({length:n},(_,i)=>({label:`Nam ${i}: chưa ghép`})),rows:n,cols:n,marks:[],wifeOfMen:Array(n).fill(-1),menPreferences:input.men.map(row=>[...row]),womenPreferences:input.women.map(row=>[...row]),free:Array.from({length:n},(_,i)=>i),proposals:0,note:''}}export function runMarriage(input:Input,{rec,signal}:RunContext<VisualState>,proposer:'men'|'women'):Output{const n=input.men.length,pref=proposer==='men'?input.men:input.women,receiverPref=proposer==='men'?input.women:input.men,rank=receiverPref.map(row=>{const r=Array(n).fill(0) as number[];row.forEach((x,i)=>r[x]=i);return r}),partner=Array(n).fill(-1) as number[],next=Array(n).fill(0) as number[],free=Array.from({length:n},(_,i)=>i);let proposals=0;function wives():number[]{const result=Array(n).fill(-1) as number[];if(proposer==='men')partner.forEach((m,w)=>{if(m>=0)result[m]=w});else partner.forEach((w,m)=>{if(w>=0)result[m]=w});return result}rec.step('init',`Mọi ${proposer==='men'?'nam':'nữ'} ban đầu đều tự do.`,d=>{d.note='Bắt đầu Gale–Shapley.'});while(free.length){if(signal.aborted)throw new DOMException('Đã hủy','AbortError');const p=free.shift()!,r=pref[p][next[p]++];proposals++;rec.count('visit');rec.step('propose',`${proposer==='men'?'Nam':'Nữ'} ${p} đề xuất với ${proposer==='men'?'nữ':'nam'} ${r}.`,d=>{d.proposals=proposals;d.free=[...free];d.note=`Đề xuất ${p}→${r}`});const old=partner[r];if(old<0){partner[r]=p}else if(rank[r][p]<rank[r][old]){partner[r]=p;free.push(old)}else free.push(p);const w=wives();rec.step('decide',old<0?`Người ${r} còn tự do và chấp nhận ${p}.`:partner[r]===p?`Người ${r} chọn ${p}, từ chối ${old}.`:`Người ${r} từ chối ${p}, giữ ${old}.`,d=>{d.wifeOfMen=[...w];d.free=[...free];d.items=w.map((v,i)=>({label:`Nam ${i}: ${v<0?'chưa ghép':`nữ ${v}`}`}));d.marks=w.flatMap((v,i)=>v<0?[]:[{row:i,col:v,role:'chosen',label:'✓'}]);d.note=`Đã có ${n-free.length} cặp tạm thời.`})}const wifeOfMen=wives();rec.step('done',`Hoàn tất ${n} cặp bền vững sau ${proposals} đề xuất.`,d=>{d.wifeOfMen=[...wifeOfMen];d.free=[];d.note='Hoàn tất ghép cặp bền vững.'});return {wifeOfMen}}
-export const legend={'Cặp đang ghép':'Ô đen','Người tự do':'Chưa ghép'};export const limits={maxInputSize:20,maxSteps:2500,maxBytes:5000000};
+import type { RunContext } from '../../core/contracts'
+import type { Input, Output } from '../../problems/stable-marriage/definition'
+import type { SequenceVisualState } from '../../visualizers/sequence'
+import type { BoardVisualState } from '../../visualizers/board'
+export interface VisualState extends SequenceVisualState, BoardVisualState {
+  wifeOfMen: number[]
+  free: number[]
+  proposals: number
+  menPreferences: number[][]
+  womenPreferences: number[][]
+}
+export function initVisual(input: Input): VisualState {
+  const n = input.men.length
+  return {
+    items: Array.from({ length: n }, (_, i) => ({ label: `Nam ${i}: chưa ghép` })),
+    rows: n,
+    cols: n,
+    marks: [],
+    wifeOfMen: Array(n).fill(-1),
+    menPreferences: input.men.map((row) => [...row]),
+    womenPreferences: input.women.map((row) => [...row]),
+    free: Array.from({ length: n }, (_, i) => i),
+    proposals: 0,
+    note: '',
+  }
+}
+export function runMarriage(
+  input: Input,
+  { rec, signal }: RunContext<VisualState>,
+  proposer: 'men' | 'women',
+): Output {
+  const n = input.men.length,
+    pref = proposer === 'men' ? input.men : input.women,
+    receiverPref = proposer === 'men' ? input.women : input.men,
+    rank = receiverPref.map((row) => {
+      const r = Array(n).fill(0) as number[]
+      row.forEach((x, i) => (r[x] = i))
+      return r
+    }),
+    partner = Array(n).fill(-1) as number[],
+    next = Array(n).fill(0) as number[],
+    free = Array.from({ length: n }, (_, i) => i)
+  let proposals = 0
+  function wives(): number[] {
+    const result = Array(n).fill(-1) as number[]
+    if (proposer === 'men')
+      partner.forEach((m, w) => {
+        if (m >= 0) result[m] = w
+      })
+    else
+      partner.forEach((w, m) => {
+        if (w >= 0) result[m] = w
+      })
+    return result
+  }
+  rec.step('init', `Mọi ${proposer === 'men' ? 'nam' : 'nữ'} ban đầu đều tự do.`, (d) => {
+    d.note = 'Bắt đầu Gale–Shapley.'
+  })
+  while (free.length) {
+    if (signal.aborted) throw new DOMException('Đã hủy', 'AbortError')
+    const p = free.shift()!,
+      r = pref[p][next[p]++]
+    proposals++
+    rec.count('visit')
+    rec.step(
+      'propose',
+      `${proposer === 'men' ? 'Nam' : 'Nữ'} ${p} đề xuất với ${proposer === 'men' ? 'nữ' : 'nam'} ${r}.`,
+      (d) => {
+        d.proposals = proposals
+        d.free = [...free]
+        d.note = `Đề xuất ${p}→${r}`
+      },
+    )
+    const old = partner[r]
+    if (old < 0) {
+      partner[r] = p
+    } else if (rank[r][p] < rank[r][old]) {
+      partner[r] = p
+      free.push(old)
+    } else free.push(p)
+    const w = wives()
+    rec.step(
+      'decide',
+      old < 0
+        ? `Người ${r} còn tự do và chấp nhận ${p}.`
+        : partner[r] === p
+          ? `Người ${r} chọn ${p}, từ chối ${old}.`
+          : `Người ${r} từ chối ${p}, giữ ${old}.`,
+      (d) => {
+        d.wifeOfMen = [...w]
+        d.free = [...free]
+        d.items = w.map((v, i) => ({ label: `Nam ${i}: ${v < 0 ? 'chưa ghép' : `nữ ${v}`}` }))
+        d.marks = w.flatMap((v, i) =>
+          v < 0 ? [] : [{ row: i, col: v, role: 'chosen', label: '✓' }],
+        )
+        d.note = `Đã có ${n - free.length} cặp tạm thời.`
+      },
+    )
+  }
+  const wifeOfMen = wives()
+  rec.step('done', `Hoàn tất ${n} cặp bền vững sau ${proposals} đề xuất.`, (d) => {
+    d.wifeOfMen = [...wifeOfMen]
+    d.free = []
+    d.note = 'Hoàn tất ghép cặp bền vững.'
+  })
+  return { wifeOfMen }
+}
+export const legend = { 'Cặp đang ghép': 'Ô đen', 'Người tự do': 'Chưa ghép' }
+export const limits = { maxInputSize: 20, maxSteps: 2500, maxBytes: 5000000 }

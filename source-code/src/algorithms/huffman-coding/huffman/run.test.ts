@@ -1,3 +1,60 @@
-import {it,expect} from 'vitest';import {algorithm} from './index';import {generate} from '../../../problems/huffman-coding/generators';import {optimum,check} from '../../../problems/huffman-coding/checker';import {MetricsRecorder,TraceRecorder} from '../../../core/recorder';import {TraceStore} from '../../../core/trace/TraceStore';it(`${algorithm.id}: mã seed, trace, tiếng Việt`,()=>{for(let seed=1;seed<=40;seed++){const input=generate(seed,'small'),output=algorithm.run(input,{rec:new MetricsRecorder(),signal:new AbortController().signal});expect(check(input,output).ok).toBe(true);if(algorithm.id.endsWith('/huffman'))expect(output.weightedBits).toBe(optimum(input))}const input=generate(5,'tiny'),initial=algorithm.initVisual(input),rec=new TraceRecorder(initial,new Set(algorithm.pseudocode.map(p=>p.id)),algorithm.traceLimit),output=algorithm.run(input,{rec,signal:new AbortController().signal}),store=new TraceStore(initial);rec.steps.forEach(s=>store.append(s));expect(store.seek(store.length).codes).toEqual(output.codes);expect(store.current.weightedBits).toBe(output.weightedBits);expect(rec.steps.some(s=>s.explain.includes('ký hiệu')||s.explain.includes('nút'))).toBe(true)});
+import { it, expect } from 'vitest'
+import { algorithm } from './index'
+import { generate } from '../../../problems/huffman-coding/generators'
+import { optimum, check } from '../../../problems/huffman-coding/checker'
+import { MetricsRecorder, TraceRecorder } from '../../../core/recorder'
+import { TraceStore } from '../../../core/trace/TraceStore'
+it(`${algorithm.id}: mã seed, trace, tiếng Việt`, () => {
+  for (let seed = 1; seed <= 40; seed++) {
+    const input = generate(seed, 'small'),
+      output = algorithm.run(input, {
+        rec: new MetricsRecorder(),
+        signal: new AbortController().signal,
+      })
+    expect(check(input, output).ok).toBe(true)
+    if (algorithm.id.endsWith('/huffman')) expect(output.weightedBits).toBe(optimum(input))
+  }
+  const input = generate(5, 'tiny'),
+    initial = algorithm.initVisual(input),
+    rec = new TraceRecorder(
+      initial,
+      new Set(algorithm.pseudocode.map((p) => p.id)),
+      algorithm.traceLimit,
+    ),
+    output = algorithm.run(input, { rec, signal: new AbortController().signal }),
+    store = new TraceStore(initial)
+  rec.steps.forEach((s) => store.append(s))
+  expect(store.seek(store.length).codes).toEqual(output.codes)
+  expect(store.current.weightedBits).toBe(output.weightedBits)
+  expect(rec.steps.some((s) => s.explain.includes('ký hiệu') || s.explain.includes('nút'))).toBe(
+    true,
+  )
+})
 
-it('Huffman đạt chi phí nhỏ nhất theo chia tập ký hiệu',()=>{for(let seed=1;seed<=35;seed++){const input=generate(seed,'tiny'),n=input.symbols.length,memo=new Map<number,number>();function brute(mask:number):number{if((mask&(mask-1))===0)return 0;const cached=memo.get(mask);if(cached!==undefined)return cached;const weight=input.symbols.reduce((sum,item,i)=>sum+(mask&(1<<i)?item.frequency:0),0);let best=Infinity;for(let sub=(mask-1)&mask;sub;sub=(sub-1)&mask){const other=mask^sub;if(other)best=Math.min(best,brute(sub)+brute(other)+weight)}memo.set(mask,best);return best}expect(algorithm.run(input,{rec:new MetricsRecorder(),signal:new AbortController().signal}).weightedBits).toBe(brute((1<<n)-1))}});
+it('Huffman đạt chi phí nhỏ nhất theo chia tập ký hiệu', () => {
+  for (let seed = 1; seed <= 35; seed++) {
+    const input = generate(seed, 'tiny'),
+      n = input.symbols.length,
+      memo = new Map<number, number>()
+    function brute(mask: number): number {
+      if ((mask & (mask - 1)) === 0) return 0
+      const cached = memo.get(mask)
+      if (cached !== undefined) return cached
+      const weight = input.symbols.reduce(
+        (sum, item, i) => sum + (mask & (1 << i) ? item.frequency : 0),
+        0,
+      )
+      let best = Infinity
+      for (let sub = (mask - 1) & mask; sub; sub = (sub - 1) & mask) {
+        const other = mask ^ sub
+        if (other) best = Math.min(best, brute(sub) + brute(other) + weight)
+      }
+      memo.set(mask, best)
+      return best
+    }
+    expect(
+      algorithm.run(input, { rec: new MetricsRecorder(), signal: new AbortController().signal })
+        .weightedBits,
+    ).toBe(brute((1 << n) - 1))
+  }
+})

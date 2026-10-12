@@ -1,1 +1,27 @@
-import type {Verdict} from '../../core/contracts';import {inputSchema,outputSchema,type Input,type Output} from './definition';export function optimum(input:Input):number{const q=input.symbols.map(s=>s.frequency);if(q.length===1)return q[0];let total=0;while(q.length>1){q.sort((a,b)=>a-b);const x=q.shift()!+q.shift()!;total+=x;q.push(x)}return total}export function check(input:Input,output:Output):Verdict{if(!inputSchema.safeParse(input).success)return {ok:false,reason:'Đầu vào không hợp lệ'};if(!outputSchema.safeParse(output).success||output.codes.length!==input.symbols.length)return {ok:false,reason:'Đầu ra sai định dạng'};for(let i=0;i<output.codes.length;i++)for(let j=0;j<output.codes.length;j++)if(i!==j&&output.codes[j].startsWith(output.codes[i]))return {ok:false,reason:'Mã không thỏa tiền tố'};const bits=output.codes.reduce((s,c,i)=>s+c.length*input.symbols[i].frequency,0);if(bits!==output.weightedBits)return {ok:false,reason:'Số bit không khớp'};const best=optimum(input);return {ok:true,optimal:bits===best,score:bits,ratio:best/bits}}
+import type { Verdict } from '../../core/contracts'
+import { inputSchema, outputSchema, type Input, type Output } from './definition'
+export function optimum(input: Input): number {
+  const q = input.symbols.map((s) => s.frequency)
+  if (q.length === 1) return q[0]
+  let total = 0
+  while (q.length > 1) {
+    q.sort((a, b) => a - b)
+    const x = q.shift()! + q.shift()!
+    total += x
+    q.push(x)
+  }
+  return total
+}
+export function check(input: Input, output: Output): Verdict {
+  if (!inputSchema.safeParse(input).success) return { ok: false, reason: 'Đầu vào không hợp lệ' }
+  if (!outputSchema.safeParse(output).success || output.codes.length !== input.symbols.length)
+    return { ok: false, reason: 'Đầu ra sai định dạng' }
+  for (let i = 0; i < output.codes.length; i++)
+    for (let j = 0; j < output.codes.length; j++)
+      if (i !== j && output.codes[j].startsWith(output.codes[i]))
+        return { ok: false, reason: 'Mã không thỏa tiền tố' }
+  const bits = output.codes.reduce((s, c, i) => s + c.length * input.symbols[i].frequency, 0)
+  if (bits !== output.weightedBits) return { ok: false, reason: 'Số bit không khớp' }
+  const best = optimum(input)
+  return { ok: true, optimal: bits === best, score: bits, ratio: best / bits }
+}

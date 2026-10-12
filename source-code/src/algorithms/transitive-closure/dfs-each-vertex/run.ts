@@ -1,1 +1,44 @@
-import type {RunContext} from '../../../core/contracts';import type {Input,Output} from '../../../problems/transitive-closure/definition';import {initVisual,type VisualState} from '../shared';export function run(input:Input,{rec,signal}:RunContext<VisualState>):Output{const adj=Array.from({length:input.n},()=>[] as number[]);for(const [a,b] of input.edges)adj[a].push(b);const reachable=initVisual(input).reachable;rec.step('init','Chuẩn bị duyệt DFS từ từng đỉnh.',d=>{d.note='Bắt đầu DFS.'});for(let s=0;s<input.n;s++){const seen=Array(input.n).fill(false) as boolean[],stack=[s];seen[s]=true;while(stack.length){if(signal.aborted)throw new DOMException('Đã hủy','AbortError');const v=stack.pop()!;rec.count('visit');for(const w of adj[v])if(!seen[w]){seen[w]=true;stack.push(w);reachable[s][w]=true;rec.step('discover',`Từ ${s} đến được ${w} qua ${v}.`,d=>{d.reachable[s][w]=true;d.matrix[s][w]=1;d.current={i:s,w};d.note=`Nguồn ${s}`},[{target:`${s}-${w}`,role:'current'}])}}}rec.step('done','Hoàn tất ma trận đường đi bằng DFS.',d=>{d.reachable=reachable.map(row=>[...row]);d.matrix=reachable.map(row=>row.map(x=>x?1:0));d.note='Hoàn tất.'});return {reachable}}
+import type { RunContext } from '../../../core/contracts'
+import type { Input, Output } from '../../../problems/transitive-closure/definition'
+import { initVisual, type VisualState } from '../shared'
+export function run(input: Input, { rec, signal }: RunContext<VisualState>): Output {
+  const adj = Array.from({ length: input.n }, () => [] as number[])
+  for (const [a, b] of input.edges) adj[a].push(b)
+  const reachable = initVisual(input).reachable
+  rec.step('init', 'Chuẩn bị duyệt DFS từ từng đỉnh.', (d) => {
+    d.note = 'Bắt đầu DFS.'
+  })
+  for (let s = 0; s < input.n; s++) {
+    const seen = Array(input.n).fill(false) as boolean[],
+      stack = [s]
+    seen[s] = true
+    while (stack.length) {
+      if (signal.aborted) throw new DOMException('Đã hủy', 'AbortError')
+      const v = stack.pop()!
+      rec.count('visit')
+      for (const w of adj[v])
+        if (!seen[w]) {
+          seen[w] = true
+          stack.push(w)
+          reachable[s][w] = true
+          rec.step(
+            'discover',
+            `Từ ${s} đến được ${w} qua ${v}.`,
+            (d) => {
+              d.reachable[s][w] = true
+              d.matrix[s][w] = 1
+              d.current = { i: s, w }
+              d.note = `Nguồn ${s}`
+            },
+            [{ target: `${s}-${w}`, role: 'current' }],
+          )
+        }
+    }
+  }
+  rec.step('done', 'Hoàn tất ma trận đường đi bằng DFS.', (d) => {
+    d.reachable = reachable.map((row) => [...row])
+    d.matrix = reachable.map((row) => row.map((x) => (x ? 1 : 0)))
+    d.note = 'Hoàn tất.'
+  })
+  return { reachable }
+}

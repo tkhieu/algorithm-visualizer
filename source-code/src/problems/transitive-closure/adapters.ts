@@ -1,1 +1,7 @@
-import type {ComparisonAdapter} from '../../core/contracts';import type {Input,Output} from './definition';export const adapter:ComparisonAdapter<Input,Output>={problemId:'transitive-closure',project:(_i,o)=>o.reachable,metrics:[{id:'ms',label:'Thời gian',better:'lower'}]};
+import type { ComparisonAdapter } from '../../core/contracts'
+import type { Input, Output } from './definition'
+export const adapter: ComparisonAdapter<Input, Output> = {
+  problemId: 'transitive-closure',
+  project: (_i, o) => o.reachable,
+  metrics: [{ id: 'ms', label: 'Thời gian', better: 'lower' }],
+}

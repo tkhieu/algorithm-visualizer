@@ -1,1 +1,6 @@
-import type {RunContext} from '../../../core/contracts';import type {Input,Output} from '../../../problems/stable-marriage/definition';import {runMarriage,type VisualState} from '../shared';export function run(input:Input,ctx:RunContext<VisualState>):Output{return runMarriage(input,ctx,'women')}
+import type { RunContext } from '../../../core/contracts'
+import type { Input, Output } from '../../../problems/stable-marriage/definition'
+import { runMarriage, type VisualState } from '../shared'
+export function run(input: Input, ctx: RunContext<VisualState>): Output {
+  return runMarriage(input, ctx, 'women')
+}

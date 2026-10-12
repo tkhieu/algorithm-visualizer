@@ -1,1 +1,27 @@
-import type {RunContext} from '../../../core/contracts';import type {Input,Output} from '../../../problems/huffman-coding/definition';import type {VisualState} from '../shared';export function run(input:Input,{rec,signal}:RunContext<VisualState>):Output{const width=Math.max(1,Math.ceil(Math.log2(input.symbols.length))),codes:string[]=[];rec.step('init',`Dùng ${width} bit cho mỗi ký hiệu.`,d=>{d.note=`Mã cố định ${width} bit.`});for(let i=0;i<input.symbols.length;i++){if(signal.aborted)throw new DOMException('Đã hủy','AbortError');codes.push(i.toString(2).padStart(width,'0'));rec.count('assign');rec.step('assign',`Gán ký hiệu ${input.symbols[i].label} mã ${codes[i]}.`,d=>{d.codes[i]=codes[i];d.nodes[i].role='current';d.note=`Đã gán ${i+1} ký hiệu.`})}const weightedBits=codes.reduce((s,c,i)=>s+c.length*input.symbols[i].frequency,0);rec.step('done',`Mã độ dài cố định dùng ${weightedBits} bit có trọng số.`,d=>{d.codes=[...codes];d.weightedBits=weightedBits;d.note='Hoàn tất mã cố định.'});return {codes,weightedBits}}
+import type { RunContext } from '../../../core/contracts'
+import type { Input, Output } from '../../../problems/huffman-coding/definition'
+import type { VisualState } from '../shared'
+export function run(input: Input, { rec, signal }: RunContext<VisualState>): Output {
+  const width = Math.max(1, Math.ceil(Math.log2(input.symbols.length))),
+    codes: string[] = []
+  rec.step('init', `Dùng ${width} bit cho mỗi ký hiệu.`, (d) => {
+    d.note = `Mã cố định ${width} bit.`
+  })
+  for (let i = 0; i < input.symbols.length; i++) {
+    if (signal.aborted) throw new DOMException('Đã hủy', 'AbortError')
+    codes.push(i.toString(2).padStart(width, '0'))
+    rec.count('assign')
+    rec.step('assign', `Gán ký hiệu ${input.symbols[i].label} mã ${codes[i]}.`, (d) => {
+      d.codes[i] = codes[i]
+      d.nodes[i].role = 'current'
+      d.note = `Đã gán ${i + 1} ký hiệu.`
+    })
+  }
+  const weightedBits = codes.reduce((s, c, i) => s + c.length * input.symbols[i].frequency, 0)
+  rec.step('done', `Mã độ dài cố định dùng ${weightedBits} bit có trọng số.`, (d) => {
+    d.codes = [...codes]
+    d.weightedBits = weightedBits
+    d.note = 'Hoàn tất mã cố định.'
+  })
+  return { codes, weightedBits }
+}

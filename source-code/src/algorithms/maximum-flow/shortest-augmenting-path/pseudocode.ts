@@ -1,1 +1,6 @@
-export const pseudocode=[{id:'init',text:'Khởi tạo mạng dư',indent:0},{id:'path',text:'Tìm đường tăng từ nguồn đến đích',indent:0},{id:'augment',text:'Tăng luồng theo nút thắt đường đi',indent:1},{id:'done',text:'Trả luồng cực đại',indent:0}];
+export const pseudocode = [
+  { id: 'init', text: 'Khởi tạo mạng dư', indent: 0 },
+  { id: 'path', text: 'Tìm đường tăng từ nguồn đến đích', indent: 0 },
+  { id: 'augment', text: 'Tăng luồng theo nút thắt đường đi', indent: 1 },
+  { id: 'done', text: 'Trả luồng cực đại', indent: 0 },
+]
