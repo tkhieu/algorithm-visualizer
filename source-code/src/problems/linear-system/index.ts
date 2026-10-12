@@ -1,0 +1,2 @@
+import type {Problem} from '../../core/contracts';import {inputSchema,outputSchema,statement,constraints,type Input,type Output} from './definition';import {generate} from './generators';import {cases} from './cases';import {check} from './checker';
+export const problem:Problem<Input,Output>={id:'linear-system',title:'Giải hệ phương trình tuyến tính',statement,inputSchema,outputSchema,constraints,generate,cases,check};

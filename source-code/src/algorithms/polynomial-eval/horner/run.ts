@@ -1,0 +1,2 @@
+import type {RunContext} from '../../../core/contracts';import type {Input,Output} from '../../../problems/polynomial-eval/definition';import {record,finish,type VisualState} from '../shared';
+export function run({coefficients,x}:Input,{rec,signal}:RunContext<VisualState>):Output{let value=0;for(let i=coefficients.length-1;i>=0;i--){if(signal.aborted)throw new Error('Đã huỷ');value=value*x+coefficients[i];rec.count('assign');record(rec,`Horner: nhân tích lũy với ${x}, cộng a[${i}]=${coefficients[i]} → ${value}.`,value)}return finish(rec,value)}

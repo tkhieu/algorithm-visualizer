@@ -1,0 +1,1 @@
+export const pseudocode=[{"id": "upper", "text": "Tính hàng của U", "indent": 0}, {"id": "lower", "text": "Tính cột của L", "indent": 0}, {"id": "forward", "text": "Giải Ly=b bằng thế xuôi", "indent": 0}, {"id": "backward", "text": "Giải Ux=y bằng thế ngược", "indent": 0}, {"id": "done", "text": "Trả về vector nghiệm", "indent": 0}];
