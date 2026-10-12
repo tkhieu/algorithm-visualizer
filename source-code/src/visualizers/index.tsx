@@ -18,9 +18,12 @@ import {BoardView,type BoardVisualState} from './board';
  * thành `unknown` ở biên nên việc ép kiểu ở đây là có chủ đích; xem docs/adding-an-algorithm.md.
  */
 export function Visualizer({kind,state,input,compact=false}:{kind:VisualKind;state:unknown;input?:unknown;compact?:boolean}){
- // A route can render once with the previous player's selected view before its reset effect runs.
- // Keep that transient frame harmless when the new algorithm has a different state shape.
- if(!compatible(kind,state))return <p className="muted">Đang chuyển dạng trực quan…</p>;
+ // A route can briefly retain the previous view while its new algorithm loads.
+ if(!compatible(kind,state,input)){
+  const fallback=visualKinds.find(view=>compatible(view,state,input));
+  if(!fallback)return <p className="muted">Đang chuyển dạng trực quan…</p>;
+  kind=fallback;
+ }
  switch(kind){
   case 'matrix':return <MatrixView state={state as MatrixVisualState} input={input as MatrixInput} compact={compact}/>;
   case 'state-space-tree':{
@@ -43,17 +46,27 @@ export function Visualizer({kind,state,input,compact=false}:{kind:VisualKind;sta
  }
 }
 
-function compatible(kind:VisualKind,state:unknown):boolean{
+const visualKinds:VisualKind[]=[
+ 'matrix','array-bars','graph','state-space-tree','tree','items','sequence',
+ 'string-align','numeric-plot','points-2d','hash-table','board',
+];
+
+function compatible(kind:VisualKind,state:unknown,input?:unknown):boolean{
  if(!state||typeof state!=='object')return false;
  const value=state as Record<string,unknown>;
+ const inputValue=(input??{}) as Record<string,unknown>;
  switch(kind){
   case 'matrix':return Array.isArray(value.matrix);
-  case 'state-space-tree':case 'tree':return Array.isArray(value.nodes);
-  case 'items':case 'sequence':return Array.isArray(value.items);
+  case 'state-space-tree':return Array.isArray(value.nodes)&&!Array.isArray(value.edges)&&
+   (value.nodes.length===0||typeof value.nodes[0]?.id==='number');
+  case 'tree':return Array.isArray(value.nodes)&&!Array.isArray(value.edges)&&
+   (value.nodes.length===0||typeof value.nodes[0]?.id==='string');
+  case 'items':return Array.isArray(value.items)&&Array.isArray(inputValue.items);
+  case 'sequence':return Array.isArray(value.items);
   case 'array-bars':return Array.isArray(value.values);
   case 'graph':return Array.isArray(value.nodes)&&Array.isArray(value.edges);
   case 'string-align':return typeof value.text==='string'&&typeof value.pattern==='string';
-  case 'points-2d':return Array.isArray(value.points);
+  case 'points-2d':return Array.isArray(value.points)&&!Array.isArray(value.samples);
   case 'numeric-plot':return Array.isArray(value.domain)&&Array.isArray(value.samples);
   case 'hash-table':return Array.isArray(value.buckets);
   case 'board':return typeof value.rows==='number'&&Array.isArray(value.marks);

@@ -1,0 +1,25 @@
+import type { Verdict } from '../../core/contracts';
+import { inputSchema, outputSchema, type Input, type Output } from './definition';
+export function reference({ piles }: Input): boolean {
+  return piles.reduce((xor, x) => xor ^ x, 0) !== 0;
+}
+export function check(input: Input, output: Output): Verdict {
+  if (!inputSchema.safeParse(input).success) return { ok: false, reason: 'Đầu vào không hợp lệ' };
+  if (!outputSchema.safeParse(output).success) return { ok: false, reason: 'Đầu ra sai định dạng' };
+  const winning = reference(input);
+  if (output.winning !== winning) return { ok: false, reason: 'Đánh giá thế thắng sai' };
+  if (!winning)
+    return output.pile === -1 && output.remove === 0
+      ? { ok: true }
+      : { ok: false, reason: 'Thế thua không có nước thắng' };
+  if (
+    output.pile >= input.piles.length ||
+    output.remove < 1 ||
+    output.remove > input.piles[output.pile]
+  )
+    return { ok: false, reason: 'Nước đi không hợp lệ' };
+  const after = input.piles.map((v, i) => (i === output.pile ? v - output.remove : v));
+  return after.reduce((xor, x) => xor ^ x, 0) === 0
+    ? { ok: true }
+    : { ok: false, reason: 'Nước đi không đưa về thế thua' };
+}

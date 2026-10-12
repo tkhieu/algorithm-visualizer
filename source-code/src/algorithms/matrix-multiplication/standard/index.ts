@@ -1,0 +1,23 @@
+import type { Algorithm } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/matrix-multiplication/definition';
+import { initVisual, type VisualState } from '../shared';
+import { run } from './run';
+import { pseudocode } from './pseudocode';
+import { legend } from './legend';
+export const algorithm: Algorithm<Input, Output, VisualState> = {
+  id: 'matrix-multiplication/standard',
+  problemId: 'matrix-multiplication',
+  title: 'Nhân ma trận thông thường',
+  chapter: 5,
+  section: '5.4',
+  page: 186,
+  technique: 'brute-force',
+  exactness: 'exact',
+  complexity: { time: 'O(n³)', space: 'O(n²)' },
+  views: ['matrix'],
+  pseudocode,
+  legend,
+  traceLimit: { maxInputSize: 4, maxSteps: 10000, maxBytes: 20000000 },
+  initVisual,
+  run
+};

@@ -1,0 +1,36 @@
+import type { RunContext } from '../../../core/contracts';
+import type { Input, Output } from '../../../problems/multiplication/definition';
+import { record, finish, type VisualState } from '../shared';
+export function run({ a, b }: Input, { rec, signal }: RunContext<VisualState>): Output {
+  function multiply(x: bigint, y: bigint): bigint {
+    if (signal.aborted) throw new Error('Đã huỷ');
+    rec.count('recurse');
+    if (x < 10n || y < 10n) {
+      const result = x * y;
+      record(rec, 'base', `Nhân trực tiếp ${x} × ${y} = ${result}.`, result.toString());
+      return result;
+    }
+    const digits = Math.max(x.toString().length, y.toString().length);
+    const m = Math.floor(digits / 2),
+      power = 10n ** BigInt(m);
+    const highX = x / power,
+      lowX = x % power,
+      highY = y / power,
+      lowY = y % power;
+    record(
+      rec,
+      'split',
+      `Tách ${x}, ${y} theo ${m} chữ số cuối.`,
+      `${highX}|${lowX}; ${highY}|${lowY}`
+    );
+    // Tích chéo được suy ra từ tích tổng, nên chỉ cần ba phép nhân đệ quy.
+    const z0 = multiply(lowX, lowY),
+      z2 = multiply(highX, highY),
+      z1 = multiply(lowX + highX, lowY + highY) - z0 - z2;
+    const result = z2 * power * power + z1 * power + z0;
+    rec.count('assign');
+    record(rec, 'combine', `Ghép ba tích con để được ${result}.`, result.toString());
+    return result;
+  }
+  return finish(rec, multiply(BigInt(a), BigInt(b)).toString());
+}
