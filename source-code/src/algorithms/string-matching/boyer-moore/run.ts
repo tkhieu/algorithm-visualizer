@@ -2,7 +2,10 @@ import type { RunContext } from '../../../core/contracts';
 import type { Input, Output } from '../../../problems/string-matching/definition';
 import { assertActive, pack, type VisualState } from '../shared';
 
-// Strong good-suffix preprocessing: shift[j + 1] applies after a mismatch at j.
+// Bảng hậu tố tốt "mạnh" (strong good-suffix), dựng bằng border của pattern đảo — khác với
+// bảng d2 trong giáo trình Levitin (chỉ dựa trên hậu tố khớp dài nhất, không xét border): bảng
+// mạnh cho dịch chuyển lớn hơn hoặc bằng d2 trong mọi trường hợp. shift[j + 1] áp dụng sau khi
+// mismatch tại vị trí j.
 export function goodSuffixShifts(pattern: string): number[] {
   const m = pattern.length;
   const shift = new Array<number>(m + 1).fill(0);
