@@ -1,5 +1,6 @@
 import { it, expect } from 'vitest';
 import { algorithm } from './index';
+import { algorithm as simulation } from '../simulation';
 import { generate } from '../../../problems/josephus/generators';
 import { reference } from '../../../problems/josephus/checker';
 import { MetricsRecorder, TraceRecorder } from '../../../core/recorder';
@@ -13,6 +14,12 @@ it('đúng với dữ liệu có seed và trace tua lại đến kết quả', (
       signal: new AbortController().signal
     });
     expect(output.survivor).toBe(expected);
+    // Direct elimination is independent of the recurrence used by this algorithm.
+    const simulated = simulation.run(input, {
+      rec: new MetricsRecorder(),
+      signal: new AbortController().signal
+    });
+    expect(output.survivor).toBe(simulated.survivor);
     const initial = algorithm.initVisual(input);
     const rec = new TraceRecorder(
       initial,

@@ -1,6 +1,7 @@
 import { it, expect } from 'vitest';
 import { algorithm } from './index';
 import { generate } from '../../../problems/root-finding/generators';
+import { f } from '../../../problems/root-finding/definition';
 import { check, reference } from '../../../problems/root-finding/checker';
 import { MetricsRecorder, TraceRecorder } from '../../../core/recorder';
 import { TraceStore } from '../../../core/trace/TraceStore';
@@ -14,6 +15,11 @@ it('đúng với dữ liệu có seed và trace tua lại đến kết quả', (
     });
     expect(check(input, output).ok).toBe(true);
     expect(Math.abs(output.root - expected)).toBeLessThanOrEqual(input.tolerance);
+    // f is strictly increasing, so these signs independently bound the root error.
+    expect(output.root).toBeGreaterThanOrEqual(input.left);
+    expect(output.root).toBeLessThanOrEqual(input.right);
+    expect(f(output.root - input.tolerance, input.c, input.d)).toBeLessThanOrEqual(0);
+    expect(f(output.root + input.tolerance, input.c, input.d)).toBeGreaterThanOrEqual(0);
     const initial = algorithm.initVisual(input);
     const rec = new TraceRecorder(
       initial,

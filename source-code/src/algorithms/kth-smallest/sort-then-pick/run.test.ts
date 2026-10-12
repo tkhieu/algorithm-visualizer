@@ -13,6 +13,11 @@ it('đúng với dữ liệu có seed và trace tua lại đến kết quả', (
       signal: new AbortController().signal
     });
     expect(output.value).toBe(expected);
+    // Rank counts characterize the kth value without sorting the input.
+    const smaller = input.values.filter((value) => value < output.value).length;
+    const atMost = input.values.filter((value) => value <= output.value).length;
+    expect(smaller).toBeLessThan(input.k);
+    expect(atMost).toBeGreaterThanOrEqual(input.k);
     const initial = algorithm.initVisual(input);
     const rec = new TraceRecorder(
       initial,
