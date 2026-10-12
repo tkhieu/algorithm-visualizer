@@ -108,7 +108,7 @@ function LoadedComparePage({problemId,problem}:{problemId:string;problem:AnyProb
    const state=l.trace.seek(Math.min(l.cursor,l.trace.length));
    return <Card key={l.id}><CardHeader><CardTitle>{a.title}</CardTitle></CardHeader><CardContent>
     <p className="text-sm muted">{a.exactness==='exact'?'Chính xác':a.exactness==='approximate'?'Xấp xỉ':'Thực nghiệm'} · {a.complexity.time}</p>
-    <div data-testid={`lane-${l.id}`} className="my-3 min-h-40">{valid?<Visualizer kind={a.views[0]} state={state} input={valid} compact/>:null}</div>
+    <div data-testid={`lane-${l.id}`} data-status={l.result?l.result.status:'running'} className="my-3 min-h-40">{valid?<Visualizer kind={a.views[0]} state={state} input={valid} compact/>:null}</div>
     <input aria-label={`Bước ${a.title}`} type="range" min="0" max={l.trace.length} value={l.cursor} onChange={e=>setCursor(l.id,Number(e.target.value))}/>
     <p className="text-sm">Bước {l.cursor}/{l.trace.length} · {l.trace.steps[l.cursor-1]?.phase||'—'}</p>
     <p>{l.result?.status==='ok'?`Giá trị ${problem.objective?problem.objective.score(valid!,l.result.output):'—'}`:l.result?.status==='not-applicable'?`Không áp dụng: ${l.result.reason}`:l.result?.status==='timeout'?'Hết thời gian':l.result?.status==='error'?l.result.message:'Đang chờ'}</p>
@@ -119,7 +119,7 @@ function LoadedComparePage({problemId,problem}:{problemId:string;problem:AnyProb
    const a=problemAlgos.find(x=>x.id.endsWith(`/${l.id}`));
    const value=r?.status==='ok'&&valid&&problem.objective?problem.objective.score(valid,r.output):null;
    const projected=r?.status==='ok'&&valid&&adapter?adapter.project(valid,r.output,query):undefined;
-   return <tr key={l.id}><td>{a?.title}</td><td>{a?.exactness==='exact'?'Chính xác':a?.exactness==='approximate'?'Xấp xỉ':'Thực nghiệm'}</td><td>{value??'—'}</td><td>{r?.status==='ok'&&r.verdict.ok?(r.verdict.optimal?'Có':r.verdict.optimal===false?'Không':'—'):'—'}</td><td>{r?.status==='ok'&&r.verdict.ok&&r.verdict.ratio!==undefined?`${(r.verdict.ratio*100).toFixed(1)}%`:'—'}</td><td>{l.trace.length}</td><td>{r?.status==='ok'?Object.values(r.counters).reduce((a,b)=>a+b,0):'—'}</td><td>{l.medianMs.toFixed(2)}</td><td><code>{projected===undefined?'—':JSON.stringify(projected)}</code></td></tr>;
+   return <tr key={l.id} data-testid={`result-row-${l.id}`}><td>{a?.title}</td><td>{a?.exactness==='exact'?'Chính xác':a?.exactness==='approximate'?'Xấp xỉ':'Thực nghiệm'}</td><td>{value??'—'}</td><td>{r?.status==='ok'&&r.verdict.ok?(r.verdict.optimal?'Có':r.verdict.optimal===false?'Không':'—'):'—'}</td><td>{r?.status==='ok'&&r.verdict.ok&&r.verdict.ratio!==undefined?`${(r.verdict.ratio*100).toFixed(1)}%`:'—'}</td><td>{l.trace.length}</td><td>{r?.status==='ok'?Object.values(r.counters).reduce((a,b)=>a+b,0):'—'}</td><td>{l.medianMs.toFixed(2)}</td><td><code>{projected===undefined?'—':JSON.stringify(projected)}</code></td></tr>;
   })}</tbody></table></div></CardContent></Card>
   <Card><CardHeader><CardTitle>Thời gian theo kích thước n</CardTitle></CardHeader><CardContent>
    <Button variant="outline" onClick={benchmark}>Đo hiệu năng theo n</Button>

@@ -28,6 +28,10 @@ function LoadedTestcasePage({problemId,problem}:{problemId:string;problem:AnyPro
  const readyAlgos=algorithms.filter(a=>a.problemId===problemId&&a.status==='ready');
  // Ưu tiên một thuật toán chính xác KHÔNG phải vét cạn/quay lui/nhánh cận làm chuẩn đối chiếu,
  // vì các kỹ thuật đó có thể quá chậm trên ca dữ liệu lớn (ví dụ vét cạn 2ⁿ trên cỡ 'large').
+ // Khi mọi lựa chọn chính xác đều "chậm" (ví dụ TSP: chỉ vét cạn/nhánh cận là chính xác), các
+ // problem đó phải tự calibrate cỡ 'large' trong generators.ts để thuật toán được chọn (phần tử
+ // đầu theo thứ tự khai báo) chạy xong trong vài chục ms — không dựa vào nhánh cận vì thời gian
+ // của nó phụ thuộc dữ liệu (worst-case vẫn O(2ⁿ)), không đoán trước được cho mọi seed.
  const slowTechniques=new Set(['brute-force','backtracking','branch-and-bound']);
  const referenceAlgo=
   readyAlgos.find(a=>a.exactness==='exact'&&!slowTechniques.has(a.technique))??
@@ -74,7 +78,7 @@ function LoadedTestcasePage({problemId,problem}:{problemId:string;problem:AnyPro
    <Button onClick={runAll} disabled={running}>{running?'Đang chạy…':'Chạy tất cả'}</Button>
    <Button variant="outline" disabled={!rows.length} onClick={()=>download('ket-qua-testcase.json',JSON.stringify(exportRows,null,2),'application/json')}>Xuất JSON</Button>
    <Button variant="outline" disabled={!rows.length} onClick={()=>download('ket-qua-testcase.csv',['id,nhom,dat,ms,ghi_chu',...exportRows.map(r=>`${r.id},${r.group},${r.pass},${r.ms},"${r.message}"`)].join('\n'),'text/csv')}>Xuất CSV</Button>
-   <span data-testid="pass-count" className="self-center font-semibold">Đạt {pass}/{rows.length}</span>
+   <span data-testid="pass-count" data-status={running?'running':rows.length?'done':'idle'} className="self-center font-semibold">Đạt {pass}/{rows.length}</span>
   </div>
   {(Object.keys(groupNames)).map(group=><Card key={group}><CardHeader><CardTitle>{groupNames[group]}</CardTitle></CardHeader><CardContent><div className="overflow-auto"><table className="data-table"><thead><tr><th>Ca kiểm thử</th><th>Kỳ vọng</th><th>Kết quả</th><th>Trung vị ms</th><th>Chi tiết</th></tr></thead><tbody>{cases.filter(c=>c.group===group).map(c=>{
    const row=rows.find(r=>r.id===c.id);

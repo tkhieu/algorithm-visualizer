@@ -135,7 +135,7 @@ function LoadedPlayerPage({problemId,algoId,problem,algo}:{problemId:string;algo
      {ui.InputEditor?<ui.InputEditor input={input} onChange={setInput} disabled={running}/>:<InputEditor problem={problem} input={input} onChange={setInput} disabled={running}/>}
      <div className="flex gap-2 mt-3"><Button onClick={run} disabled={!valid||running}>Chạy</Button>{running&&<Button variant="outline" onClick={()=>cancel.current?.()}><Square size={14}/> Dừng</Button>}</div>
     </CardContent></Card>
-    <Card><CardHeader><CardTitle>Kết quả</CardTitle></CardHeader><CardContent data-testid="output">
+    <Card><CardHeader><CardTitle>Kết quả</CardTitle></CardHeader><CardContent data-testid="output" data-status={running?'running':result?result.status:'idle'}>
      {result?.status==='ok'?(ui.OutputRenderer?<ui.OutputRenderer input={valid} output={result.output} verdict={result.verdict} truncated={result.truncated}/>:<OutputPanel output={result.output} verdict={result.verdict} truncated={result.truncated}/>)
       :result?<p>{result.status==='invalid-input'?result.issues.join('; '):result.status==='not-applicable'?`Không áp dụng: ${result.reason}`:result.status==='timeout'?'Hết thời gian chạy':result.status==='cancelled'?'Đã dừng':result.status==='error'?result.message:'Không thể chạy'}</p>
       :<p className="muted">Chạy thuật toán để xem kết quả.</p>}
