@@ -1,0 +1,49 @@
+import type { TestCase } from '../../core/contracts'
+import type { Input } from './definition'
+import { generate } from './generators'
+export const cases: TestCase<Input>[] = [
+  {
+    id: 'normal',
+    name: 'Bốn ký hiệu',
+    group: 'normal',
+    input: {
+      symbols: [
+        { label: 'A', frequency: 5 },
+        { label: 'B', frequency: 7 },
+        { label: 'C', frequency: 10 },
+        { label: 'D', frequency: 15 },
+      ],
+    },
+  },
+  {
+    id: 'edge',
+    name: 'Một ký hiệu',
+    group: 'edge',
+    input: { symbols: [{ label: 'A', frequency: 5 }] },
+  },
+  { id: 'small', name: 'Ít ký hiệu', group: 'small', input: generate(3, 'tiny') },
+  { id: 'large', name: 'Nhiều ký hiệu', group: 'large', input: generate(8, 'large') },
+  {
+    id: 'special',
+    name: 'Tần suất bằng nhau',
+    group: 'special',
+    input: {
+      symbols: [
+        { label: 'A', frequency: 1 },
+        { label: 'B', frequency: 1 },
+        { label: 'C', frequency: 1 },
+      ],
+    },
+  },
+  {
+    id: 'invalid',
+    name: 'Ký hiệu trùng',
+    group: 'invalid',
+    input: {
+      symbols: [
+        { label: 'A', frequency: 1 },
+        { label: 'A', frequency: 2 },
+      ],
+    },
+  },
+]

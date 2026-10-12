@@ -1,0 +1,46 @@
+import type { TestCase } from '../../core/contracts'
+import type { Input } from './definition'
+import { generate } from './generators'
+export const cases: TestCase<Input>[] = [
+  {
+    id: 'normal',
+    name: 'Thứ tự công việc',
+    group: 'normal',
+    input: {
+      n: 4,
+      edges: [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [2, 3],
+      ],
+    },
+  },
+  { id: 'edge', name: 'Không có cạnh', group: 'edge', input: { n: 3, edges: [] } },
+  { id: 'small', name: 'DAG nhỏ', group: 'small', input: generate(2, 'tiny') },
+  { id: 'large', name: 'DAG lớn', group: 'large', input: generate(4, 'large') },
+  {
+    id: 'special',
+    name: 'Nhiều nguồn',
+    group: 'special',
+    input: {
+      n: 4,
+      edges: [
+        [1, 3],
+        [2, 3],
+      ],
+    },
+  },
+  {
+    id: 'invalid',
+    name: 'Có chu trình',
+    group: 'invalid',
+    input: {
+      n: 2,
+      edges: [
+        [0, 1],
+        [1, 0],
+      ],
+    },
+  },
+]

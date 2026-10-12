@@ -1,0 +1,7 @@
+import type { ComparisonAdapter } from '../../core/contracts'
+import type { Input, Output } from './definition'
+export const adapter: ComparisonAdapter<Input, Output> = {
+  problemId: 'all-pairs-shortest-path',
+  project: (_i, o) => o.distance,
+  metrics: [{ id: 'ms', label: 'Thời gian', better: 'lower' }],
+}

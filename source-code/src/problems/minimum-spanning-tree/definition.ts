@@ -1,0 +1,40 @@
+import { z } from 'zod'
+export const inputSchema = z
+  .object({
+    n: z.number().int().min(1).max(60),
+    edges: z
+      .array(z.tuple([z.number().int(), z.number().int(), z.number().int().min(1).max(100)]))
+      .max(400),
+  })
+  .superRefine((v, ctx) => {
+    if (v.edges.some(([a, b]) => a < 0 || b < 0 || a >= v.n || b >= v.n || a === b)) {
+      ctx.addIssue({ code: 'custom', message: 'Cạnh không hợp lệ' })
+      return
+    }
+    const seen = new Set([0]),
+      queue = [0]
+    for (let i = 0; i < queue.length; i++)
+      for (const [a, b] of v.edges) {
+        const w = a === queue[i] ? b : b === queue[i] ? a : -1
+        if (w >= 0 && !seen.has(w)) {
+          seen.add(w)
+          queue.push(w)
+        }
+      }
+    if (seen.size !== v.n) ctx.addIssue({ code: 'custom', message: 'Đồ thị phải liên thông' })
+  })
+export const outputSchema = z.object({
+  edgeIndices: z.array(z.number().int()),
+  weight: z.number().nonnegative(),
+})
+export type Input = z.infer<typeof inputSchema>
+export type Output = z.infer<typeof outputSchema>
+export const statement =
+  'Cho đồ thị vô hướng liên thông có trọng số dương. Chọn n−1 cạnh tạo cây khung có tổng trọng số ' +
+  'nhỏ nhất. Ví dụ: n=2 có cạnh trọng số 3 thì chọn cạnh đó; n=1 cho cây rỗng trọng số 0.'
+export const constraints = [
+  '1 ≤ n ≤ 60',
+  'Tối đa 400 cạnh',
+  'Trọng số từ 1 đến 100',
+  'Đồ thị liên thông',
+]

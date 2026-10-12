@@ -111,7 +111,7 @@ function LoadedComparePage({problemId,problem}:{problemId:string;problem:AnyProb
     <div data-testid={`lane-${l.id}`} className="my-3 min-h-40">{valid?<Visualizer kind={a.views[0]} state={state} input={valid} compact/>:null}</div>
     <input aria-label={`Bước ${a.title}`} type="range" min="0" max={l.trace.length} value={l.cursor} onChange={e=>setCursor(l.id,Number(e.target.value))}/>
     <p className="text-sm">Bước {l.cursor}/{l.trace.length} · {l.trace.steps[l.cursor-1]?.phase||'—'}</p>
-    <p>{l.result?.status==='ok'?`Giá trị ${problem.objective?problem.objective.score(valid!,l.result.output):'—'}`:l.result?.status==='timeout'?'Hết thời gian':l.result?.status==='error'?l.result.message:'Đang chờ'}</p>
+    <p>{l.result?.status==='ok'?`Giá trị ${problem.objective?problem.objective.score(valid!,l.result.output):'—'}`:l.result?.status==='not-applicable'?`Không áp dụng: ${l.result.reason}`:l.result?.status==='timeout'?'Hết thời gian':l.result?.status==='error'?l.result.message:'Đang chờ'}</p>
    </CardContent></Card>;
   })}</div>
   <Card><CardHeader><CardTitle>Bảng kết quả</CardTitle></CardHeader><CardContent><div className="overflow-auto"><table className="data-table" data-testid="results-table"><thead><tr><th>Thuật toán</th><th>Loại</th><th>Giá trị</th><th>Tối ưu?</th><th>Tỷ lệ</th><th>Bước</th><th>Phép toán</th><th>Trung vị ms</th><th>Kết quả chung</th></tr></thead><tbody>{lanes.map(l=>{

@@ -1,0 +1,37 @@
+import type { RunContext } from '../../../core/contracts'
+import type { Input, Output } from '../../../problems/all-pairs-shortest-path/definition'
+import { initVisual, type VisualState } from '../shared'
+export function run(input: Input, { rec, signal }: RunContext<VisualState>): Output {
+  const dist = initVisual(input).distance.map((row) => row.map((x) => x ?? Infinity))
+  rec.step('init', 'Khởi tạo khoảng cách trực tiếp và đường đi độ dài 0.', (d) => {
+    d.note = 'Bắt đầu Floyd.'
+  })
+  for (let k = 0; k < input.n; k++)
+    for (let i = 0; i < input.n; i++)
+      for (let j = 0; j < input.n; j++) {
+        if (signal.aborted) throw new DOMException('Đã hủy', 'AbortError')
+        rec.count('compare')
+        if (dist[i][k] + dist[k][j] < dist[i][j]) {
+          dist[i][j] = dist[i][k] + dist[k][j]
+          rec.count('relax')
+          rec.step(
+            'via',
+            `Đường ${i}→${j} qua ${k} ngắn hơn: ${dist[i][j]}.`,
+            (d) => {
+              d.distance[i][j] = dist[i][j]
+              d.matrix[i][j] = dist[i][j]
+              d.current = { i, w: j }
+              d.note = `Trung gian ${k}`
+            },
+            [{ target: `${i}-${j}`, role: 'current' }],
+          )
+        }
+      }
+  const distance = dist.map((row) => row.map((x) => (Number.isFinite(x) ? x : null)))
+  rec.step('done', 'Hoàn tất mọi cặp đường đi ngắn nhất.', (d) => {
+    d.distance = distance
+    d.matrix = distance.map((row) => row.map((x) => x ?? '∞'))
+    d.note = 'Hoàn tất.'
+  })
+  return { distance }
+}
