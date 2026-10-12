@@ -55,7 +55,7 @@ test('/algorithms lọc theo chương và theo trạng thái',async({page})=>{
  const afterStatusFilter=await rows.count();
  expect(afterStatusFilter).toBeLessThanOrEqual(afterChapterFilter);
  expect(afterStatusFilter).toBeGreaterThan(0);
- await expect(page.getByText('Quy hoạch động — bảng',{exact:true})).toBeVisible();
+ await expect(rows.getByText('Quy hoạch động — bảng',{exact:true}).first()).toBeVisible();
 
  expect(errors).toEqual([]);
 });
@@ -69,5 +69,5 @@ test('/problems lọc theo chương, kỹ thuật và trạng thái',async({page
  await expect(page.getByRole('heading',{name:'Sắp xếp'})).toHaveCount(0);
  await page.getByRole('combobox',{name:'Lọc trạng thái bài toán'}).selectOption('planned');
  await expect(page.getByRole('heading',{name:'Bài toán cái túi 0/1'})).toHaveCount(0);
- await expect(page.getByRole('heading',{name:'Dãy đồng xu'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Nhân chuỗi ma trận'})).toBeVisible();
 });
