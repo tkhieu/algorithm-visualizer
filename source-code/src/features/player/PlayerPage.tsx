@@ -42,7 +42,10 @@ function LoadedPlayerPage({problemId,algoId,problem,algo}:{problemId:string;algo
  const [result,setResult]=useState<RunResult<unknown>|null>(null);
  const [running,setRunning]=useState(false);
  const cancel=useRef<null|(()=>void)>(null);
- const cursor=usePlayerStore(s=>s.cursor),playing=usePlayerStore(s=>s.playing),speed=usePlayerStore(s=>s.speed),view=usePlayerStore(s=>s.view),setCursor=usePlayerStore(s=>s.setCursor),setPlaying=usePlayerStore(s=>s.setPlaying),setSpeed=usePlayerStore(s=>s.setSpeed),setView=usePlayerStore(s=>s.setView),reset=usePlayerStore(s=>s.reset);
+ const cursor=usePlayerStore(s=>s.cursor),playing=usePlayerStore(s=>s.playing),speed=usePlayerStore(s=>s.speed),storeView=usePlayerStore(s=>s.view),setCursor=usePlayerStore(s=>s.setCursor),setPlaying=usePlayerStore(s=>s.setPlaying),setSpeed=usePlayerStore(s=>s.setSpeed),setView=usePlayerStore(s=>s.setView),reset=usePlayerStore(s=>s.reset);
+ // view trong store có thể còn mang giá trị của thuật toán trước (hoặc mặc định 'matrix') trong lần render đầu,
+ // trước khi effect dưới đây chạy — luôn rơi về algo.views[0] nếu view hiện tại không thuộc views của algo này.
+ const view=algo.views.includes(storeView)?storeView:algo.views[0];
  useEffect(()=>{reset(algo.views[0]);return()=>cancel.current?.()},[algo,reset]);
  const parsed=problem.inputSchema.safeParse(input);
  const valid=parsed.success?parsed.data:null;
