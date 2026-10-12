@@ -5,31 +5,52 @@ export interface VisualState {
   values: number[];
   marks: { index: number; role: Role }[];
   ranges: { from: number; to: number; role: 'sorted' | 'active' }[];
+  /** Cây đệ quy của mergesort: mỗi lần gọi mergeSort(lo,hi) là một đỉnh. */
+  nodes: { id: string; parent: string | null; label: string; role?: string }[];
   note: string;
 }
 export function initVisual(input: Input): VisualState {
-  return { values: [...input.values], marks: [], ranges: [], note: '' };
+  return { values: [...input.values], marks: [], ranges: [], nodes: [], note: '' };
+}
+function setRole(d: VisualState, id: string, role: string) {
+  const i = d.nodes.findIndex(n => n.id === id);
+  if (i >= 0) d.nodes[i] = { ...d.nodes[i], role };
 }
 export function run(input: Input, { rec }: RunContext<VisualState>): Output {
   const values = [...input.values];
   const n = values.length;
-  function mergeSort(lo: number, hi: number): void {
-    if (lo >= hi) return;
-    const mid = Math.floor((lo + hi) / 2);
+  if (n === 0) {
+    rec.step('done', 'Dãy rỗng — không cần sắp xếp.', () => {}, [], 'done');
+    return { sorted: [] };
+  }
+  let nextNodeId = 0;
+  function mergeSort(lo: number, hi: number, parent: string | null): string {
+    const id = String(nextNodeId++);
     rec.step(
       'divide',
-      `Chia A[${lo}..${hi}] tại giữa thành A[${lo}..${mid}] và A[${mid + 1}..${hi}].`,
+      lo === hi
+        ? `Đoạn A[${lo}..${hi}] chỉ có 1 phần tử, đã sắp.`
+        : `Chia A[${lo}..${hi}] tại giữa thành hai nửa.`,
       d => {
-        d.ranges = [
-          { from: lo, to: mid, role: 'active' },
-          { from: mid + 1, to: hi, role: 'active' },
-        ];
+        d.nodes.push({ id, parent, label: `${lo}..${hi}`, role: 'current' });
+        d.ranges = [{ from: lo, to: hi, role: 'active' }];
       },
-      [],
+      [{ target: `tree-node-${id}`, role: 'current' }],
       'divide',
     );
-    mergeSort(lo, mid);
-    mergeSort(mid + 1, hi);
+    if (lo >= hi) {
+      rec.step(
+        'merged',
+        `Đoạn A[${lo}..${hi}] là trường hợp cơ sở, không cần trộn.`,
+        d => setRole(d, id, 'done'),
+        [{ target: `tree-node-${id}`, role: 'done' }],
+        'merge',
+      );
+      return id;
+    }
+    const mid = Math.floor((lo + hi) / 2);
+    mergeSort(lo, mid, id);
+    mergeSort(mid + 1, hi, id);
     const left = values.slice(lo, mid + 1),
       right = values.slice(mid + 1, hi + 1);
     let i = 0,
@@ -107,18 +128,20 @@ export function run(input: Input, { rec }: RunContext<VisualState>): Output {
       `Đã trộn xong A[${lo}..${hi}].`,
       d => {
         d.ranges = [{ from: lo, to: hi, role: 'sorted' }];
+        setRole(d, id, 'done');
       },
-      [],
+      [{ target: `tree-node-${id}`, role: 'done' }],
       'merge',
     );
+    return id;
   }
-  mergeSort(0, n - 1);
+  mergeSort(0, n - 1, null);
   rec.step(
     'done',
     'Hoàn tất sắp xếp trộn.',
     d => {
       d.marks = [];
-      d.ranges = n > 0 ? [{ from: 0, to: n - 1, role: 'sorted' }] : [];
+      d.ranges = [{ from: 0, to: n - 1, role: 'sorted' }];
       d.note = 'Đã sắp xếp';
     },
     [],

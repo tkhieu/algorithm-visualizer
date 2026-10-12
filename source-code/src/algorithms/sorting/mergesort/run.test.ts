@@ -30,6 +30,24 @@ describe('sắp xếp trộn', () => {
     const final = store.seek(store.length);
     expect(final.values).toEqual(output.sorted);
   });
+  it('cây đệ quy trộn có đúng 2n-1 đỉnh, mỗi đỉnh là một lần gọi mergeSort(lo,hi)', () => {
+    for (const seed of [1, 2, 3, 4, 5]) {
+      const input = generate(seed, 'small');
+      const n = input.values.length;
+      const rec = new TraceRecorder(
+        algorithm.initVisual(input),
+        new Set(algorithm.pseudocode.map(l => l.id)),
+        algorithm.traceLimit,
+      );
+      algorithm.run(input, { rec, signal: new AbortController().signal });
+      const store = new TraceStore(algorithm.initVisual(input));
+      for (const step of rec.steps) store.append(step);
+      const final = store.seek(store.length);
+      expect(final.nodes.length, `seed ${seed}`).toBe(2 * n - 1);
+      expect(final.nodes.every(nd => nd.role === 'done'), `seed ${seed}`).toBe(true);
+      expect(final.nodes.filter(nd => nd.parent === null).length, `seed ${seed}`).toBe(1);
+    }
+  });
   it('bước "place" giải thích bằng tiếng Việt', () => {
     const input = { values: [3, 1, 2] };
     const rec = new TraceRecorder(

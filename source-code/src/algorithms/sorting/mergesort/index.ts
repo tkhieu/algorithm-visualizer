@@ -13,7 +13,7 @@ export const algorithm: Algorithm<Input, Output, VisualState> = {
   technique: 'divide-and-conquer',
   exactness: 'exact',
   complexity: { time: 'O(n log n)', space: 'O(n)' },
-  views: ['array-bars'],
+  views: ['array-bars', 'tree'],
   pseudocode,
   legend,
   traceLimit: { maxInputSize: 60, maxSteps: 5000, maxBytes: 2500000 },

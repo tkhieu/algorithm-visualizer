@@ -136,7 +136,7 @@ const plannedDefs:ProblemDef[]=[
   {id:'selection',title:'Sắp xếp chọn',technique:'brute-force',time:'O(n²)',space:'O(1)',status:'ready',views:['array-bars']},
   {id:'bubble',title:'Sắp xếp nổi bọt',technique:'brute-force',time:'O(n²)',space:'O(1)',status:'ready',views:['array-bars']},
   {id:'insertion',title:'Sắp xếp chèn',technique:'decrease-and-conquer',time:'O(n²)',space:'O(1)',status:'ready',views:['array-bars']},
-  {id:'mergesort',title:'Sắp xếp trộn',technique:'divide-and-conquer',time:'O(n log n)',space:'O(n)',status:'ready',views:['array-bars']},
+  {id:'mergesort',title:'Sắp xếp trộn',technique:'divide-and-conquer',time:'O(n log n)',space:'O(n)',status:'ready',views:['array-bars','tree']},
   {id:'quicksort',title:'Sắp xếp nhanh',technique:'divide-and-conquer',time:'O(n log n) TB',space:'O(log n)',status:'ready',views:['array-bars']},
   {id:'heapsort',title:'Sắp xếp vun đống',technique:'transform-and-conquer',time:'O(n log n)',space:'O(1)',status:'ready',views:['array-bars','tree']},
   {id:'counting',title:'Sắp xếp đếm phân phối',technique:'space-time-tradeoff',time:'O(n+k)',space:'O(n+k)',status:'ready',views:['array-bars']},
