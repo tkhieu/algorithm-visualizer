@@ -47,6 +47,16 @@ const graphColoringAlgorithms:AlgorithmSummary[]=[
 ];
 const graphColoringProblem:ProblemSummary={id:'graph-coloring',title:'Tô màu đồ thị (bài toán Sở thú)',status:'ready'};
 
+// --- B5: tsp (đã triển khai, status ready) — khớp 1:1 với src/algorithms/tsp/*.
+const tspAlgorithms:AlgorithmSummary[]=[
+ {id:'tsp/exhaustive',problemId:'tsp',title:'Vét cạn mọi hoán vị',chapter:3,section:'3.4',page:115,technique:'brute-force',exactness:'exact',complexity:{time:'O(n!)',space:'O(n)'},views:['points-2d','state-space-tree'],status:'ready'},
+ {id:'tsp/branch-and-bound',problemId:'tsp',title:'Nhánh cận',chapter:12,section:'12.2',page:438,technique:'branch-and-bound',exactness:'exact',complexity:{time:'O(n!) xấu nhất',space:'O(n·2ⁿ)'},views:['points-2d','state-space-tree'],status:'ready'},
+ {id:'tsp/nearest-neighbor',problemId:'tsp',title:'Láng giềng gần nhất (xấp xỉ)',chapter:12,section:'12.3',page:443,technique:'approximation',exactness:'approximate',complexity:{time:'O(n²)',space:'O(n)'},views:['points-2d','state-space-tree'],status:'ready'},
+ {id:'tsp/twice-around-tree',problemId:'tsp',title:'Hai lần cây khung (xấp xỉ)',chapter:12,section:'12.3',page:443,technique:'approximation',exactness:'approximate',complexity:{time:'O(n² log n)',space:'O(n)'},views:['points-2d','state-space-tree'],status:'ready'},
+ {id:'tsp/christofides',problemId:'tsp',title:'Christofides (xấp xỉ)',chapter:12,section:'12.3',page:443,technique:'approximation',exactness:'approximate',complexity:{time:'O(n³)',space:'O(n²)'},views:['points-2d','state-space-tree'],status:'ready'},
+];
+const tspProblem:ProblemSummary={id:'tsp',title:'Người du lịch (TSP)',status:'ready'};
+
 // --- Toàn bộ catalog còn lại (Phase B sẽ lần lượt chuyển từng dòng sang status 'ready').
 // Số mục/trang tham chiếu từ docs/levitin-thuat-toan-co-the-demo.md. Với biến thể mở rộng,
 // trang chỉ tới chủ đề gần nhất; Phase B sẽ ghi rõ nguồn riêng trong phần mô tả thuật toán.
@@ -278,13 +288,6 @@ const plannedDefs:ProblemDef[]=[
  ]},
 
  // B5 — Chương 3.4, 12.1–12.3 + bài tập mở rộng
- {id:'tsp',title:'Người du lịch (TSP)',views:['points-2d','state-space-tree'],algos:[
-  {id:'exhaustive',title:'Vét cạn mọi hoán vị',technique:'brute-force',time:'O(n!)',space:'O(n)'},
-  {id:'branch-and-bound',title:'Nhánh cận',technique:'branch-and-bound',time:'O(n!) xấu nhất',space:'O(n·2ⁿ)'},
-  {id:'nearest-neighbor',title:'Láng giềng gần nhất (xấp xỉ)',technique:'approximation',exactness:'approximate',time:'O(n²)',space:'O(n)'},
-  {id:'twice-around-tree',title:'Hai lần cây khung (xấp xỉ)',technique:'approximation',exactness:'approximate',time:'O(n² log n)',space:'O(n)'},
-  {id:'christofides',title:'Christofides (xấp xỉ)',technique:'approximation',exactness:'approximate',time:'O(n³)',space:'O(n²)'},
- ]},
  {id:'assignment',title:'Bài toán phân công',views:['board','state-space-tree'],algos:[
   {id:'exhaustive',title:'Vét cạn mọi phân công',technique:'brute-force',time:'O(n!)',space:'O(n)'},
   {id:'branch-and-bound',title:'Nhánh cận',technique:'branch-and-bound',time:'O(n!) xấu nhất',space:'O(n²)'},
@@ -314,5 +317,5 @@ const plannedAlgorithms:AlgorithmSummary[]=plannedDefs.flatMap(p=>p.algos.map(a=
 }));
 const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({id:p.id,title:p.title,status:'planned'}));
 
-export const problems:ProblemSummary[]=[knapsackProblem,nQueensProblem,hamiltonianProblem,subsetSumProblem,graphColoringProblem,...plannedProblems];
-export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...nQueensAlgorithms,...hamiltonianAlgorithms,...subsetSumAlgorithms,...graphColoringAlgorithms,...plannedAlgorithms];
+export const problems:ProblemSummary[]=[knapsackProblem,nQueensProblem,hamiltonianProblem,subsetSumProblem,graphColoringProblem,tspProblem,...plannedProblems];
+export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...nQueensAlgorithms,...hamiltonianAlgorithms,...subsetSumAlgorithms,...graphColoringAlgorithms,...tspAlgorithms,...plannedAlgorithms];
