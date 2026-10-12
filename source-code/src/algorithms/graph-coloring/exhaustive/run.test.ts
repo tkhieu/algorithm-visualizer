@@ -1,0 +1,28 @@
+import {describe,it,expect} from 'vitest';import {algorithm} from './index';import {algorithm as backtracking} from '../backtracking/index';import {MetricsRecorder,TraceRecorder} from '../../../core/recorder';import {TraceStore} from '../../../core/trace/TraceStore';import {check} from '../../../problems/graph-coloring/checker';import {generate} from '../../../problems/graph-coloring/generators';
+describe('graph-coloring/exhaustive',()=>{
+ it('khớp với quay lui trên nhiều seed cỡ nhỏ/trung',()=>{
+  for(let seed=1;seed<=40;seed++)for(const size of ['tiny','small'] as const){
+   const input=generate(seed,size);
+   const output=algorithm.run(input,{rec:new MetricsRecorder(),signal:new AbortController().signal});
+   const reference=backtracking.run(input,{rec:new MetricsRecorder(),signal:new AbortController().signal});
+   expect(check(input,output).ok,`seed ${seed} ${size}`).toBe(true);
+   expect(output.found).toBe(reference.found);
+  }
+ });
+ it('từ chối kⁿ vượt giới hạn an toàn',()=>{
+  const big={nodes:Array.from({length:10},(_,i)=>`V${i}`),edges:[],colors:10};
+  expect(()=>algorithm.run(big,{rec:new MetricsRecorder(),signal:new AbortController().signal})).toThrow();
+ });
+ it('trace tua lại đúng và khớp output cuối',()=>{
+  const input={nodes:['A','B','C'],edges:[{from:'A',to:'B'},{from:'B',to:'C'},{from:'C',to:'A'}],colors:3};
+  const rec=new TraceRecorder(algorithm.initVisual(input),new Set(algorithm.pseudocode.map(l=>l.id)),algorithm.traceLimit);
+  const output=algorithm.run(input,{rec,signal:new AbortController().signal});
+  expect(rec.truncated).toBe(false);
+  const store=new TraceStore(algorithm.initVisual(input));
+  for(const step of rec.steps)store.append(step);
+  const final=store.seek(rec.steps.length);
+  const colored=final.nodes.map(n=>n.label===undefined?null:Number(n.label));
+  expect(colored).toEqual(output.coloring);
+  expect(rec.steps.some(s=>s.explain.includes('nghiệm'))).toBe(true);
+ });
+});

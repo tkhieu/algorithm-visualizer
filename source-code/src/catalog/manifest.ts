@@ -15,6 +15,38 @@ const knapsackAlgorithms:AlgorithmSummary[]=[
 ];
 const knapsackProblem:ProblemSummary={id:'knapsack-01',title:'Bài toán cái túi 0/1',status:'ready'};
 
+// --- B5: n-queens (đã triển khai, status ready) — khớp 1:1 với src/algorithms/n-queens/*.
+const nQueensAlgorithms:AlgorithmSummary[]=[
+ {id:'n-queens/backtracking',problemId:'n-queens',title:'Quay lui',chapter:12,section:'12.1',page:425,technique:'backtracking',exactness:'exact',complexity:{time:'O(n!) xấu nhất',space:'O(n)'},views:['board','state-space-tree'],status:'ready'},
+ {id:'n-queens/exhaustive',problemId:'n-queens',title:'Vét cạn mọi cách đặt',chapter:12,section:'12.1',page:425,technique:'brute-force',exactness:'exact',complexity:{time:'O(nⁿ) xấu nhất',space:'O(n)'},views:['board','state-space-tree'],status:'ready'},
+];
+const nQueensProblem:ProblemSummary={id:'n-queens',title:'Bài toán n quân hậu',status:'ready'};
+
+// --- B5: hamiltonian-circuit (đã triển khai, status ready) — khớp 1:1 với src/algorithms/hamiltonian-circuit/*.
+const hamiltonianAlgorithms:AlgorithmSummary[]=[
+ {id:'hamiltonian-circuit/backtracking',problemId:'hamiltonian-circuit',title:'Quay lui',chapter:12,section:'12.1',page:426,technique:'backtracking',exactness:'exact',complexity:{time:'O(n!) xấu nhất',space:'O(n)'},views:['graph','state-space-tree'],status:'ready'},
+ {id:'hamiltonian-circuit/exhaustive',problemId:'hamiltonian-circuit',title:'Vét cạn mọi hoán vị',chapter:12,section:'12.1',page:426,technique:'brute-force',exactness:'exact',complexity:{time:'O(n!)',space:'O(n)'},views:['graph','state-space-tree'],status:'ready'},
+];
+const hamiltonianProblem:ProblemSummary={id:'hamiltonian-circuit',title:'Chu trình Hamilton',status:'ready'};
+
+// --- B5: subset-sum (đã triển khai, status ready) — khớp 1:1 với src/algorithms/subset-sum/*.
+const subsetSumAlgorithms:AlgorithmSummary[]=[
+ {id:'subset-sum/backtracking',problemId:'subset-sum',title:'Quay lui',chapter:12,section:'12.1',page:427,technique:'backtracking',exactness:'exact',complexity:{time:'O(2ⁿ) xấu nhất',space:'O(n)'},views:['state-space-tree','matrix'],status:'ready'},
+ {id:'subset-sum/dp',problemId:'subset-sum',title:'Quy hoạch động',chapter:12,section:'12.1',page:427,technique:'dp',exactness:'exact',complexity:{time:'O(n·S)',space:'O(n·S)'},views:['state-space-tree','matrix'],status:'ready'},
+ {id:'subset-sum/exhaustive',problemId:'subset-sum',title:'Vét cạn mọi tập con',chapter:12,section:'12.1',page:427,technique:'brute-force',exactness:'exact',complexity:{time:'O(2ⁿ)',space:'O(n)'},views:['state-space-tree','matrix'],status:'ready'},
+];
+const subsetSumProblem:ProblemSummary={id:'subset-sum',title:'Bài toán tổng tập con',status:'ready'};
+
+// --- B5: graph-coloring (đã triển khai, status ready) — khớp 1:1 với src/algorithms/graph-coloring/*.
+const graphColoringAlgorithms:AlgorithmSummary[]=[
+ {id:'graph-coloring/greedy',problemId:'graph-coloring',title:'Tham lam theo thứ tự đỉnh',chapter:12,section:'12.1',page:425,technique:'greedy',exactness:'approximate',complexity:{time:'O(V²)',space:'O(V)'},views:['graph','state-space-tree'],status:'ready'},
+ {id:'graph-coloring/welsh-powell',problemId:'graph-coloring',title:'Welsh–Powell',chapter:12,section:'12.1',page:425,technique:'greedy',exactness:'approximate',complexity:{time:'O(V²)',space:'O(V)'},views:['graph','state-space-tree'],status:'ready'},
+ {id:'graph-coloring/dsatur',problemId:'graph-coloring',title:'DSATUR (mở rộng, không có trong giáo trình)',chapter:12,section:'12.1',page:425,technique:'greedy',exactness:'approximate',complexity:{time:'O(V²)',space:'O(V)'},views:['graph','state-space-tree'],status:'ready'},
+ {id:'graph-coloring/backtracking',problemId:'graph-coloring',title:'Quay lui',chapter:12,section:'12.1',page:425,technique:'backtracking',exactness:'exact',complexity:{time:'O(kⁿ) xấu nhất',space:'O(V)'},views:['graph','state-space-tree'],status:'ready'},
+ {id:'graph-coloring/exhaustive',problemId:'graph-coloring',title:'Vét cạn mọi cách tô',chapter:12,section:'12.1',page:425,technique:'brute-force',exactness:'exact',complexity:{time:'O(kⁿ)',space:'O(V)'},views:['graph','state-space-tree'],status:'ready'},
+];
+const graphColoringProblem:ProblemSummary={id:'graph-coloring',title:'Tô màu đồ thị (bài toán Sở thú)',status:'ready'};
+
 // --- Toàn bộ catalog còn lại (Phase B sẽ lần lượt chuyển từng dòng sang status 'ready').
 // Số mục/trang tham chiếu từ docs/levitin-thuat-toan-co-the-demo.md. Với biến thể mở rộng,
 // trang chỉ tới chủ đề gần nhất; Phase B sẽ ghi rõ nguồn riêng trong phần mô tả thuật toán.
@@ -258,26 +290,6 @@ const plannedDefs:ProblemDef[]=[
   {id:'branch-and-bound',title:'Nhánh cận',technique:'branch-and-bound',time:'O(n!) xấu nhất',space:'O(n²)'},
   {id:'hungarian',title:'Thuật toán Hungary (mở rộng)',technique:'iterative-improvement',time:'O(n³)',space:'O(n²)'},
  ]},
- {id:'n-queens',title:'n quân hậu',views:['board','state-space-tree'],algos:[
-  {id:'backtracking',title:'Quay lui',technique:'backtracking',time:'O(n!) xấu nhất',space:'O(n)'},
-  {id:'exhaustive',title:'Vét cạn mọi cách đặt',technique:'brute-force',time:'O(nⁿ)',space:'O(n)'},
- ]},
- {id:'hamiltonian-circuit',title:'Chu trình Hamilton',views:['graph','state-space-tree'],algos:[
-  {id:'backtracking',title:'Quay lui',technique:'backtracking',time:'O(n!) xấu nhất',space:'O(n)'},
-  {id:'exhaustive',title:'Vét cạn mọi hoán vị',technique:'brute-force',time:'O(n!)',space:'O(n)'},
- ]},
- {id:'subset-sum',title:'Tổng tập con',views:['state-space-tree','matrix'],algos:[
-  {id:'backtracking',title:'Quay lui',technique:'backtracking',time:'O(2ⁿ) xấu nhất',space:'O(n)'},
-  {id:'dp',title:'Quy hoạch động',technique:'dp',time:'O(nS)',space:'O(nS)'},
-  {id:'exhaustive',title:'Vét cạn mọi tập con',technique:'brute-force',time:'O(2ⁿ)',space:'O(n)'},
- ]},
- {id:'graph-coloring',title:'Tô màu đồ thị (Sở thú)',views:['graph','state-space-tree'],algos:[
-  {id:'greedy',title:'Tham lam theo thứ tự đỉnh',technique:'greedy',exactness:'approximate',time:'O(V²)',space:'O(V)'},
-  {id:'welsh-powell',title:'Welsh–Powell',technique:'greedy',exactness:'approximate',time:'O(V²)',space:'O(V)'},
-  {id:'dsatur',title:'DSATUR (mở rộng)',technique:'greedy',exactness:'approximate',time:'O(V²)',space:'O(V)'},
-  {id:'backtracking',title:'Quay lui',technique:'backtracking',time:'O(kⁿ) xấu nhất',space:'O(V)'},
-  {id:'exhaustive',title:'Vét cạn mọi cách tô',technique:'brute-force',time:'O(kⁿ)',space:'O(V)'},
- ]},
  {id:'matrix-chain',title:'Nhân chuỗi ma trận',views:['matrix','tree'],algos:[
   {id:'dp',title:'Quy hoạch động — bảng',technique:'dp',time:'O(n³)',space:'O(n²)'},
   {id:'memo',title:'Quy hoạch động — có nhớ',technique:'dp',time:'O(n³)',space:'O(n²)'},
@@ -302,5 +314,5 @@ const plannedAlgorithms:AlgorithmSummary[]=plannedDefs.flatMap(p=>p.algos.map(a=
 }));
 const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({id:p.id,title:p.title,status:'planned'}));
 
-export const problems:ProblemSummary[]=[knapsackProblem,...plannedProblems];
-export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...plannedAlgorithms];
+export const problems:ProblemSummary[]=[knapsackProblem,nQueensProblem,hamiltonianProblem,subsetSumProblem,graphColoringProblem,...plannedProblems];
+export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...nQueensAlgorithms,...hamiltonianAlgorithms,...subsetSumAlgorithms,...graphColoringAlgorithms,...plannedAlgorithms];
