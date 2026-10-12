@@ -34,6 +34,34 @@ describe('sắp xếp đếm phân phối', () => {
     const final = store.seek(store.length);
     expect(final.values).toEqual(output.sorted);
   });
+  it('ổn định: giữ đúng thứ tự gốc (tag) cho các khóa bằng nhau', () => {
+    // values[1]=3 (idx 1) đứng trước values[4]=3 (idx 4); values[0]=5 (idx 0) đứng trước
+    // values[2]=5 (idx 2). Sắp xếp ổn định phải giữ đúng thứ tự tương đối này trong kết quả.
+    const input = { values: [5, 3, 5, 1, 3] };
+    const rec = new TraceRecorder(
+      algorithm.initVisual(input),
+      new Set(algorithm.pseudocode.map(l => l.id)),
+      algorithm.traceLimit,
+    );
+    const output = algorithm.run(input, { rec, signal: new AbortController().signal });
+    const store = new TraceStore(algorithm.initVisual(input));
+    for (const step of rec.steps) store.append(step);
+    const final = store.seek(store.length);
+    expect(output.sorted).toEqual([1, 3, 3, 5, 5]);
+    expect(final.tags).toEqual([3, 1, 4, 0, 2]);
+  });
+  it('bước "distribute" tích lũy đúng số phần tử nhỏ hơn hoặc bằng mỗi giá trị', () => {
+    const input = { values: [5, 3, 5, 1, 3] };
+    const rec = new TraceRecorder(
+      algorithm.initVisual(input),
+      new Set(algorithm.pseudocode.map(l => l.id)),
+      algorithm.traceLimit,
+    );
+    algorithm.run(input, { rec, signal: new AbortController().signal });
+    const distribute = rec.steps.filter(s => s.lineId === 'distribute');
+    expect(distribute.length).toBeGreaterThan(0);
+    expect(distribute.every(s => s.explain.includes('Tích lũy'))).toBe(true);
+  });
   it('bước "tally" giải thích bằng tiếng Việt', () => {
     const input = { values: [3, 1, 2] };
     const rec = new TraceRecorder(
