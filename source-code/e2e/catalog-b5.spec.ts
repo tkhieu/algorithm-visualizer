@@ -55,6 +55,7 @@ test('tsp/branch-and-bound: tua bước và đường dẫn testcases/compare m�
   await page.goto('/play/tsp/branch-and-bound');
   await page.getByRole('button', {name: 'Chạy', exact: true}).click();
   await expect(page.getByTestId('output')).not.toContainText('Không thể chạy');
+  await expect(page.getByTestId('output')).not.toHaveText('Chạy thuật toán để xem kết quả.');
   await page.getByRole('button', {name: 'Tiến bước'}).click();
   await expect(page.getByTestId('visual-state')).toHaveAttribute('data-step', '1');
 
