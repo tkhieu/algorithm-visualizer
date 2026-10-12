@@ -15,6 +15,38 @@ const knapsackAlgorithms:AlgorithmSummary[]=[
 ];
 const knapsackProblem:ProblemSummary={id:'knapsack-01',title:'Bài toán cái túi 0/1',status:'ready'};
 
+// --- B4 (chuỗi, hình học, DP mẫu, QHTT): đã triển khai, khớp 1:1 với src/algorithms/<id>/*.
+const b4Algorithms:AlgorithmSummary[]=[
+ {id:'string-matching/brute-force',problemId:'string-matching',title:'So khớp vét cạn',chapter:3,section:'3.2',page:104,technique:'brute-force',exactness:'exact',complexity:{time:'O(nm)',space:'O(1)'},views:['string-align'],status:'ready'},
+ {id:'string-matching/horspool',problemId:'string-matching',title:'Thuật toán Horspool',chapter:7,section:'7.2',page:259,technique:'space-time-tradeoff',exactness:'exact',complexity:{time:'O(nm) xấu nhất, O(n) TB',space:'O(k)'},views:['string-align'],status:'ready'},
+ {id:'string-matching/boyer-moore',problemId:'string-matching',title:'Thuật toán Boyer–Moore',chapter:7,section:'7.2',page:259,technique:'space-time-tradeoff',exactness:'exact',complexity:{time:'O(nm) xấu nhất, O(n) TB',space:'O(k)'},views:['string-align'],status:'ready'},
+ {id:'closest-pair/brute-force',problemId:'closest-pair',title:'So từng cặp điểm',chapter:5,section:'5.5',page:192,technique:'brute-force',exactness:'exact',complexity:{time:'O(n²)',space:'O(1)'},views:['points-2d'],status:'ready'},
+ {id:'closest-pair/divide-and-conquer',problemId:'closest-pair',title:'Chia để trị theo trục x',chapter:5,section:'5.5',page:192,technique:'divide-and-conquer',exactness:'exact',complexity:{time:'O(n log² n)',space:'O(n)'},views:['points-2d'],status:'ready'},
+ {id:'convex-hull/brute-force',problemId:'convex-hull',title:'Kiểm tra từng cạnh',chapter:3,section:'3.3',page:108,technique:'brute-force',exactness:'exact',complexity:{time:'O(n³)',space:'O(n)'},views:['points-2d'],status:'ready'},
+ {id:'convex-hull/quickhull',problemId:'convex-hull',title:'QuickHull',chapter:5,section:'5.5',page:192,technique:'divide-and-conquer',exactness:'exact',complexity:{time:'O(n log n) TB',space:'O(n)'},views:['points-2d'],status:'ready'},
+ {id:'coin-row/dp',problemId:'coin-row',title:'Quy hoạch động — bảng',chapter:8,section:'8.1',page:285,technique:'dp',exactness:'exact',complexity:{time:'O(n)',space:'O(n)'},views:['sequence'],status:'ready'},
+ {id:'coin-row/memo',problemId:'coin-row',title:'Quy hoạch động — có nhớ',chapter:8,section:'8.1',page:285,technique:'dp',exactness:'exact',complexity:{time:'O(n)',space:'O(n)'},views:['sequence'],status:'ready'},
+ {id:'coin-row/exhaustive',problemId:'coin-row',title:'Vét cạn đệ quy',chapter:3,section:'3.4',page:115,technique:'brute-force',exactness:'exact',complexity:{time:'O(2ⁿ)',space:'O(n)'},views:['sequence'],status:'ready'},
+ {id:'change-making/dp',problemId:'change-making',title:'Quy hoạch động',chapter:8,section:'8.1',page:285,technique:'dp',exactness:'exact',complexity:{time:'O(n·A)',space:'O(A)'},views:['matrix'],status:'ready'},
+ {id:'change-making/greedy',problemId:'change-making',title:'Tham lam (có thể sai)',chapter:8,section:'8.1',page:285,technique:'greedy',exactness:'approximate',complexity:{time:'O(n)',space:'O(1)'},views:['matrix'],status:'ready'},
+ {id:'coin-collecting/dp',problemId:'coin-collecting',title:'Quy hoạch động trên lưới',chapter:8,section:'8.1',page:285,technique:'dp',exactness:'exact',complexity:{time:'O(nm)',space:'O(nm)'},views:['board'],status:'ready'},
+ {id:'coin-collecting/exhaustive-paths',problemId:'coin-collecting',title:'Vét cạn mọi đường đi',chapter:8,section:'8.1',page:285,technique:'brute-force',exactness:'exact',complexity:{time:'O(C(n+m,n))',space:'O(n+m)'},views:['board'],status:'ready'},
+ {id:'optimal-bst/dp',problemId:'optimal-bst',title:'Quy hoạch động',chapter:8,section:'8.3',page:297,technique:'dp',exactness:'exact',complexity:{time:'O(n³)',space:'O(n²)'},views:['matrix','tree'],status:'ready'},
+ {id:'optimal-bst/exhaustive',problemId:'optimal-bst',title:'Vét cạn mọi cây',chapter:8,section:'8.3',page:297,technique:'brute-force',exactness:'exact',complexity:{time:'O(4ⁿ/n^1.5)',space:'O(n)'},views:['matrix','tree'],status:'ready'},
+ {id:'linear-programming-2d/simplex',problemId:'linear-programming-2d',title:'Thuật toán Simplex',chapter:10,section:'10.1',page:346,technique:'iterative-improvement',exactness:'exact',complexity:{time:'O(2ⁿ) xấu nhất',space:'O(n²)'},views:['numeric-plot','matrix'],status:'ready'},
+ {id:'linear-programming-2d/vertex-enumeration',problemId:'linear-programming-2d',title:'Liệt kê đỉnh miền khả thi',chapter:10,section:'10.1',page:346,technique:'brute-force',exactness:'exact',complexity:{time:'O(C(m,n))',space:'O(n)'},views:['numeric-plot','matrix'],status:'ready'},
+];
+const b4Problems:ProblemSummary[]=[
+ {id:'string-matching',title:'So khớp chuỗi',status:'ready'},
+ {id:'closest-pair',title:'Cặp điểm gần nhất',status:'ready'},
+ {id:'convex-hull',title:'Bao lồi',status:'ready'},
+ {id:'coin-row',title:'Dãy đồng xu',status:'ready'},
+ {id:'change-making',title:'Đổi tiền tối thiểu đồng xu',status:'ready'},
+ {id:'coin-collecting',title:'Gom đồng xu trên lưới',status:'ready'},
+ {id:'optimal-bst',title:'Cây tìm kiếm nhị phân tối ưu',status:'ready'},
+ {id:'linear-programming-2d',title:'Quy hoạch tuyến tính 2 chiều',status:'ready'},
+];
+
 // --- Toàn bộ catalog còn lại (Phase B sẽ lần lượt chuyển từng dòng sang status 'ready').
 // Số mục/trang tham chiếu từ docs/levitin-thuat-toan-co-the-demo.md. Với biến thể mở rộng,
 // trang chỉ tới chủ đề gần nhất; Phase B sẽ ghi rõ nguồn riêng trong phần mô tả thuật toán.
@@ -215,40 +247,6 @@ const plannedDefs:ProblemDef[]=[
  ]},
 
  // B4 — Chương 3.2, 3.3, 5.5, 7.2, 8.1, 8.3, 10.1
- {id:'string-matching',title:'So khớp chuỗi',views:['string-align'],algos:[
-  {id:'brute-force',title:'So khớp vét cạn',technique:'brute-force',time:'O(nm)',space:'O(1)'},
-  {id:'horspool',title:'Thuật toán Horspool',technique:'space-time-tradeoff',time:'O(nm) xấu nhất, O(n) TB',space:'O(k)'},
-  {id:'boyer-moore',title:'Thuật toán Boyer–Moore',technique:'space-time-tradeoff',time:'O(nm) xấu nhất, O(n) TB',space:'O(k)'},
- ]},
- {id:'closest-pair',title:'Cặp điểm gần nhất',views:['points-2d'],algos:[
-  {id:'brute-force',title:'So từng cặp điểm',technique:'brute-force',time:'O(n²)',space:'O(1)'},
-  {id:'divide-and-conquer',title:'Chia để trị theo trục x',technique:'divide-and-conquer',time:'O(n log n)',space:'O(n)'},
- ]},
- {id:'convex-hull',title:'Bao lồi',views:['points-2d'],algos:[
-  {id:'brute-force',title:'Kiểm tra từng cạnh',technique:'brute-force',time:'O(n³)',space:'O(n)'},
-  {id:'quickhull',title:'QuickHull',technique:'divide-and-conquer',time:'O(n log n) TB',space:'O(n)'},
- ]},
- {id:'coin-row',title:'Dãy đồng xu',views:['sequence'],algos:[
-  {id:'dp',title:'Quy hoạch động — bảng',technique:'dp',time:'O(n)',space:'O(n)'},
-  {id:'memo',title:'Quy hoạch động — có nhớ',technique:'dp',time:'O(n)',space:'O(n)'},
-  {id:'exhaustive',title:'Vét cạn đệ quy',technique:'brute-force',time:'O(2ⁿ)',space:'O(n)'},
- ]},
- {id:'change-making',title:'Đổi tiền tối thiểu đồng xu',views:['matrix'],algos:[
-  {id:'dp',title:'Quy hoạch động',technique:'dp',time:'O(n·A)',space:'O(A)'},
-  {id:'greedy',title:'Tham lam (có thể sai)',technique:'greedy',exactness:'approximate',time:'O(n)',space:'O(1)'},
- ]},
- {id:'coin-collecting',title:'Gom đồng xu trên lưới',views:['board'],algos:[
-  {id:'dp',title:'Quy hoạch động trên lưới',technique:'dp',time:'O(nm)',space:'O(nm)'},
-  {id:'exhaustive-paths',title:'Vét cạn mọi đường đi',technique:'brute-force',time:'O(C(n+m,n))',space:'O(n+m)'},
- ]},
- {id:'optimal-bst',title:'Cây tìm kiếm nhị phân tối ưu',views:['matrix','tree'],algos:[
-  {id:'dp',title:'Quy hoạch động',technique:'dp',time:'O(n³)',space:'O(n²)'},
-  {id:'exhaustive',title:'Vét cạn mọi cây',technique:'brute-force',time:'O(4ⁿ/n^1.5)',space:'O(n)'},
- ]},
- {id:'linear-programming-2d',title:'Quy hoạch tuyến tính 2 chiều',views:['numeric-plot','matrix'],algos:[
-  {id:'simplex',title:'Thuật toán Simplex',technique:'iterative-improvement',time:'O(2ⁿ) xấu nhất',space:'O(n²)'},
-  {id:'vertex-enumeration',title:'Liệt kê đỉnh miền khả thi',technique:'brute-force',time:'O(C(m,n))',space:'O(n)'},
- ]},
 
  // B5 — Chương 3.4, 12.1–12.3 + bài tập mở rộng
  {id:'tsp',title:'Người du lịch (TSP)',views:['points-2d','state-space-tree'],algos:[
@@ -315,5 +313,5 @@ const plannedProblems:ProblemSummary[]=plannedDefs.map(p=>({
  id:p.id,title:p.title,status:p.status??(readyB1Problems.has(p.id)?'ready':'planned'),
 }));
 
-export const problems:ProblemSummary[]=[knapsackProblem,...plannedProblems];
-export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...plannedAlgorithms];
+export const problems:ProblemSummary[]=[knapsackProblem,...b4Problems,...plannedProblems];
+export const algorithms:AlgorithmSummary[]=[...knapsackAlgorithms,...b4Algorithms,...plannedAlgorithms];
