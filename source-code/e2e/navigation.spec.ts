@@ -55,7 +55,7 @@ test('/algorithms lọc theo chương và theo trạng thái',async({page})=>{
  const afterStatusFilter=await rows.count();
  expect(afterStatusFilter).toBeLessThanOrEqual(afterChapterFilter);
  expect(afterStatusFilter).toBeGreaterThan(0);
- await expect(page.getByText('Quy hoạch động — bảng',{exact:true})).toBeVisible();
+ await expect(page.getByTestId('algo-row-knapsack-01/dp-table').getByText('Quy hoạch động — bảng',{exact:true})).toBeVisible();
 
  expect(errors).toEqual([]);
 });
