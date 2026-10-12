@@ -93,7 +93,7 @@ export function run(input: Input, { rec }: RunContext<VisualState>): Output {
       [],
       'done',
     );
-    return { unique: false, duplicate: bestValue };
+    return { unique: false, duplicate: bestValue, duplicateCount: bestCount };
   }
   rec.step(
     'done',

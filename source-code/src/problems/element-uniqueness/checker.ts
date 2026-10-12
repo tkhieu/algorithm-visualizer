@@ -14,5 +14,10 @@ export function check(input: Input, output: Output): Verdict {
       : { ok: false, reason: 'Không được báo giá trị trùng khi dãy duy nhất' };
   if (output.duplicate === null || (counts.get(output.duplicate) ?? 0) < 2)
     return { ok: false, reason: 'Giá trị trùng không hợp lệ' };
+  if (
+    output.duplicateCount !== undefined &&
+    output.duplicateCount !== (counts.get(output.duplicate) ?? 0)
+  )
+    return { ok: false, reason: 'Số lần xuất hiện không khớp dữ liệu' };
   return { ok: true };
 }

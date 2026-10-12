@@ -5,6 +5,8 @@ export const inputSchema = z.object({
 export const outputSchema = z.object({
   unique: z.boolean(),
   duplicate: z.number().int().nullable(),
+  /** Số lần `duplicate` xuất hiện trong dãy — tuỳ chọn, chỉ các thuật toán tìm mode mới báo. */
+  duplicateCount: z.number().int().min(2).optional(),
 });
 export type Input = z.infer<typeof inputSchema>;
 export type Output = z.infer<typeof outputSchema>;

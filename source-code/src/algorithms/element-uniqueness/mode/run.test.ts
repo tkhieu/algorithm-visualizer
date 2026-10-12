@@ -8,22 +8,25 @@ import type { Input } from '../../../problems/element-uniqueness/definition';
 function solve(input: Input) {
   return algorithm.run(input, { rec: new MetricsRecorder(), signal: new AbortController().signal });
 }
-function referenceMode(input: Input): { unique: boolean; duplicate: number | null } {
-  const sorted = [...input.values].sort((a, b) => a - b);
+// Tham chiếu ĐỘC LẬP với kỹ thuật của thuật toán (không sắp xếp): đếm tần suất trực tiếp bằng
+// Map, rồi chọn giá trị có tần suất lớn nhất (giá trị nhỏ nhất khi có nhiều mode bằng tần suất,
+// khớp quy tắc tie-break của thuật toán — nó quét dãy đã sắp tăng và chỉ đổi best khi dài HƠN).
+function referenceMode(
+  input: Input,
+): { unique: boolean; duplicate: number | null; duplicateCount?: number } {
+  const counts = new Map<number, number>();
+  for (const v of input.values) counts.set(v, (counts.get(v) ?? 0) + 1);
   let best: number | null = null,
-    bestCount = 0,
-    runStart = 0;
-  for (let i = 0; i <= sorted.length; i++) {
-    if (i === sorted.length || sorted[i] !== sorted[runStart]) {
-      const len = i - runStart;
-      if (len > bestCount) {
-        bestCount = len;
-        best = sorted[runStart];
-      }
-      runStart = i;
+    bestCount = 0;
+  for (const [v, c] of counts) {
+    if (best === null || c > bestCount || (c === bestCount && v < best)) {
+      best = v;
+      bestCount = c;
     }
   }
-  return bestCount >= 2 ? { unique: false, duplicate: best } : { unique: true, duplicate: null };
+  return bestCount >= 2
+    ? { unique: false, duplicate: best, duplicateCount: bestCount }
+    : { unique: true, duplicate: null };
 }
 describe('tìm mode bằng sắp xếp trước', () => {
   it('đúng kết quả mode trên 150 seed ngẫu nhiên, đối chiếu đếm tần suất trực tiếp', () => {
@@ -45,7 +48,7 @@ describe('tìm mode bằng sắp xếp trước', () => {
     const store = new TraceStore(algorithm.initVisual(input));
     for (const step of rec.steps) store.append(step);
     const final = store.seek(store.length);
-    expect(output).toEqual({ unique: false, duplicate: 2 });
+    expect(output).toEqual({ unique: false, duplicate: 2, duplicateCount: 4 });
     expect(final.marks.filter(m => m.role === 'found').length).toBe(4);
   });
   it('bước "done" giải thích mode bằng tiếng Việt', () => {
