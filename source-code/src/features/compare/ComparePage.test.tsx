@@ -1,5 +1,5 @@
 import {describe, it, expect, vi} from 'vitest';
-import {render, screen, fireEvent, waitFor} from '@testing-library/react';
+import {render, screen, fireEvent, act} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 import {z} from 'zod';
 import {opNames, type RunResult} from '../../core/contracts';
@@ -69,61 +69,88 @@ function okResult(): RunResult<unknown> {
   return {status: 'ok', output: {}, verdict: {ok: true}, counters, ms: 1, truncated: false};
 }
 
-const status=(testId:string)=>screen.getByTestId(testId).getAttribute('data-status');
-// Chờ một điều kiện tối đa `timeout`ms rồi bỏ qua nếu nó không bao giờ đúng — dùng để chứng
-// minh một vế âm (ví dụ "không bao giờ chuyển sang 'ok'") một cách xác định: nếu điều kiện có
-// xảy ra, waitFor trả về ngay (vài tick, không chờ hết timeout); nếu không, test vẫn tiếp tục
-// sau đúng khoảng timeout đó rồi assert trạng thái cuối — không phải sleep vô điều kiện.
-async function settleOrTimeout(predicate:()=>void,timeout=300){
- try{await waitFor(predicate,{timeout})}catch{/* không xảy ra trong thời gian chờ — như kỳ vọng khi đã fix */}
+const status = (testId: string) => screen.getByTestId(testId).getAttribute('data-status');
+// Mọi hành động (render, click, resolve promise đã treo) được gói trong act(async…) — React
+// tự xả hết hàng đợi microtask/effect phát sinh trước khi act() trả về, nên assert ngay sau đó
+// là đồng bộ, xác định, không cần waitFor/timeout nào (không có chờ theo thời gian thực).
+async function tick(fn: () => void) {
+  await act(async () => {
+    fn();
+  });
 }
 
 describe('ComparePage — generation token bỏ qua kết quả của lượt chạy đã bị thay thế', () => {
   it('đổi lựa chọn giữa lúc đang chạy: làn bị bỏ chọn biến mất, kết quả muộn của nó bị bỏ qua, chọn lại chạy mới sạch', async () => {
-    render(
-      <MemoryRouter initialEntries={['/compare/fake-problem']}>
-        <ComparePage problemId="fake-problem" />
-      </MemoryRouter>,
-    );
-    await screen.findByTestId('lane-slow');
+    await tick(() => {
+      render(
+        <MemoryRouter initialEntries={['/compare/fake-problem']}>
+          <ComparePage problemId="fake-problem" />
+        </MemoryRouter>,
+      );
+    });
     expect(status('lane-slow')).toBe('idle');
     expect(status('lane-fast')).toBe('idle');
 
-    fireEvent.click(screen.getByRole('button', {name: 'Chạy tất cả'}));
-    await waitFor(() => expect(status('lane-slow')).toBe('running'));
+    await tick(() => fireEvent.click(screen.getByRole('button', {name: 'Chạy tất cả'})));
+    expect(status('lane-slow')).toBe('running');
     expect(status('lane-fast')).toBe('running');
 
     const staleSlowRun = pendingRuns.get('fake-problem/slow')!;
-    pendingRuns.get('fake-problem/fast')!.resolve(okResult());
-    await waitFor(() => expect(status('lane-fast')).toBe('ok'));
+    await tick(() => pendingRuns.get('fake-problem/fast')!.resolve(okResult()));
+    expect(status('lane-fast')).toBe('ok');
 
     // Bỏ chọn Slow ngay khi lượt chạy của nó còn đang treo (chưa resolve).
-    fireEvent.click(screen.getByRole('checkbox', {name: 'Slow'}));
+    await tick(() => fireEvent.click(screen.getByRole('checkbox', {name: 'Slow'})));
     expect(screen.queryByTestId('lane-slow')).toBeNull();
     expect(cancelledIds).toContain('fake-problem/slow');
 
     // Chọn lại Slow NGAY (trước khi lượt chạy cũ resolve) — tạo một làn mới cùng id, idle, như
     // trong mô tả lỗi gốc: "kết quả muộn ghi đè lên làn đã bị xoá rồi chọn lại dưới cùng id".
-    fireEvent.click(screen.getByRole('checkbox', {name: 'Slow'}));
-    await screen.findByTestId('lane-slow');
+    await tick(() => fireEvent.click(screen.getByRole('checkbox', {name: 'Slow'})));
     expect(status('lane-slow')).toBe('idle');
 
-    // Giờ mới mô phỏng kết quả "muộn" của lượt chạy cũ (đã bị huỷ) tới — không sleep vô điều
-    // kiện, chỉ resolve thủ công promise đã treo từ trước lúc bỏ chọn, rồi chờ có điều kiện
-    // (settleOrTimeout) đủ lâu để chuỗi .then cũ (nếu không bị chặn) có cơ hội chạy hết và ghi
-    // đè làn. Nếu không có generation token, kết quả muộn này sẽ ghi đè lên làn mới (idle) vừa
-    // tạo ở trên, hiện 'ok' một cách sai lệch — settleOrTimeout sẽ bắt được điều đó ngay khi nó
-    // xảy ra; nếu được chặn đúng (đã fix), nó sẽ không bao giờ xảy ra và ta vẫn thấy 'idle'.
-    staleSlowRun.resolve(okResult());
-    await settleOrTimeout(()=>expect(status('lane-slow')).toBe('ok'));
+    // Giờ mới mô phỏng kết quả "muộn" của lượt chạy cũ (đã bị huỷ) tới, resolve thủ công promise
+    // đã treo từ trước lúc bỏ chọn — gói trong act() để xả hết chuỗi .then cũ (await
+    // task.promise → benchWorker → updateLane) nếu nó không bị chặn, rồi assert ngay, đồng bộ.
+    // Nếu không có generation token, chuỗi này sẽ ghi đè lên làn mới (idle) vừa tạo ở trên,
+    // khiến assert dưới đây thất bại (status chuyển 'ok').
+    await tick(() => staleSlowRun.resolve(okResult()));
     expect(status('lane-slow')).toBe('idle');
 
     // Chạy lại: lượt chạy mới cho Slow phải là một promise mới, độc lập khỏi lượt đã bỏ qua.
-    fireEvent.click(screen.getByRole('button', {name: 'Chạy tất cả'}));
-    await waitFor(() => expect(status('lane-slow')).toBe('running'));
+    await tick(() => fireEvent.click(screen.getByRole('button', {name: 'Chạy tất cả'})));
+    expect(status('lane-slow')).toBe('running');
     const freshSlowRun = pendingRuns.get('fake-problem/slow')!;
     expect(freshSlowRun).not.toBe(staleSlowRun);
-    freshSlowRun.resolve(okResult());
-    await waitFor(() => expect(status('lane-slow')).toBe('ok'));
+    await tick(() => freshSlowRun.resolve(okResult()));
+    expect(status('lane-slow')).toBe('ok');
+  });
+
+  it('đổi lựa chọn khi cả hai làn còn đang chạy: làn giữ lại trở về idle (không kẹt running), chạy lại thì xong', async () => {
+    await tick(() => {
+      render(
+        <MemoryRouter initialEntries={['/compare/fake-problem']}>
+          <ComparePage problemId="fake-problem" />
+        </MemoryRouter>,
+      );
+    });
+    await tick(() => fireEvent.click(screen.getByRole('button', {name: 'Chạy tất cả'})));
+    expect(status('lane-slow')).toBe('running');
+    expect(status('lane-fast')).toBe('running');
+
+    // Bỏ chọn Fast khi CẢ HAI làn còn đang chạy (chưa lane nào có result) — Fast biến mất,
+    // Slow (vẫn được chọn, vẫn running, chưa có result) phải bị đưa về idle ngay, không được
+    // kẹt ở 'running' mãi vì lượt chạy cũ của nó đã bị cancel() và kết quả (nếu tới) sẽ bị
+    // runGen chặn, nghĩa là running:true sẽ không bao giờ tự tắt nếu không reset ở đây.
+    await tick(() => fireEvent.click(screen.getByRole('checkbox', {name: 'Fast'})));
+    expect(screen.queryByTestId('lane-fast')).toBeNull();
+    expect(status('lane-slow')).toBe('idle');
+    expect(cancelledIds).toContain('fake-problem/slow');
+
+    // Chạy lại (chỉ Slow còn được chọn): phải hoàn tất được, không kẹt running mãi.
+    await tick(() => fireEvent.click(screen.getByRole('button', {name: 'Chạy tất cả'})));
+    expect(status('lane-slow')).toBe('running');
+    await tick(() => pendingRuns.get('fake-problem/slow')!.resolve(okResult()));
+    expect(status('lane-slow')).toBe('ok');
   });
 });

@@ -62,7 +62,15 @@ function LoadedComparePage({problemId,problem}:{problemId:string;problem:AnyProb
   activeCancels.current=[];
   setBusy(false);
   const currentIds=idsKey?idsKey.split(','):[];
-  setLanes(prev=>currentIds.map(id=>prev.find(l=>l.id===id)??{id,trace:null,cursor:0,result:null,medianMs:0,running:false}));
+  setLanes(prev=>currentIds.map(id=>{
+   const existing=prev.find(l=>l.id===id);
+   // Làn vẫn đang running (chưa có result) vừa bị cancel() ở trên — lượt chạy của nó không
+   // bao giờ hoàn tất nữa (kết quả, nếu tới muộn, sẽ bị runGen chặn), nên phải đưa về idle
+   // ngay, không được để running:true mãi. Làn đã có result (xong, bất kể trạng thái nào) thì
+   // giữ nguyên để đổi lựa chọn không xoá kết quả của làn chưa đổi.
+   if(existing&&!existing.running)return existing;
+   return {id,trace:null,cursor:0,result:null,medianMs:0,running:false};
+  }));
  },[idsKey]);
  const parsed=problem.inputSchema.safeParse(input);
  const valid=parsed.success?parsed.data:null;
