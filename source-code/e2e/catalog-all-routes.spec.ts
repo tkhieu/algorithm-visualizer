@@ -83,6 +83,13 @@ test.describe('smoke toàn bộ /compare/:problem (bài toán có ≥ 2 thuật 
       const errors = trackErrors(page);
       await page.goto(`/compare/${problemId}`);
       await expect(page.getByRole('heading', {level: 1})).toBeVisible();
+      // Trước khi bấm "Chạy tất cả", mọi làn đã được chọn phải hiện sẵn ở trạng thái idle —
+      // chưa dispatch run nào — không phải 'running' (xem ComparePage.tsx).
+      for (const a of algos)
+        await expect(page.getByTestId(`lane-${a.id.split('/')[1]}`), `làn ${a.id} phải idle khi mới vào trang`).toHaveAttribute(
+          'data-status',
+          'idle',
+        );
       await page.getByRole('button', {name: 'Chạy tất cả'}).click();
       await expect(page.getByTestId('results-table').locator('tbody tr')).toHaveCount(algos.length);
       for (const a of algos) {
