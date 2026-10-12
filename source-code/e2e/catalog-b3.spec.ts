@@ -1,7 +1,5 @@
 import {test,expect} from '@playwright/test';
 
-test.use({baseURL:process.env.B3_E2E_BASE_URL??'http://127.0.0.1:5173'});
-
 const algorithms:Record<string,string[]>={
  'graph-traversal':['dfs','bfs'],
  'topological-sort':['dfs-based','source-removal'],
