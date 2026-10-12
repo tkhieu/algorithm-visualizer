@@ -37,7 +37,7 @@ export function ProblemPage({problemId}:{problemId:string}){
   <div className="grid gap-3 md:grid-cols-2">{problemAlgos.map(a=><Card key={a.id}><CardHeader><CardTitle>{a.title}</CardTitle></CardHeader><CardContent>
    <p>Chương {a.chapter} · §{a.section}{a.page?` · tr. ${a.page}`:''}</p>
    <p>{a.exactness==='exact'?'Nghiệm chính xác':a.exactness==='approximate'?'Nghiệm xấp xỉ':'Nghiệm thực nghiệm'} · Thời gian {a.complexity.time} · Bộ nhớ {a.complexity.space}</p>
-   {a.status==='ready'?<Button variant="outline" className="mt-2" asChild><Link to={`/play/${problemId}/${a.id.split('/')[1]}`}>Xem từng bước</Link></Button>:<p className="muted mt-2">Sắp có</p>}
+   {a.status==='ready'?<Button variant="outline" className="mt-2" asChild><Link to={`/play/${problemId}/${a.id.split('/')[1]}`}>Chạy</Link></Button>:<p className="muted mt-2">Sắp có</p>}
   </CardContent></Card>)}</div>
  </div>;
 }
