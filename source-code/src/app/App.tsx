@@ -1,6 +1,57 @@
-import {BrowserRouter,Link,NavLink,Route,Routes,useParams} from 'react-router-dom';import {lazy,Suspense} from 'react';const CatalogPage=lazy(()=>import('../features/catalog/CatalogPage').then(m=>({default:m.CatalogPage})));const ProblemPage=lazy(()=>import('../features/catalog/ProblemPage').then(m=>({default:m.ProblemPage})));const PlayerPage=lazy(()=>import('../features/player/PlayerPage').then(m=>({default:m.PlayerPage})));const ComparePage=lazy(()=>import('../features/compare/ComparePage').then(m=>({default:m.ComparePage})));const TestcasePage=lazy(()=>import('../features/testcase-runner/TestcasePage').then(m=>({default:m.TestcasePage})));import {chapters} from '../catalog/chapters';import {techniques} from '../catalog/techniques';import {manifest as algorithms} from '../catalog/manifest';
-function Shell(){const [mode,setMode]=React.useState<'chapter'|'technique'>('chapter');return <div className="app-shell"><aside className="sidebar"><Link to="/" className="brand">CÁI TÚI <span>0/1</span></Link><p className="muted text-xs mt-1">TRỰC QUAN HÓA THUẬT TOÁN</p><div className="flex gap-1 my-5"><button className={mode==='chapter'?'selected':''} onClick={()=>setMode('chapter')}>Theo chương</button><button className={mode==='technique'?'selected':''} onClick={()=>setMode('technique')}>Theo kỹ thuật</button></div>{mode==='chapter'?chapters.map(c=><div key={c.id} className="nav-group"><NavLink to={`/chapter/${c.id}`}>Chương {c.id} · {c.name}</NavLink>{algorithms.filter(a=>a.chapter===c.id).map(a=><NavLink className="nav-sub" key={a.id} to={`/play/knapsack-01/${a.id.split('/')[1]}`}>{a.title}</NavLink>)}</div>):techniques.map(t=><div key={t.id} className="nav-group"><NavLink to={`/technique/${t.id}`}>{t.name}</NavLink>{algorithms.filter(a=>a.technique===t.id).map(a=><NavLink className="nav-sub" key={a.id} to={`/play/knapsack-01/${a.id.split('/')[1]}`}>{a.title}</NavLink>)}</div>)}<div className="nav-group mt-5"><NavLink to="/compare/knapsack-01">So sánh</NavLink><NavLink to="/testcases/knapsack-01">Ca kiểm thử</NavLink><NavLink to="/about">Giới thiệu</NavLink></div></aside><main><header className="topbar"><Link to="/">Trang chủ</Link><span>/</span><Link to="/problem/knapsack-01">Bài toán cái túi 0/1</Link></header><div className="page"><Suspense fallback={<p>Đang tải trang…</p>}><Routes><Route path="/" element={<CatalogPage/>}/><Route path="/chapter/:n" element={<CatalogPage/>}/><Route path="/technique/:t" element={<CatalogPage/>}/><Route path="/problem/:problemId" element={<ProblemPage/>}/><Route path="/play/:problemId/:algoId" element={<PlayerRoute/>}/><Route path="/compare/:problemId" element={<ComparePage/>}/><Route path="/testcases/:problemId" element={<TestcasePage/>}/><Route path="/about" element={<AboutPage/>}/></Routes></Suspense></div></main></div>}
-function PlayerRoute(){const {algoId}=useParams();return <PlayerPage key={algoId} algoId={algoId||'dp-table'}/>}
-function AboutPage(){return <div className="space-y-4"><h1>Giới thiệu</h1><p>Ứng dụng minh họa bài toán cái túi 0/1 trong môn Phân tích và thiết kế thuật toán (CS112).</p><p>Năm cách giải dựa trên Anany Levitin, <em>Introduction to the Design and Analysis of Algorithms</em>, bản 3, các mục §3.4, §8.2, §12.2 và §12.3.</p><p>Phím tắt ở trình phát: Space phát/dừng; ←/→ lùi/tiến; Shift+←/→ đổi giai đoạn; +/− đổi tốc độ.</p></div>}
-import * as React from 'react';
+import {BrowserRouter,Link,Route,Routes,useParams} from 'react-router-dom';
+import {lazy,Suspense} from 'react';
+import {Sidebar} from '../features/nav/Sidebar';
+import {CommandPalette} from '../features/nav/CommandPalette';
+import {Breadcrumbs} from '../features/nav/Breadcrumbs';
+
+const HomePage=lazy(()=>import('../features/catalog/HomePage').then(m=>({default:m.HomePage})));
+const CatalogPage=lazy(()=>import('../features/catalog/CatalogPage').then(m=>({default:m.CatalogPage})));
+const ProblemsPage=lazy(()=>import('../features/catalog/ProblemsPage').then(m=>({default:m.ProblemsPage})));
+const AlgorithmsPage=lazy(()=>import('../features/catalog/AlgorithmsPage').then(m=>({default:m.AlgorithmsPage})));
+const ProblemPage=lazy(()=>import('../features/catalog/ProblemPage').then(m=>({default:m.ProblemPage})));
+const PlayerPage=lazy(()=>import('../features/player/PlayerPage').then(m=>({default:m.PlayerPage})));
+const ComparePage=lazy(()=>import('../features/compare/ComparePage').then(m=>({default:m.ComparePage})));
+const TestcasePage=lazy(()=>import('../features/testcase-runner/TestcasePage').then(m=>({default:m.TestcasePage})));
+
+function Shell(){
+ return <div className="app-shell">
+  <Sidebar/>
+  <main>
+   <header className="topbar"><Link to="/">Trang chủ</Link><span className="muted text-xs ml-auto">Ctrl+K hoặc / để tìm kiếm</span></header>
+   <div className="page">
+    <Suspense fallback={<p>Đang tải trang…</p>}>
+     <Routes>
+      <Route path="/" element={<HomePage/>}/>
+      <Route path="/chapter/:n" element={<CatalogPage/>}/>
+      <Route path="/technique/:t" element={<CatalogPage/>}/>
+      <Route path="/problems" element={<ProblemsPage/>}/>
+      <Route path="/algorithms" element={<AlgorithmsPage/>}/>
+      <Route path="/problem/:problemId" element={<ProblemRoute/>}/>
+      <Route path="/play/:problemId/:algoId" element={<PlayerRoute/>}/>
+      <Route path="/compare/:problemId" element={<CompareRoute/>}/>
+      <Route path="/testcases/:problemId" element={<TestcaseRoute/>}/>
+      <Route path="/about" element={<AboutPage/>}/>
+     </Routes>
+    </Suspense>
+   </div>
+  </main>
+  <CommandPalette/>
+ </div>;
+}
+
+function ProblemRoute(){const {problemId}=useParams();return <ProblemPage key={problemId} problemId={problemId??''}/>}
+function PlayerRoute(){const {problemId,algoId}=useParams();return <PlayerPage key={`${problemId}/${algoId}`} problemId={problemId??''} algoId={algoId??''}/>}
+function CompareRoute(){const {problemId}=useParams();return <ComparePage key={problemId} problemId={problemId??''}/>}
+function TestcaseRoute(){const {problemId}=useParams();return <TestcasePage key={problemId} problemId={problemId??''}/>}
+
+function AboutPage(){
+ return <div className="space-y-4">
+  <Breadcrumbs items={[{label:'Trang chủ',to:'/'},{label:'Giới thiệu'}]}/>
+  <h1>Giới thiệu</h1>
+  <p>Ứng dụng minh họa toàn bộ catalog thuật toán trong môn Phân tích và thiết kế thuật toán (CS112), dựa trên Anany Levitin, <em>Introduction to the Design and Analysis of Algorithms</em>, bản 3.</p>
+  <p>Mỗi bài toán có input → từng bước → output, chế độ so sánh nhiều cách giải và bộ ca kiểm thử. Thanh bên có ba cách xếp: theo chương, theo kỹ thuật, theo bài toán. Nhấn <kbd>Ctrl</kbd>+<kbd>K</kbd> hoặc <kbd>/</kbd> để tìm kiếm nhanh.</p>
+  <p>Phím tắt ở trình phát: Space phát/dừng; ←/→ lùi/tiến; Shift+←/→ đổi giai đoạn; +/− đổi tốc độ.</p>
+ </div>;
+}
+
 export function App(){return <BrowserRouter basename={import.meta.env.BASE_URL}><Shell/></BrowserRouter>}
