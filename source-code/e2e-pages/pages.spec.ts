@@ -16,7 +16,7 @@ test('Pages build serves the catalog and a seeded DP deep link',async({page})=>{
   expect(await readFile('dist/404.html','utf8')).toBe(await readFile('dist/index.html','utf8'));
   await stat('dist/.nojekyll');
   await page.goto('./');
-  await expect(page.getByRole('heading',{name:'Khám phá bài toán cái túi 0/1'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Toàn bộ catalog thuật toán Levitin'})).toBeVisible();
   await expect(page.getByRole('link',{name:'Mở trình phát'}).first()).toHaveAttribute('href',/^\/kv-test\/play\//);
 
   await page.goto('/kv-test/play/knapsack-01/dp-table?seed=42');

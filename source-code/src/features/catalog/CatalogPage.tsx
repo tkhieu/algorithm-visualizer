@@ -1,2 +1,57 @@
-import {useEffect,useMemo,useState} from 'react';import {Link,useParams} from 'react-router-dom';import {manifest as algorithms} from '../../catalog/manifest';import {problem} from '../../problems/knapsack-01';import {Card,CardContent,CardHeader,CardTitle} from '../../components/ui/card';import {Button} from '../../components/ui/button';
-export function CatalogPage(){const {n,t}=useParams();const [search,setSearch]=useState('');const [chapter,setChapter]=useState(n||'all');const [technique,setTechnique]=useState(t||'all');useEffect(()=>{setChapter(n||'all');setTechnique(t||'all')},[n,t]);const visible=useMemo(()=>algorithms.filter(a=>(chapter==='all'||String(a.chapter)===chapter)&&(technique==='all'||a.technique===technique)&&(`${a.title} ${problem.title}`.toLowerCase().includes(search.toLowerCase()))),[search,chapter,technique]);return <div className="space-y-5"><div><p className="eyebrow">CS112 · Minh họa thuật toán</p><h1>Khám phá bài toán cái túi 0/1</h1><p className="muted">Một bài toán, năm cách giải từ Levitin. Theo dõi từng bước và so sánh hiệu quả.</p></div><div className="flex gap-2 flex-wrap"><input aria-label="Tìm kiếm" placeholder="Tìm thuật toán" value={search} onChange={e=>setSearch(e.target.value)}/><select aria-label="Lọc chương" value={chapter} onChange={e=>setChapter(e.target.value)}><option value="all">Mọi chương</option><option value="3">Chương 3</option><option value="8">Chương 8</option><option value="12">Chương 12</option></select><select aria-label="Lọc kỹ thuật" value={technique} onChange={e=>setTechnique(e.target.value)}><option value="all">Mọi kỹ thuật</option><option value="brute-force">Vét cạn</option><option value="dp">Quy hoạch động</option><option value="branch-and-bound">Nhánh cận</option><option value="greedy">Tham lam</option></select></div><Card><CardHeader><CardTitle><Link to="/problem/knapsack-01">{problem.title}</Link></CardTitle></CardHeader><CardContent><p>{problem.statement}</p><div className="flex gap-2 mt-4"><Button asChild><Link to="/problem/knapsack-01">Xem bài toán</Link></Button><Button variant="outline" asChild><Link to="/compare/knapsack-01">So sánh nổi bật</Link></Button></div></CardContent></Card><div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{visible.map(a=><Card key={a.id}><CardHeader><CardTitle>{a.title}</CardTitle></CardHeader><CardContent><p className="muted">Chương {a.chapter} · §{a.section} · tr. {a.page}</p><p>{a.exactness==='exact'?'Chính xác':'Xấp xỉ'} · {a.complexity.time}</p><Button className="mt-3" variant="outline" asChild><Link to={`/play/knapsack-01/${a.id.split('/')[1]}`}>Mở trình phát</Link></Button></CardContent></Card>)}</div></div>}
+import {useEffect,useMemo,useState} from 'react';
+import {Link,useParams} from 'react-router-dom';
+import {algorithms,problems} from '../../catalog/manifest';
+import {chapters} from '../../catalog/chapters';
+import {techniques} from '../../catalog/techniques';
+import {Card,CardContent,CardHeader,CardTitle} from '../../components/ui/card';
+import {Button} from '../../components/ui/button';
+import {Breadcrumbs} from '../nav/Breadcrumbs';
+
+const exactnessLabel={exact:'Chính xác',approximate:'Xấp xỉ',heuristic:'Thực nghiệm'} as const;
+
+/** Lưới thuật toán có lọc — dùng chung cho /chapter/:n, /technique/:t và (nhúng) trang chủ. */
+export function CatalogPage({standalone=true}:{standalone?:boolean}={}){
+ const {n,t}=useParams();
+ const [search,setSearch]=useState('');
+ const [chapter,setChapter]=useState(n||'all');
+ const [technique,setTechnique]=useState(t||'all');
+ const [status,setStatus]=useState<'all'|'ready'|'planned'>('all');
+ useEffect(()=>{setChapter(n||'all');setTechnique(t||'all')},[n,t]);
+ const problemTitle=useMemo(()=>new Map(problems.map(p=>[p.id,p.title])),[]);
+ const visible=useMemo(()=>algorithms.filter(a=>
+  (chapter==='all'||String(a.chapter)===chapter)&&
+  (technique==='all'||a.technique===technique)&&
+  (status==='all'||a.status===status)&&
+  (`${a.title} ${problemTitle.get(a.problemId)??''}`.toLowerCase().includes(search.toLowerCase()))
+ ),[search,chapter,technique,status,problemTitle]);
+ const chapterName=chapters.find(c=>String(c.id)===n)?.name;
+ const techniqueName=techniques.find(tq=>tq.id===t)?.name;
+ return <div className="space-y-5">
+  {standalone&&<Breadcrumbs items={[{label:'Trang chủ',to:'/'},{label:n?`Chương ${n}`:t?`Kỹ thuật · ${techniqueName??t}`:'Thuật toán'}]}/>}
+  {standalone&&<h1>{n?`Chương ${n}${chapterName?` · ${chapterName}`:''}`:t?`Kỹ thuật · ${techniqueName??t}`:'Toàn bộ thuật toán'}</h1>}
+  <div className="flex gap-2 flex-wrap">
+   <input aria-label="Tìm kiếm" placeholder="Tìm thuật toán" value={search} onChange={e=>setSearch(e.target.value)}/>
+   <select aria-label="Lọc chương" value={chapter} onChange={e=>setChapter(e.target.value)}>
+    <option value="all">Mọi chương</option>
+    {chapters.map(c=><option key={c.id} value={c.id}>Chương {c.id} · {c.name}</option>)}
+   </select>
+   <select aria-label="Lọc kỹ thuật" value={technique} onChange={e=>setTechnique(e.target.value)}>
+    <option value="all">Mọi kỹ thuật</option>
+    {techniques.map(tq=><option key={tq.id} value={tq.id}>{tq.name}</option>)}
+   </select>
+   <select aria-label="Lọc trạng thái" value={status} onChange={e=>setStatus(e.target.value as typeof status)}>
+    <option value="all">Mọi trạng thái</option>
+    <option value="ready">Đã có</option>
+    <option value="planned">Sắp có</option>
+   </select>
+  </div>
+  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{visible.map(a=><Card key={a.id} className={a.status!=='ready'?'opacity-60':undefined}><CardHeader><CardTitle>{a.title}</CardTitle></CardHeader><CardContent>
+   <p className="muted">{problemTitle.get(a.problemId)} · Chương {a.chapter} · §{a.section}{a.page?` · tr. ${a.page}`:''}</p>
+   <p>{exactnessLabel[a.exactness]} · {a.complexity.time}</p>
+   {a.status==='ready'
+    ?<Button className="mt-3" variant="outline" asChild><Link to={`/play/${a.problemId}/${a.id.split('/')[1]}`}>Mở trình phát</Link></Button>
+    :<p className="muted mt-3">Sắp có</p>}
+  </CardContent></Card>)}</div>
+  {visible.length===0&&<p className="muted">Không tìm thấy thuật toán phù hợp.</p>}
+ </div>;
+}
