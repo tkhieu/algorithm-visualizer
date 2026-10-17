@@ -120,7 +120,7 @@ Dữ liệu vào là JSON gồm ba trường, định nghĩa bằng Zod trong `s
 | Số đỉnh n | 0 ≤ n ≤ 10 | heuristic khoảng 300 đỉnh |
 | Số cạnh m | ≤ 100 | theo n |
 | Số màu k | 1 ≤ k ≤ 10 | |
-| Vét cạn | ghi trace đầy đủ khi n ≤ 6; vượt mức này vẫn chạy nhưng trace bị cắt. Nếu kⁿ > 200.000 thì báo lỗi (`error`) | báo "Không áp dụng" khi vượt |
+| Vét cạn | ngưỡng kích thước input để ghi trace là n ≤ 6 (vượt mức này thuật toán vẫn chạy nhưng không ghi đủ trace); ngoài ra trace luôn bị cắt khi quá 5.000 bước hoặc 2,5 MB. Nếu kⁿ > 200.000 thì báo lỗi (`error`) | báo "Không áp dụng" khi vượt |
 
 ### 2.6. Ví dụ Input/Output
 
@@ -176,7 +176,7 @@ Greedy(G, order, k)
 - **Không bảo đảm** tìm được cách tô dù cách tô tồn tại (phản ví dụ: đồ thị vương miện).
 - **Độ phức tạp:**
   - *Lý thuyết* (dùng danh sách kề): O(n·k + m). Mỗi đỉnh quét các đỉnh kề để đánh dấu màu bị cấm, rồi quét k màu.
-  - *Cài đặt trong app:* các cạnh được lưu thành tập cặp đỉnh, nên để tìm màu bị cấm, app phải quét toàn bộ n đỉnh. Chi phí là O(n·(n + k)) = O(n²) với k ≤ n. Muốn đạt O(n·k + m) thì phải chuyển sang danh sách kề.
+  - *Cài đặt trong app:* các cạnh được lưu thành tập cặp đỉnh, nên để tìm màu bị cấm, app phải quét toàn bộ n đỉnh. Chi phí là O(n·(n + k)). Muốn đạt O(n·k + m) thì phải chuyển sang danh sách kề.
 
 #### (2) Welsh–Powell
 
@@ -189,7 +189,7 @@ WelshPowell(G, k)
 - **Ý tưởng:** tô đỉnh nhiều ràng buộc trước. Welsh–Powell bảo đảm số màu tối đa là max_i min(d_i + 1, i), với d_1 ≥ d_2 ≥ … là bậc của các đỉnh sau khi sắp.
 - **Độ phức tạp:**
   - *Lý thuyết:* O(n log n + n·k + m).
-  - *Cài đặt trong app:* tính bậc bằng cách quét mọi cặp đỉnh, nên tốn O(n²). Cộng thêm phần sắp xếp và greedy, tổng cộng là O(n²).
+  - *Cài đặt trong app:* tính bậc bằng cách quét mọi cặp đỉnh, nên tốn O(n²). Cộng thêm phần sắp xếp và greedy, tổng cộng là O(n² + n·k).
 - **Lưu ý:** trên đồ thị vương miện, mọi đỉnh cùng bậc 2. Thứ tự sau khi sắp vẫn giữ nguyên thứ tự xen kẽ ban đầu, nên Welsh–Powell gặp đúng khó khăn của greedy (trace thật, mục 4.3).
 
 #### (3) DSATUR (Brélaz, 1979) – mở rộng ngoài sách, app ghi rõ
@@ -208,7 +208,7 @@ DSATUR(G, k)
   - Vì vậy trên ví dụ chung, DSATUR thành công còn greedy thì không. Đây là điểm so sánh chính (trace thật, mục 4.3).
 - **Độ phức tạp:**
   - *Lý thuyết:* O(n² + m), nếu cập nhật độ bão hòa tăng dần sau mỗi lần tô.
-  - *Cài đặt trong app:* ở mỗi vòng, app tính lại độ bão hòa của mọi đỉnh chưa tô bằng cách quét mọi cặp đỉnh. Mỗi vòng tốn O(n²), n vòng tốn **O(n³)**.
+  - *Cài đặt trong app:* ở mỗi vòng, app tính lại độ bão hòa của mọi đỉnh chưa tô bằng cách quét mọi cặp đỉnh. Mỗi vòng tốn O(n²), n vòng tốn O(n³). Cộng thêm việc chọn màu O(n + k) mỗi vòng, tổng cộng là **O(n³ + n·k)**.
 
 #### (4) Quay lui (Levitin §12.1)
 
@@ -229,8 +229,9 @@ Backtrack(i)
   - Vì vậy nếu thuật toán trả về false sau khi duyệt hết, thì chắc chắn không có cách tô k màu.
 - **Dừng:** ở nghiệm đầu tiên, tức là giải bài toán quyết định k màu.
 - **Độ phức tạp:**
-  - Cây tìm kiếm có tối đa O(kⁿ) nút, vì mỗi nút có tối đa k con.
-  - Kiểm tra một màu tốn O(Δ) với danh sách kề, nhưng tốn O(n) trong app, vì app quét mọi đỉnh. Trường hợp xấu nhất trong app là O(kⁿ · n).
+  - Cây tìm kiếm có tối đa N = 1 + k + k² + … + kⁿ ≤ (n + 1)·kⁿ nút, vì mỗi nút có tối đa k con. Ví dụ, khi k = 1 thì N = n + 1.
+  - Mỗi nút kiểm tra một màu với các đỉnh kề. Với danh sách kề, việc này tốn O(Δ + 1), nên cận lý thuyết là **O((n + 1)·kⁿ·(Δ + 1))**.
+  - App kiểm tra bằng cách quét mọi đỉnh, mỗi nút tốn O(n), nên trường hợp xấu nhất trong app là **O(n²·kⁿ)**.
   - Trên thực tế, việc cắt nhánh làm giảm số nút rất nhiều.
 
 #### (5) Vét cạn
@@ -243,21 +244,24 @@ Exhaustive(G, k)
 ```
 
 - **Độ phức tạp:**
-  - Có kⁿ phép gán. Mỗi phép gán được kiểm tra trong O(m) nếu duyệt danh sách cạnh. App kiểm tra bằng cách quét các cặp đỉnh, nên tốn O(kⁿ · n²).
+  - Có kⁿ phép gán, tức kⁿ lá, sinh ra qua tối đa (n + 1)·kⁿ nút của cây.
+  - Nếu kiểm tra mỗi lá bằng cách duyệt danh sách cạnh thì tốn O(m), nên cận là **O(kⁿ·(n + m))**.
+  - App kiểm tra bằng cách quét các cặp đỉnh, nên trong app là **O(kⁿ·n²)**.
   - Đây là mốc để so sánh với quay lui.
 - **Giới hạn trong app:**
-  - Khi n ≤ 6, trace được ghi đầy đủ. Lớn hơn mức này thì thuật toán vẫn chạy, nhưng trace bị cắt.
+  - n ≤ 6 là ngưỡng kích thước input để ghi trace. Vượt ngưỡng này thì thuật toán vẫn chạy nhưng không ghi đủ trace.
+  - Kể cả khi n ≤ 6, trace vẫn bị cắt nếu quá 5.000 bước hoặc 2,5 MB. Ví dụ K₆ với k = 5 có 5⁶ = 15.625 phép gán, vô nghiệm, nên sinh ra hơn 5.000 bước.
   - Nếu kⁿ > 200.000, thuật toán báo lỗi kèm gợi ý dùng quay lui. Đây là trạng thái `error`, không phải "Không áp dụng".
 
 #### Bảng tổng hợp
 
 | Thuật toán | Kết luận chắc chắn bài k màu? | Độ phức tạp lý thuyết / trong app | Giới hạn n trong app |
 |---|---|---|---|
-| Greedy | Không (có thể "chưa tìm được") | O(n·k + m) / O(n²) | 10 [SAU NÂNG CẤP: khoảng 300] |
-| Welsh–Powell | Không | O(n log n + n·k + m) / O(n²) | 10 [SAU NÂNG CẤP] |
-| DSATUR | Không (nhưng đúng trên đồ thị hai phía) | O(n² + m) / O(n³) | 10 [SAU NÂNG CẤP] |
-| Quay lui | Có | O(kⁿ · Δ) / O(kⁿ · n) | 10 |
-| Vét cạn | Có | O(kⁿ · m) / O(kⁿ · n²) | trace đủ khi n ≤ 6; kⁿ ≤ 200.000 |
+| Greedy | Không (có thể "chưa tìm được") | O(n·k + m) / O(n·(n + k)) | 10 [SAU NÂNG CẤP: khoảng 300] |
+| Welsh–Powell | Không | O(n log n + n·k + m) / O(n² + n·k) | 10 [SAU NÂNG CẤP] |
+| DSATUR | Không (nhưng đúng trên đồ thị hai phía) | O(n² + m) / O(n³ + n·k) | 10 [SAU NÂNG CẤP] |
+| Quay lui | Có | O((n+1)·kⁿ·(Δ+1)) / O(n²·kⁿ) | 10 |
+| Vét cạn | Có | O(kⁿ·(n + m)) / O(kⁿ·n²) | ngưỡng trace n ≤ 6; báo lỗi nếu kⁿ > 200.000 |
 
 **Tài liệu tham chiếu:**
 - Levitin, *Introduction to the Design and Analysis of Algorithms*, 3rd ed., §1.3 và §12.1;
@@ -324,7 +328,7 @@ Bảng dưới đây lấy từ lần chạy thật hàm `run()` của app, vớ
   - Hai đỉnh này không kề nhau nên gán như vậy là hợp lệ. Nhưng nó buộc mọi đỉnh A còn lại phải khác màu B1, và mọi đỉnh B còn lại phải khác màu A1. Với hai màu, điều này dẫn tới bế tắc ở A3.
 - **Bước 13:** B1 đổi sang màu 1. Từ đây nhóm A nhận màu 0 và nhóm B nhận màu 1, và không còn bế tắc nào nữa.
 - **Thống kê:** 20 bước, 15 lần thăm nút, 6 lần cắt nhánh (reject), tổng 21 phép toán.
-  - Cây trạng thái có 15 nút thử màu: 9 lần gán (`place`) và 6 lần loại (`reject`). Vét cạn phải tới 2⁶ = 64 lá.
+  - Cây trạng thái có 15 nút thử màu: 9 lần gán (`place`) và 6 lần loại (`reject`). Vét cạn duyệt theo thứ tự từ điển và gặp nghiệm đầu tiên 010101 ở lá thứ 22. Không gian tìm kiếm của vét cạn có tối đa 2⁶ = 64 lá.
 
 **Kết quả:** found = true, coloring = [0, 1, 0, 1, 0, 1]. Checker kiểm tra cả 6 cạnh, hai đầu mút của mỗi cạnh đều khác màu.
 
@@ -621,7 +625,7 @@ Nhận xét dự kiến (phải đối chiếu với số liệu thật):
 
 ### 7.4. Hạn chế
 
-- Thuật toán chính xác chỉ chạy được với đồ thị nhỏ: n ≤ 10. Vét cạn chỉ ghi trace đầy đủ khi n ≤ 6, và báo lỗi khi kⁿ > 200.000.
+- Thuật toán chính xác chỉ chạy được với đồ thị nhỏ: n ≤ 10. Vét cạn có ngưỡng ghi trace n ≤ 6, mọi trace đều bị cắt khi quá 5.000 bước hoặc 2,5 MB, và thuật toán báo lỗi khi kⁿ > 200.000.
 - Heuristic không bảo đảm tìm được nghiệm.
 - Oracle độc lập chỉ khả thi với đồ thị nhỏ.
 - Toàn bộ code do AI sinh. Tuy đã qua review chéo và test, vẫn có thể còn lỗi chưa phát hiện.

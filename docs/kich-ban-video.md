@@ -116,7 +116,7 @@
 - **Hình 2:** cuộn qua từng nhóm, mỗi nhóm khoảng 3 giây.
 - **Hình 3 [SAU NÂNG CẤP]:** mở một ca lớn khoảng 300 đỉnh trên Player bằng DSATUR (hiển thị bằng Canvas).
   - Chữ: "Heuristic chạy được trên đồ thị 300 đỉnh".
-- **Hình 4:** mở quay lui với ca lớn để thấy thông báo "Không áp dụng".
+- **Hình 4 [SAU NÂNG CẤP]:** mở quay lui với ca lớn để thấy thông báo "Không áp dụng". Trên `main` hiện tại, input quá 10 đỉnh bị từ chối ngay ở bước kiểm tra dữ liệu, và quay lui chưa có thông báo "Không áp dụng".
   - Chữ: "Thuật toán chính xác có giới hạn an toàn – báo rõ thay vì treo máy".
 - **Hình 5:** bấm xuất CSV/JSON. Chữ: "Xuất kết quả để đưa vào report".
 
