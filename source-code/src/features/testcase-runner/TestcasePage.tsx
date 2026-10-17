@@ -52,7 +52,10 @@ function LoadedTestcasePage({problemId,problem}:{problemId:string;problem:AnyPro
    const score=r.status==='ok'&&problem.objective?problem.objective.score(c.input,r.output):undefined;
    const actual=typeof c.expected==='number'&&score!==undefined?score:r.status==='ok'?r.output:undefined;
    const matches=c.expected===undefined||JSON.stringify(actual)===JSON.stringify(c.expected);
-   const pass=r.status==='ok'&&r.verdict.ok&&matches;
+   // "Không áp dụng" (precondition từ chối vì vượt ngưỡng an toàn của chính thuật toán, ví dụ đồ
+   // thị lớn với quay lui) là câu trả lời ĐÚNG cho input đó, không phải một kết quả sai — tính là
+   // đạt để không lẫn với "Không đạt" thật (nhãn hiển thị ở cột "Kết quả" vẫn phân biệt riêng).
+   const pass=(r.status==='ok'&&r.verdict.ok&&matches)||r.status==='not-applicable';
    const message=r.status==='ok'?(c.expected!==undefined?`Kết quả ${JSON.stringify(actual)}; kỳ vọng ${JSON.stringify(c.expected)}`:'Kết quả hợp lệ'):r.status==='not-applicable'?`Không áp dụng: ${r.reason}`:r.status;
    setRows(prev=>[...prev,{id,pass,ms:response.medianMs,message,notApplicable:r.status==='not-applicable'}]);
   });

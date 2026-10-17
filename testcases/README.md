@@ -32,13 +32,13 @@ Chạy lại từ `source-code` bằng `npm run export:testcases` (script đọc
 toán trong manifest nên không cần sửa file này khi thêm bài toán mới — cứ thêm bài toán và chuyển
 trạng thái `ready`).
 
-## Theo bài toán (425 ca, 47 bài toán)
+## Theo bài toán (437 ca, 47 bài toán)
 
 - **knapsack-01** (Bài toán cái túi 0/1) — 13 ca: thông thường 2, biên 3, nhỏ 2, lớn 2, đặc biệt 2, không hợp lệ 2
 - **n-queens** (Bài toán n quân hậu) — 12 ca: thông thường 2, biên 3, nhỏ 2, lớn 2, đặc biệt 1, không hợp lệ 2
 - **hamiltonian-circuit** (Chu trình Hamilton) — 10 ca: thông thường 2, biên 2, nhỏ 2, lớn 2, đặc biệt 1, không hợp lệ 1
 - **subset-sum** (Bài toán tổng tập con) — 11 ca: thông thường 2, biên 3, nhỏ 2, lớn 2, đặc biệt 1, không hợp lệ 1
-- **graph-coloring** (Tô màu đồ thị (bài toán Sở thú)) — 10 ca: thông thường 2, biên 2, nhỏ 2, lớn 2, đặc biệt 1, không hợp lệ 1
+- **graph-coloring** (Tô màu đồ thị (bài toán Sở thú)) — 22 ca: thông thường 5, biên 3, nhỏ 2, lớn 5, đặc biệt 5, không hợp lệ 2
 - **tsp** (Người du lịch (TSP)) — 10 ca: thông thường 2, biên 2, nhỏ 2, lớn 2, đặc biệt 1, không hợp lệ 1
 - **assignment** (Bài toán phân công) — 10 ca: thông thường 2, biên 2, nhỏ 2, lớn 2, đặc biệt 1, không hợp lệ 1
 - **matrix-chain** (Nhân chuỗi ma trận) — 10 ca: thông thường 2, biên 2, nhỏ 2, lớn 2, đặc biệt 1, không hợp lệ 1

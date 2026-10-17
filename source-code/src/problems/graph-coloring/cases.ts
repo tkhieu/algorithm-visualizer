@@ -1,6 +1,16 @@
 import type {TestCase} from '../../core/contracts';
 import type {Input} from './definition';
-import {generate} from './generators';
+import {
+  generate,
+  randomGraph,
+  crownGraph,
+  completeGraph,
+  cycleGraph,
+  completeBipartiteGraph,
+  petersenGraph,
+  grotzschGraph,
+} from './generators';
+const chromatic = (input: Input): Input => ({...input, mode: 'chromatic'});
 const triangle: Input = {
   nodes: ['A', 'B', 'C'],
   edges: [
@@ -42,4 +52,84 @@ export const cases: TestCase<Input>[] = [
     },
   },
   {id: 'invalid-zero-colors', name: 'k bằng 0', group: 'invalid', input: {nodes: ['A'], edges: [], colors: 0}},
+  {
+    id: 'chromatic-crown',
+    name: 'χ(G): đồ thị vương miện — tham lam dùng n/2 màu, χ = 2',
+    group: 'special',
+    input: chromatic(crownGraph(3)),
+    expected: 2,
+  },
+  {
+    id: 'chromatic-complete-k6',
+    name: 'χ(G): đồ thị đủ K6 — χ = 6',
+    group: 'special',
+    input: chromatic(completeGraph(6)),
+    expected: 6,
+  },
+  {
+    id: 'chromatic-petersen',
+    name: 'χ(G): đồ thị Petersen — χ = 3',
+    group: 'special',
+    input: chromatic(petersenGraph()),
+    expected: 3,
+  },
+  {
+    id: 'chromatic-grotzsch',
+    name: 'χ(G): đồ thị Grötzsch (Mycielski của C5, không tam giác) — χ = 4',
+    group: 'special',
+    input: chromatic(grotzschGraph()),
+    expected: 4,
+  },
+  {
+    id: 'chromatic-cycle-odd',
+    name: 'χ(G): chu trình lẻ C5 — χ = 3',
+    group: 'normal',
+    input: chromatic(cycleGraph(5)),
+    expected: 3,
+  },
+  {
+    id: 'chromatic-cycle-even',
+    name: 'χ(G): chu trình chẵn C6 — χ = 2',
+    group: 'normal',
+    input: chromatic(cycleGraph(6)),
+    expected: 2,
+  },
+  {
+    id: 'chromatic-bipartite',
+    name: 'χ(G): đồ thị hai phía đầy đủ K(3,4) — χ = 2',
+    group: 'normal',
+    input: chromatic(completeBipartiteGraph(3, 4)),
+    expected: 2,
+  },
+  {
+    id: 'chromatic-empty',
+    name: 'χ(G): đồ thị rỗng (0 đỉnh) — χ = 0',
+    group: 'edge',
+    input: chromatic({nodes: [], edges: [], colors: 1}),
+    expected: 0,
+  },
+  {
+    id: 'chromatic-large-100',
+    name: 'χ(G): đồ thị ngẫu nhiên 100 đỉnh cho heuristic (không biết trước χ)',
+    group: 'large',
+    input: chromatic(randomGraph(100, 100, 0.03)),
+  },
+  {
+    id: 'chromatic-large-200',
+    name: 'χ(G): đồ thị ngẫu nhiên 200 đỉnh cho heuristic (không biết trước χ)',
+    group: 'large',
+    input: chromatic(randomGraph(200, 200, 0.02)),
+  },
+  {
+    id: 'chromatic-large-300',
+    name: 'χ(G): đồ thị ngẫu nhiên 300 đỉnh cho heuristic — vượt ngưỡng hiển thị Canvas (>300 phần tử)',
+    group: 'large',
+    input: chromatic(randomGraph(300, 310, 0.015)),
+  },
+  {
+    id: 'invalid-mode',
+    name: 'Chế độ không hợp lệ',
+    group: 'invalid',
+    input: {nodes: ['A'], edges: [], colors: 1, mode: 'invalid-mode'},
+  },
 ];

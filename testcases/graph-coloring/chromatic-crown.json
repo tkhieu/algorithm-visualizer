@@ -1,0 +1,45 @@
+{
+  "id": "chromatic-crown",
+  "name": "χ(G): đồ thị vương miện — tham lam dùng n/2 màu, χ = 2",
+  "group": "special",
+  "input": {
+    "nodes": [
+      "A1",
+      "B1",
+      "A2",
+      "B2",
+      "A3",
+      "B3"
+    ],
+    "edges": [
+      {
+        "from": "A1",
+        "to": "B2"
+      },
+      {
+        "from": "A1",
+        "to": "B3"
+      },
+      {
+        "from": "A2",
+        "to": "B1"
+      },
+      {
+        "from": "A2",
+        "to": "B3"
+      },
+      {
+        "from": "A3",
+        "to": "B1"
+      },
+      {
+        "from": "A3",
+        "to": "B2"
+      }
+    ],
+    "colors": 2,
+    "mode": "chromatic"
+  },
+  "expected": 2,
+  "note": null
+}

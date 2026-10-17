@@ -5,6 +5,7 @@ export const adapter: ComparisonAdapter<Input, Output> = {
   project: (_input, output) => output,
   metrics: [
     {id: 'found', label: 'Tô được', better: 'higher'},
+    {id: 'colorsUsed', label: 'Số màu', better: 'lower'},
     {id: 'ms', label: 'Thời gian', better: 'lower'},
   ],
 };

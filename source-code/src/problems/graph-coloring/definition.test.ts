@@ -1,6 +1,14 @@
 import {describe, it, expect} from 'vitest';
 import {inputSchema} from './definition';
-import {check, existsColoring} from './checker';
+import {check, existsColoring, chromaticNumberOracle, CHROMATIC_ORACLE_MAX_N} from './checker';
+import {
+  crownGraph,
+  completeGraph,
+  cycleGraph,
+  completeBipartiteGraph,
+  petersenGraph,
+  grotzschGraph,
+} from './generators';
 const triangle = {
   nodes: ['A', 'B', 'C'],
   edges: [
@@ -49,5 +57,95 @@ describe('graph-coloring definition', () => {
   });
   it('check từ chối hai đỉnh kề cùng màu', () => {
     expect(check(triangle, {found: true, coloring: [0, 0, 1]}).ok).toBe(false);
+  });
+
+  it('chấp nhận mode mới và từ chối giá trị mode không hợp lệ', () => {
+    expect(inputSchema.safeParse({...triangle, mode: 'chromatic'}).success).toBe(true);
+    expect(inputSchema.safeParse({...triangle, mode: 'k-coloring'}).success).toBe(true);
+    expect(inputSchema.safeParse({...triangle, mode: 'invalid-mode'}).success).toBe(false);
+  });
+
+  it('nâng giới hạn số đỉnh lên 320 cho đồ thị lớn của heuristic', () => {
+    const big = {nodes: Array.from({length: 320}, (_, i) => `V${i}`), edges: [], colors: 1};
+    expect(inputSchema.safeParse(big).success).toBe(true);
+    expect(inputSchema.safeParse({...big, nodes: [...big.nodes, 'overflow']}).success).toBe(false);
+  });
+
+  describe('chromaticNumberOracle — oracle độc lập tính χ(G) bằng cách tăng dần k', () => {
+    it('đồ thị rỗng (0 đỉnh): χ = 0', () => {
+      expect(chromaticNumberOracle({nodes: [], edges: [], colors: 1})).toBe(0);
+    });
+    it('vương miện (bipartite): χ = 2', () => {
+      expect(chromaticNumberOracle(crownGraph(3))).toBe(2);
+    });
+    it('đầy đủ K5: χ = 5', () => {
+      expect(chromaticNumberOracle(completeGraph(5))).toBe(5);
+    });
+    it('chu trình lẻ C5: χ = 3; chu trình chẵn C6: χ = 2', () => {
+      expect(chromaticNumberOracle(cycleGraph(5))).toBe(3);
+      expect(chromaticNumberOracle(cycleGraph(6))).toBe(2);
+    });
+    it('hai phía đầy đủ K(3,4): χ = 2', () => {
+      expect(chromaticNumberOracle(completeBipartiteGraph(3, 4))).toBe(2);
+    });
+    it('Petersen: χ = 3 (nằm trong ngưỡng oracle vì có 10 đỉnh ≤ 12)', () => {
+      expect(petersenGraph().nodes.length).toBeLessThanOrEqual(CHROMATIC_ORACLE_MAX_N);
+      expect(chromaticNumberOracle(petersenGraph())).toBe(3);
+    });
+    it('Grötzsch (11 đỉnh, không tam giác): χ = 4', () => {
+      expect(grotzschGraph().nodes.length).toBeLessThanOrEqual(CHROMATIC_ORACLE_MAX_N);
+      expect(chromaticNumberOracle(grotzschGraph())).toBe(4);
+    });
+  });
+
+  describe('check ở chế độ chromatic', () => {
+    it('phải found=true — không có khái niệm "vô nghiệm" khi không giới hạn số màu', () => {
+      expect(check({...triangle, mode: 'chromatic'}, {found: false, coloring: []}).ok).toBe(false);
+    });
+    it('chromaticExact đúng với χ(G) tính độc lập thì tối ưu, sai thì bị từ chối', () => {
+      const input = {...crownGraph(3), mode: 'chromatic' as const};
+      const correct = check(input, {found: true, coloring: [0, 1, 0, 1, 0, 1], colorsUsed: 2, chromaticExact: true});
+      expect(correct).toEqual({ok: true, optimal: true});
+      const wrong = check(input, {
+        found: true,
+        coloring: [0, 1, 2, 3, 4, 5],
+        colorsUsed: 6,
+        chromaticExact: true,
+      });
+      expect(wrong.ok).toBe(false);
+    });
+    it('heuristic (không chromaticExact): tối ưu nếu khớp χ(G), không bảo đảm nếu không khớp', () => {
+      const input = {...crownGraph(3), mode: 'chromatic' as const};
+      const optimal = check(input, {found: true, coloring: [0, 1, 0, 1, 0, 1], colorsUsed: 2, heuristic: true});
+      expect(optimal).toEqual({ok: true, optimal: true});
+      const suboptimal = check(input, {
+        found: true,
+        coloring: [0, 0, 1, 1, 2, 2],
+        colorsUsed: 3,
+        heuristic: true,
+      });
+      expect(suboptimal).toEqual({ok: true, optimal: false});
+    });
+    it('đồ thị lớn hơn ngưỡng oracle: không tính χ(G) độc lập, chỉ ghi nhận tin hoặc không bảo đảm', () => {
+      const big = {
+        nodes: Array.from({length: CHROMATIC_ORACLE_MAX_N + 1}, (_, i) => `V${i}`),
+        edges: [],
+        colors: 1,
+        mode: 'chromatic' as const,
+      };
+      const coloring = big.nodes.map(() => 0);
+      expect(check(big, {found: true, coloring, colorsUsed: 1, chromaticExact: true})).toEqual({
+        ok: true,
+        optimal: true,
+      });
+      expect(check(big, {found: true, coloring, colorsUsed: 1, heuristic: true})).toEqual({
+        ok: true,
+        optimal: false,
+      });
+    });
+    it('từ chối khi số màu báo cáo không khớp số màu thực dùng trong cách tô', () => {
+      const input = {...crownGraph(3), mode: 'chromatic' as const};
+      expect(check(input, {found: true, coloring: [0, 1, 0, 1, 0, 1], colorsUsed: 5, heuristic: true}).ok).toBe(false);
+    });
   });
 });
