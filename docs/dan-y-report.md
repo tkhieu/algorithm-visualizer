@@ -19,7 +19,7 @@ Mỗi yêu cầu của đề phải trỏ được tới mục report, chức n�
 |---|---|---|---|---|
 | Nhập Input | Ch.2 Mô hình | Chỉnh JSON / sinh ngẫu nhiên / chọn ca mẫu | nhóm nhỏ, không hợp lệ | Cảnh 4 |
 | Theo dõi từng bước | Ch.4 Ví dụ minh họa | Player: mã giả, trạng thái, tiến/lùi | ví dụ chung | Cảnh 5 |
-| Xem Output | Ch.2, Ch.4 | Kết quả + kiểm tra hợp lệ/tối ưu | mọi nhóm | Cảnh 5–6 |
+| Xem Output | Ch.2, Ch.4 | Kết quả + kiểm tra cách tô hợp lệ với k màu, hoặc xác nhận vô nghiệm với k màu | mọi nhóm | Cảnh 5–6 |
 | Nhiều cách giải, so sánh | Ch.3, Ch.6 | Trang So sánh | đồ thị vương miện, ca lớn | Cảnh 6 |
 | Testcase đa dạng, lớn | Ch.6 | Trang Testcase | 6 nhóm | Cảnh 7 |
 | Tường thuật quá trình + AI | Ch.5 | — | — | — |
@@ -34,7 +34,7 @@ Mỗi yêu cầu của đề phải trỏ được tới mục report, chức n�
 
 ### Chương 1. Giới thiệu bài toán
 
-- **Lý do thật sự chọn:** cô nhận xét phần thiết kế thuật toán trong bài thi còn yếu, nêu bài Sở thú là bài tô màu đồ thị; sinh viên chọn bài này để làm lại cho kỹ. Nêu thêm lý do kỹ thuật: bài có nhiều cách giải để so sánh (nhanh nhưng không chắc tối ưu, chắc tối ưu nhưng chậm).
+- **Lý do thật sự chọn:** cô nhận xét phần thiết kế thuật toán trong bài thi còn yếu, nêu bài Sở thú là bài tô màu đồ thị; sinh viên chọn bài này để làm lại cho kỹ. Nêu thêm lý do kỹ thuật: bài có nhiều cách giải để so sánh (heuristic nhanh nhưng có thể báo "chưa tìm được" dù tồn tại cách tô k màu; thuật toán chính xác kết luận chắc chắn có/không tô được bằng k màu nhưng chi phí lũy thừa).
 - **Nguồn gốc:** bài toán bốn màu; Levitin §1.3 (giới thiệu) và §12.1 trang 425 (quay lui cho bài tô màu m màu, nguồn app đang ghi cho cả 5 thuật toán); Welsh–Powell (1967); Brélaz (1979) cho DSATUR.
 - **Ứng dụng thực tế:** xếp lịch thi, phân chuồng thú (bài Sở thú), cấp phát thanh ghi trong trình biên dịch, phân tần số sóng.
 
