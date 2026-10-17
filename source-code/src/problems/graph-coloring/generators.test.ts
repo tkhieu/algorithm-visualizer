@@ -31,14 +31,43 @@ describe('graph-coloring generators (hồi quy cho đồ thị cấu trúc mới
     expect(inputSchema.safeParse(a).success).toBe(true);
   });
 
-  it('randomGraph(seed, MAX_NODES, 1): đồ thị đầy đủ ở n lớn nhất vẫn hợp lệ (không vượt MAX_EDGES)', () => {
-    // n=320, p=1 lẽ ra sinh đồ thị đầy đủ C(320,2) = 51.040 cạnh — vượt xa MAX_EDGES (8000). Trước
-    // khi cắt bớt, input này không hợp lệ với inputSchema (mọi giá trị n,p mà trình nhập liệu cho
-    // chọn phải luôn sinh ra input hợp lệ).
+  it('randomGraph(seed, MAX_NODES, 1): sinh đúng mẫu thật G(n,p), không tự cắt — việc giữ input hợp lệ thuộc về nơi gọi (ui.tsx), không phải generator', () => {
+    // n=320, p=1 sinh đúng đồ thị đầy đủ C(320,2) = 51.040 cạnh — KHÔNG được cắt về MAX_EDGES ở
+    // đây: cắt ở một điểm cố định trong thứ tự duyệt làm lệch mẫu (xem chú thích tại randomGraph).
+    // Input này không hợp lệ với inputSchema, đúng như kỳ vọng — ui.tsx phải tự chọn n/p để không
+    // rơi vào trường hợp này (test riêng cho ui.tsx kiểm việc đó), hoặc từ chối khi vẫn xảy ra.
     const g = randomGraph(1, MAX_NODES, 1);
     expect(g.nodes.length).toBe(MAX_NODES);
-    expect(g.edges.length).toBe(MAX_EDGES);
-    expect(inputSchema.safeParse(g).success).toBe(true);
+    expect(g.edges.length).toBe((MAX_NODES * (MAX_NODES - 1)) / 2);
+    expect(g.edges.length).toBeGreaterThan(MAX_EDGES);
+    expect(inputSchema.safeParse(g).success).toBe(false);
+  });
+
+  it('randomGraph không cắt bớt cạnh ở bất kỳ (n,p) nào — số cạnh luôn khớp chính xác mẫu đã sinh, không bị chặn ở MAX_EDGES', () => {
+    // Trước khi sửa, randomGraph dừng vòng lặp ngay khi đủ MAX_EDGES cạnh — thiên vị các cặp đỉnh
+    // xét sau trong vòng lặp (chỉ số i,j lớn). Đếm thủ công bằng công thức của hàm (không gọi lại
+    // randomGraph) để xác nhận không có việc dừng sớm nào xảy ra.
+    const seed = 3;
+    const n = 310;
+    const p = 0.4; // kỳ vọng ~0.4 * C(310,2) ≈ 19157 cạnh, vượt xa MAX_EDGES=8000
+    const g = randomGraph(seed, n, p);
+    // Đếm lại bằng chính công thức rng độc lập của bài test (không gọi randomGraph) để xác nhận
+    // không có cạnh nào bị bỏ so với đúng số cặp mà r() < p chấp nhận.
+    const expectedCount = (() => {
+      let x = seed >>> 0;
+      const r = () => {
+        x = (x + 0x6d2b79f5) >>> 0;
+        let t = x;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+      let count = 0;
+      for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (r() < p) count++;
+      return count;
+    })();
+    expect(g.edges.length).toBe(expectedCount);
+    expect(g.edges.length).toBeGreaterThan(MAX_EDGES);
   });
 
   it('randomGraph với p nhỏ và n vừa phải không bị cắt (không đổi hành vi bình thường)', () => {

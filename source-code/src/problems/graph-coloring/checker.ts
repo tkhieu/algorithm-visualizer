@@ -13,13 +13,23 @@ export function connected(adj: Set<string>, a: string, b: string): boolean {
   return adj.has(`${a}|${b}`);
 }
 /** Duyệt các phân hoạch đỉnh thành lớp màu, độc lập với phép mở rộng quay lui của thuật toán.
- * Mỗi đỉnh chỉ được thêm vào một lớp nếu không xung đột với đỉnh nào đã có trong lớp đó ngay tại
- * thời điểm thêm (loại nhánh ngay, không đợi đến khi gán hết n đỉnh mới kiểm tra toàn bộ) — nếu
- * không, một đồ thị có nhiều đỉnh cô lập (không cạnh) sẽ khiến hàm này thử mọi tổ hợp lớp cho các
- * đỉnh cô lập trước khi phát hiện xung đột ở phần còn lại, tốn tới O(kⁿ) một cách không cần thiết. */
+ * Hai điều cần để không nổ cây tìm kiếm bất kể input.nodes xếp theo thứ tự nào:
+ * 1. Mỗi đỉnh chỉ được thêm vào một lớp nếu không xung đột với đỉnh nào đã có trong lớp đó ngay
+ *    tại thời điểm thêm (loại nhánh ngay, không đợi gán hết n đỉnh mới kiểm tra toàn bộ).
+ * 2. (1) một mình không đủ: nếu nhiều đỉnh cô lập (không cạnh, luôn không xung đột với lớp nào)
+ *    nằm TRƯỚC một lõi khó (ví dụ một clique không tô được với k màu) trong input.nodes, hàm vẫn
+ *    phải thử hết tổ hợp lớp của các đỉnh cô lập trước khi chạm tới lõi và phát hiện vô nghiệm —
+ *    tốn tới O(kⁿ) vẫn y như cũ, chỉ dời chỗ nổ ra chỗ khác. Vì vậy hàm này DUYỆT đỉnh theo bậc
+ *    giảm dần của riêng nó (không theo thứ tự input.nodes) — không liên quan gì tới việc Welsh–
+ *    Powell cũng sắp theo bậc, vì Welsh–Powell không hề là thuật toán đang được oracle này kiểm
+ *    (oracle luôn kiểm quay lui/vét cạn, hai thuật toán giữ nguyên thứ tự input.nodes, không sắp
+ *    bậc) — nhờ vậy lõi khó (bậc cao) luôn được xét trước, phát hiện vô nghiệm sớm bất kể người
+ *    gọi liệt kê input.nodes theo thứ tự nào. */
 export function existsColoring(input: Input): boolean {
   const n = input.nodes.length;
   const adj = adjacency(input);
+  const degree = input.nodes.map((v) => input.nodes.filter((u) => adj.has(`${v}|${u}`)).length);
+  const order = input.nodes.map((_, i) => i).sort((a, b) => degree[b] - degree[a]);
   const classes: number[] = [];
   function conflictsWithClass(mask: number, v: number): boolean {
     for (let i = 0; i < n; i++) {
@@ -27,13 +37,14 @@ export function existsColoring(input: Input): boolean {
     }
     return false;
   }
-  function enumerate(v: number): boolean {
-    if (v === n) return true;
+  function enumerate(depth: number): boolean {
+    if (depth === n) return true;
+    const v = order[depth];
     for (let c = 0; c < Math.min(classes.length + 1, input.colors); c++) {
       if (c === classes.length) classes.push(0);
       if (!conflictsWithClass(classes[c], v)) {
         classes[c] |= 1 << v;
-        if (enumerate(v + 1)) return true;
+        if (enumerate(depth + 1)) return true;
         classes[c] &= ~(1 << v);
       }
       if (classes[c] === 0) classes.pop();

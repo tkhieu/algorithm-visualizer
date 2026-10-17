@@ -41,6 +41,36 @@ function buildPreset(preset: PresetId, n: number, q: number): Input {
   if (preset === 'petersen') return petersenGraph();
   return grotzschGraph();
 }
+/** Số đỉnh/cạnh một mẫu SẼ có, tính trước bằng công thức — không dựng đồ thị thật — để kiểm xem
+ * tham số người dùng gõ có vượt MAX_NODES/MAX_EDGES hay không TRƯỚC khi gọi buildPreset. Bắt buộc
+ * phải kiểm trước: với preset 'complete' hay 'crown', một n gõ tay lớn (hoặc NaN/Infinity) khiến
+ * buildPreset dựng hẳn mảng cạnh O(n²) — có thể treo hoặc hết bộ nhớ tab trước khi code JS nào
+ * kịp kiểm tra độ dài mảng kết quả. Không dùng số liệu này để CẮT đồ thị: nếu vượt ngưỡng, từ chối
+ * hẳn (không gọi buildPreset) — cắt bớt đỉnh/cạnh của một mẫu đã biết (Kₙ, vương miện, …) phá vỡ
+ * đúng cấu trúc khiến χ đã ghi trong tên mẫu không còn đúng (ví dụ K128 cắt còn 8000 cạnh không
+ * còn là K128, K(320,1) cắt còn 320 đỉnh phía trái mất hết cạnh nên χ thật thành 1 chứ không phải 2). */
+function presetSize(preset: PresetId, n: number, q: number): {nodes: number; edges: number} | null {
+  if (!Number.isFinite(n) || !Number.isFinite(q)) return null;
+  if (preset === 'crown') {
+    const m = Math.max(2, Math.round(n));
+    return {nodes: 2 * m, edges: m * (m - 1)};
+  }
+  if (preset === 'complete') {
+    const c = Math.max(1, Math.round(n));
+    return {nodes: c, edges: (c * (c - 1)) / 2};
+  }
+  if (preset === 'cycle') {
+    const c = Math.max(3, Math.round(n));
+    return {nodes: c, edges: c};
+  }
+  if (preset === 'bipartite') {
+    const p = Math.max(1, Math.round(n));
+    const r = Math.max(1, Math.round(q));
+    return {nodes: p + r, edges: p * r};
+  }
+  if (preset === 'petersen') return {nodes: 10, edges: 15};
+  return {nodes: 11, edges: 20}; // grotzsch
+}
 
 /** Trình nhập liệu riêng cho Tô màu đồ thị: thêm chọn chế độ (k-coloring/chromatic), bộ sinh đồ
  * thị ngẫu nhiên G(n,p) theo seed, và các mẫu đồ thị đã biết χ (vương miện, Kₙ, chu trình, hai
@@ -138,19 +168,36 @@ export function InputEditor({input, onChange, disabled = false}: InputEditorProp
           <Button
             disabled={disabled}
             onClick={() => {
-              // Kẹp n/p trước khi sinh để output luôn hợp lệ với inputSchema: n ≤ MAX_NODES (ô số
-              // chỉ gợi ý max qua thuộc tính HTML, không chặn người dùng gõ tay một số lớn hơn), và
-              // hạ p nếu n*p quá lớn (ví dụ n=320, p=1 — đồ thị đầy đủ — sẽ cho 51.040 cạnh, vượt xa
-              // MAX_EDGES) để số cạnh kỳ vọng nằm trong giới hạn thay vì để randomGraph cắt cụt một
-              // cách "vô hình" (không có cách nào feedback lại cho người dùng từ bên trong đó).
+              // randomGraph sinh đúng mẫu G(n,p) thật, không tự cắt cạnh (cắt làm lệch mẫu — xem
+              // chú thích tại randomGraph). Ở đây: kẹp n ≤ MAX_NODES (ô số chỉ gợi ý max qua thuộc
+              // tính HTML, không chặn người dùng gõ tay một số lớn hơn), rồi hạ p để số cạnh KỲ
+              // VỌNG chỉ còn 90% MAX_EDGES — còn dư nhiều lần độ lệch chuẩn của phân phối nhị thức
+              // nên số cạnh THỰC SINH RA hiếm khi vượt MAX_EDGES. Nếu lần hiếm đó vẫn xảy ra: từ
+              // chối hẳn (không cắt, không lặng lẽ nhận một đồ thị khác với cái vừa báo), giữ nguyên
+              // dữ liệu hiện tại.
               const safeN = Math.min(Math.max(1, Math.round(n)), MAX_NODES);
               const maxPairs = (safeN * (safeN - 1)) / 2;
-              const safeP = maxPairs > 0 ? Math.min(Math.max(0, p), MAX_EDGES / maxPairs) : p;
+              const safeP = maxPairs > 0 ? Math.min(Math.max(0, p), (MAX_EDGES * 0.9) / maxPairs) : Math.max(0, p);
+              const graph = randomGraph(seed, safeN, safeP, data?.colors ?? 4);
+              if (graph.edges.length > MAX_EDGES) {
+                setGenNotice(
+                  `Không áp dụng: với hạt giống ${seed}, n=${safeN}, p=${safeP.toFixed(4)} sinh ra ${graph.edges.length} ` +
+                    `cạnh — vẫn vượt giới hạn ${MAX_EDGES}. Giữ nguyên dữ liệu hiện tại; hãy giảm p/n hoặc đổi hạt giống rồi thử lại.`,
+                );
+                return;
+              }
               const notices: string[] = [];
               if (safeN !== n) notices.push(`giảm n xuống ${safeN} (tối đa ${MAX_NODES} đỉnh)`);
-              if (safeP < p) notices.push(`giảm p xuống ${safeP.toFixed(4)} để không vượt quá ${MAX_EDGES} cạnh`);
-              setGenNotice(notices.length ? `Đã tự điều chỉnh để hợp lệ: ${notices.join('; ')}.` : null);
-              onChange({...randomGraph(seed, safeN, safeP, data?.colors ?? 4), mode});
+              if (safeP < p)
+                notices.push(
+                  `giảm xác suất cạnh từ ${p} xuống ${safeP.toFixed(4)} — kỳ vọng khoảng ${Math.round(safeP * maxPairs)} cạnh (tối đa ${MAX_EDGES})`,
+                );
+              setGenNotice(
+                notices.length
+                  ? `Đã tự điều chỉnh để hợp lệ: ${notices.join('; ')}. Đồ thị sinh ra thực tế có ${graph.edges.length} cạnh.`
+                  : null,
+              );
+              onChange({...graph, mode});
               setParams((prev) => {
                 prev.delete('case');
                 return prev;
@@ -199,19 +246,21 @@ export function InputEditor({input, onChange, disabled = false}: InputEditorProp
           <Button
             disabled={disabled}
             onClick={() => {
+              // Kiểm kích thước BẰNG CÔNG THỨC trước, không dựng đồ thị thật — một n/q gõ tay quá
+              // lớn (hoặc NaN) không được phép khiến buildPreset cố dựng một mảng cạnh khổng lồ.
+              // Nếu vượt ngưỡng: từ chối hẳn, giữ nguyên dữ liệu hiện tại — không cắt bớt (cắt bớt
+              // một mẫu đã biết phá vỡ đúng cấu trúc của nó, xem chú thích ở presetSize).
+              const size = presetSize(preset, presetN, presetQ);
+              if (!size || size.nodes > MAX_NODES || size.edges > MAX_EDGES) {
+                setGenNotice(
+                  `Không áp dụng: mẫu này cần ${size ? `${size.nodes} đỉnh, ${size.edges} cạnh` : 'một kích thước hợp lệ'} — ` +
+                    `vượt giới hạn (tối đa ${MAX_NODES} đỉnh, ${MAX_EDGES} cạnh). Giữ nguyên dữ liệu hiện tại; hãy chọn kích thước nhỏ hơn.`,
+                );
+                return;
+              }
+              setGenNotice(null);
               const built = buildPreset(preset, presetN, presetQ);
-              // Cùng một lưới an toàn như tab "Ngẫu nhiên": kích thước mẫu (n, p, q) do người dùng
-              // gõ tay không bị HTML chặn, nên Kₙ hay vương miện với kích thước quá lớn vẫn phải
-              // được kẹp lại trước khi đưa vào inputSchema, không để tràn MAX_NODES/MAX_EDGES.
-              const nodes = built.nodes.length > MAX_NODES ? built.nodes.slice(0, MAX_NODES) : built.nodes;
-              const keep = new Set(nodes);
-              let edges = built.edges.filter((e) => keep.has(e.from) && keep.has(e.to));
-              if (edges.length > MAX_EDGES) edges = edges.slice(0, MAX_EDGES);
-              const notices: string[] = [];
-              if (nodes.length !== built.nodes.length) notices.push(`giảm xuống ${nodes.length} đỉnh (tối đa ${MAX_NODES})`);
-              if (edges.length !== built.edges.length) notices.push(`cắt bớt xuống ${edges.length} cạnh (tối đa ${MAX_EDGES})`);
-              setGenNotice(notices.length ? `Đã tự điều chỉnh mẫu để hợp lệ: ${notices.join('; ')}.` : null);
-              onChange({...built, nodes, edges, colors: data?.colors ?? built.colors, mode});
+              onChange({...built, colors: data?.colors ?? built.colors, mode});
               setParams((prev) => {
                 prev.delete('case');
                 return prev;
