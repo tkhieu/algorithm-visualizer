@@ -10,7 +10,7 @@ import {
   mycielskian,
   grotzschGraph,
 } from './generators';
-import {inputSchema} from './definition';
+import {inputSchema, MAX_EDGES, MAX_NODES} from './definition';
 import {chromaticNumberOracle, existsColoring} from './checker';
 
 describe('graph-coloring generators (hồi quy cho đồ thị cấu trúc mới)', () => {
@@ -29,6 +29,21 @@ describe('graph-coloring generators (hồi quy cho đồ thị cấu trúc mới
     expect(a.nodes.length).toBe(50);
     expect(a.edges).toEqual(b.edges);
     expect(inputSchema.safeParse(a).success).toBe(true);
+  });
+
+  it('randomGraph(seed, MAX_NODES, 1): đồ thị đầy đủ ở n lớn nhất vẫn hợp lệ (không vượt MAX_EDGES)', () => {
+    // n=320, p=1 lẽ ra sinh đồ thị đầy đủ C(320,2) = 51.040 cạnh — vượt xa MAX_EDGES (8000). Trước
+    // khi cắt bớt, input này không hợp lệ với inputSchema (mọi giá trị n,p mà trình nhập liệu cho
+    // chọn phải luôn sinh ra input hợp lệ).
+    const g = randomGraph(1, MAX_NODES, 1);
+    expect(g.nodes.length).toBe(MAX_NODES);
+    expect(g.edges.length).toBe(MAX_EDGES);
+    expect(inputSchema.safeParse(g).success).toBe(true);
+  });
+
+  it('randomGraph với p nhỏ và n vừa phải không bị cắt (không đổi hành vi bình thường)', () => {
+    const g = randomGraph(7, 50, 0.1);
+    expect(g.edges.length).toBeLessThan(MAX_EDGES);
   });
 
   it('crownGraph(m): hai phía (χ = 2 với oracle độc lập), K_{m,m} bỏ một ghép cặp', () => {

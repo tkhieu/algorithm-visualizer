@@ -45,20 +45,34 @@ function LoadedTestcasePage({problemId,problem}:{problemId:string;problem:AnyPro
   const invalid=cases.filter(c=>c.group==='invalid').map(c=>({id:c.id,pass:!problem.inputSchema.safeParse(c.input).success,ms:0,message:'Đầu vào phải bị từ chối'}));
   setRows(invalid);
   if(!referenceAlgo){setRunning(false);return}
-  const jobs=cases.filter(c=>c.group!=='invalid').map(c=>({id:c.id,algoId:referenceAlgo.id,input:c.input}));
-  await benchPool(jobs,(id,response)=>{
-   const c=cases.find(x=>x.id===id)!;
-   const r=response.result;
+  const applicable=cases.filter(c=>c.group!=='invalid');
+  const toRow=(c:(typeof applicable)[number],r:Awaited<ReturnType<typeof benchWorker>>['result'],ms:number):Row=>{
    const score=r.status==='ok'&&problem.objective?problem.objective.score(c.input,r.output):undefined;
    const actual=typeof c.expected==='number'&&score!==undefined?score:r.status==='ok'?r.output:undefined;
    const matches=c.expected===undefined||JSON.stringify(actual)===JSON.stringify(c.expected);
-   // "Không áp dụng" (precondition từ chối vì vượt ngưỡng an toàn của chính thuật toán, ví dụ đồ
-   // thị lớn với quay lui) là câu trả lời ĐÚNG cho input đó, không phải một kết quả sai — tính là
-   // đạt để không lẫn với "Không đạt" thật (nhãn hiển thị ở cột "Kết quả" vẫn phân biệt riêng).
-   const pass=(r.status==='ok'&&r.verdict.ok&&matches)||r.status==='not-applicable';
+   const pass=r.status==='ok'&&r.verdict.ok&&matches;
    const message=r.status==='ok'?(c.expected!==undefined?`Kết quả ${JSON.stringify(actual)}; kỳ vọng ${JSON.stringify(c.expected)}`:'Kết quả hợp lệ'):r.status==='not-applicable'?`Không áp dụng: ${r.reason}`:r.status;
-   setRows(prev=>[...prev,{id,pass,ms:response.medianMs,message,notApplicable:r.status==='not-applicable'}]);
+   return {id:c.id,pass,ms,message,notApplicable:r.status==='not-applicable'};
+  };
+  const notApplicableIds=new Set<string>();
+  const jobs=applicable.map(c=>({id:c.id,algoId:referenceAlgo.id,input:c.input}));
+  await benchPool(jobs,(id,response)=>{
+   if(response.result.status==='not-applicable')notApplicableIds.add(id);
+   setRows(prev=>[...prev,toRow(cases.find(x=>x.id===id)!,response.result,response.medianMs)]);
   });
+  // Thuật toán tham chiếu tự khai "Không áp dụng" cho ca này (ví dụ đồ thị lớn vượt ngưỡng an toàn
+  // của quay lui) — thử lại bằng từng thuật toán ready còn lại theo đúng thứ tự khai báo, để ca đó
+  // vẫn được một thuật toán áp dụng được kiểm chứng thay vì chỉ hiện "Không áp dụng" suông. Cơ chế
+  // này chung cho mọi bài toán có nhiều thuật toán ready, không riêng gì graph-coloring.
+  for(const algo of readyAlgos){
+   if(algo.id===referenceAlgo.id||notApplicableIds.size===0)continue;
+   const retryJobs=[...notApplicableIds].map(id=>({id,algoId:algo.id,input:cases.find(c=>c.id===id)!.input}));
+   await benchPool(retryJobs,(id,response)=>{
+    if(response.result.status==='not-applicable')return;
+    notApplicableIds.delete(id);
+    setRows(prev=>prev.map(row=>row.id===id?toRow(cases.find(c=>c.id===id)!,response.result,response.medianMs):row));
+   });
+  }
   setRunning(false);
  };
  const benchmark=async()=>{
@@ -71,7 +85,10 @@ function LoadedTestcasePage({problemId,problem}:{problemId:string;problem:AnyPro
   }
   setChart(values);
  };
- const pass=rows.filter(r=>r.pass).length;
+ // "Không áp dụng" không phải là "đạt" (chưa hề so với expected) lẫn "không đạt" (không phải kết
+ // quả sai) — đếm riêng để không lẫn với tổng đạt, tránh che giấu lỗi thật ở các bài toán khác.
+ const pass=rows.filter(r=>r.pass&&!r.notApplicable).length;
+ const notApplicableCount=rows.filter(r=>r.notApplicable).length;
  const exportRows=rows.map(r=>({...r,group:cases.find(c=>c.id===r.id)?.group}));
 
  return <div className="space-y-4">
@@ -81,7 +98,7 @@ function LoadedTestcasePage({problemId,problem}:{problemId:string;problem:AnyPro
    <Button onClick={runAll} disabled={running}>{running?'Đang chạy…':'Chạy tất cả'}</Button>
    <Button variant="outline" disabled={!rows.length} onClick={()=>download('ket-qua-testcase.json',JSON.stringify(exportRows,null,2),'application/json')}>Xuất JSON</Button>
    <Button variant="outline" disabled={!rows.length} onClick={()=>download('ket-qua-testcase.csv',['id,nhom,dat,ms,ghi_chu',...exportRows.map(r=>`${r.id},${r.group},${r.pass},${r.ms},"${r.message}"`)].join('\n'),'text/csv')}>Xuất CSV</Button>
-   <span data-testid="pass-count" data-status={running?'running':rows.length?'done':'idle'} className="self-center font-semibold">Đạt {pass}/{rows.length}</span>
+   <span data-testid="pass-count" data-status={running?'running':rows.length?'done':'idle'} className="self-center font-semibold">Đạt {pass}/{rows.length}{notApplicableCount>0?` · Không áp dụng ${notApplicableCount}`:''}</span>
   </div>
   {(Object.keys(groupNames)).map(group=><Card key={group}><CardHeader><CardTitle>{groupNames[group]}</CardTitle></CardHeader><CardContent><div className="overflow-auto"><table className="data-table"><thead><tr><th>Ca kiểm thử</th><th>Kỳ vọng</th><th>Kết quả</th><th>Trung vị ms</th><th>Chi tiết</th></tr></thead><tbody>{cases.filter(c=>c.group===group).map(c=>{
    const row=rows.find(r=>r.id===c.id);

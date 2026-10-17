@@ -3,7 +3,7 @@ import {useSearchParams} from 'react-router-dom';
 import {Tabs, TabsList, TabsTrigger, TabsContent} from '../../components/ui/tabs';
 import {Button} from '../../components/ui/button';
 import type {InputEditorProps, OutputRendererProps} from '../../catalog/ui-registry';
-import {inputSchema, type Input, type Output} from './definition';
+import {inputSchema, MAX_EDGES, MAX_NODES, type Input, type Output} from './definition';
 import {cases} from './cases';
 import {
   randomGraph,
@@ -53,6 +53,7 @@ export function InputEditor({input, onChange, disabled = false}: InputEditorProp
   const [seed, setSeed] = useState(42);
   const [n, setN] = useState(10);
   const [p, setP] = useState(0.3);
+  const [genNotice, setGenNotice] = useState<string | null>(null);
   const [preset, setPreset] = useState<PresetId>('crown');
   const [presetN, setPresetN] = useState(4);
   const [presetQ, setPresetQ] = useState(3);
@@ -137,7 +138,19 @@ export function InputEditor({input, onChange, disabled = false}: InputEditorProp
           <Button
             disabled={disabled}
             onClick={() => {
-              onChange({...randomGraph(seed, n, p, data?.colors ?? 4), mode});
+              // Kẹp n/p trước khi sinh để output luôn hợp lệ với inputSchema: n ≤ MAX_NODES (ô số
+              // chỉ gợi ý max qua thuộc tính HTML, không chặn người dùng gõ tay một số lớn hơn), và
+              // hạ p nếu n*p quá lớn (ví dụ n=320, p=1 — đồ thị đầy đủ — sẽ cho 51.040 cạnh, vượt xa
+              // MAX_EDGES) để số cạnh kỳ vọng nằm trong giới hạn thay vì để randomGraph cắt cụt một
+              // cách "vô hình" (không có cách nào feedback lại cho người dùng từ bên trong đó).
+              const safeN = Math.min(Math.max(1, Math.round(n)), MAX_NODES);
+              const maxPairs = (safeN * (safeN - 1)) / 2;
+              const safeP = maxPairs > 0 ? Math.min(Math.max(0, p), MAX_EDGES / maxPairs) : p;
+              const notices: string[] = [];
+              if (safeN !== n) notices.push(`giảm n xuống ${safeN} (tối đa ${MAX_NODES} đỉnh)`);
+              if (safeP < p) notices.push(`giảm p xuống ${safeP.toFixed(4)} để không vượt quá ${MAX_EDGES} cạnh`);
+              setGenNotice(notices.length ? `Đã tự điều chỉnh để hợp lệ: ${notices.join('; ')}.` : null);
+              onChange({...randomGraph(seed, safeN, safeP, data?.colors ?? 4), mode});
               setParams((prev) => {
                 prev.delete('case');
                 return prev;
@@ -146,6 +159,7 @@ export function InputEditor({input, onChange, disabled = false}: InputEditorProp
           >
             Sinh đồ thị
           </Button>
+          {genNotice && <p role="status" className="text-sm mt-2">{genNotice}</p>}
         </TabsContent>
         <TabsContent value="preset">
           <label className="field-label">
@@ -186,7 +200,18 @@ export function InputEditor({input, onChange, disabled = false}: InputEditorProp
             disabled={disabled}
             onClick={() => {
               const built = buildPreset(preset, presetN, presetQ);
-              onChange({...built, colors: data?.colors ?? built.colors, mode});
+              // Cùng một lưới an toàn như tab "Ngẫu nhiên": kích thước mẫu (n, p, q) do người dùng
+              // gõ tay không bị HTML chặn, nên Kₙ hay vương miện với kích thước quá lớn vẫn phải
+              // được kẹp lại trước khi đưa vào inputSchema, không để tràn MAX_NODES/MAX_EDGES.
+              const nodes = built.nodes.length > MAX_NODES ? built.nodes.slice(0, MAX_NODES) : built.nodes;
+              const keep = new Set(nodes);
+              let edges = built.edges.filter((e) => keep.has(e.from) && keep.has(e.to));
+              if (edges.length > MAX_EDGES) edges = edges.slice(0, MAX_EDGES);
+              const notices: string[] = [];
+              if (nodes.length !== built.nodes.length) notices.push(`giảm xuống ${nodes.length} đỉnh (tối đa ${MAX_NODES})`);
+              if (edges.length !== built.edges.length) notices.push(`cắt bớt xuống ${edges.length} cạnh (tối đa ${MAX_EDGES})`);
+              setGenNotice(notices.length ? `Đã tự điều chỉnh mẫu để hợp lệ: ${notices.join('; ')}.` : null);
+              onChange({...built, nodes, edges, colors: data?.colors ?? built.colors, mode});
               setParams((prev) => {
                 prev.delete('case');
                 return prev;
@@ -195,6 +220,7 @@ export function InputEditor({input, onChange, disabled = false}: InputEditorProp
           >
             Chèn mẫu
           </Button>
+          {genNotice && <p role="status" className="text-sm mt-2">{genNotice}</p>}
         </TabsContent>
         <TabsContent value="case">
           <label className="field-label">

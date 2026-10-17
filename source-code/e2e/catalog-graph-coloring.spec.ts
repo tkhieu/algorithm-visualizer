@@ -57,6 +57,20 @@ test('mẫu đồ thị: chèn Petersen và chạy quay lui tìm χ(G) = 3 (hi�
   expect(errors).toEqual([]);
 });
 
+test('bộ sinh ngẫu nhiên: n=320, p=1 (đồ thị đầy đủ ở kích thước lớn nhất) vẫn tự điều chỉnh để hợp lệ, không lỗi', async ({page}) => {
+  const errors = trackErrors(page);
+  await page.goto('/play/graph-coloring/greedy');
+  await page.getByRole('tab', {name: 'Ngẫu nhiên'}).click();
+  await page.getByLabel('Số đỉnh n').fill('320');
+  await page.getByLabel('Xác suất cạnh p').fill('1');
+  await page.getByRole('button', {name: 'Sinh đồ thị'}).click();
+  await expect(page.getByText(/Đã tự điều chỉnh để hợp lệ/)).toBeVisible();
+  await expect(page.getByText('✓ Dữ liệu hợp lệ')).toBeVisible();
+  await page.getByRole('button', {name: 'Chạy', exact: true}).click();
+  await expect(page.getByTestId('output')).not.toContainText('Không thể chạy');
+  expect(errors).toEqual([]);
+});
+
 test('So sánh: chế độ χ(G) hiện cột Giá trị (số màu) có giá trị số sau khi chạy', async ({page}) => {
   const errors = trackErrors(page);
   await page.goto('/compare/graph-coloring');

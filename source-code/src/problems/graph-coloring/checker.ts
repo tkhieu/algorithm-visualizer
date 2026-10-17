@@ -12,28 +12,30 @@ export function adjacency(input: Input): Set<string> {
 export function connected(adj: Set<string>, a: string, b: string): boolean {
   return adj.has(`${a}|${b}`);
 }
-/** Duyệt các phân hoạch đỉnh thành lớp màu, độc lập với phép mở rộng quay lui của thuật toán. */
+/** Duyệt các phân hoạch đỉnh thành lớp màu, độc lập với phép mở rộng quay lui của thuật toán.
+ * Mỗi đỉnh chỉ được thêm vào một lớp nếu không xung đột với đỉnh nào đã có trong lớp đó ngay tại
+ * thời điểm thêm (loại nhánh ngay, không đợi đến khi gán hết n đỉnh mới kiểm tra toàn bộ) — nếu
+ * không, một đồ thị có nhiều đỉnh cô lập (không cạnh) sẽ khiến hàm này thử mọi tổ hợp lớp cho các
+ * đỉnh cô lập trước khi phát hiện xung đột ở phần còn lại, tốn tới O(kⁿ) một cách không cần thiết. */
 export function existsColoring(input: Input): boolean {
   const n = input.nodes.length;
   const adj = adjacency(input);
   const classes: number[] = [];
-  function enumerate(v: number): boolean {
-    if (v === n) {
-      return classes.every((mask) => {
-        for (let i = 0; i < n; i++) {
-          if (!(mask & (1 << i))) continue;
-          for (let j = i + 1; j < n; j++) {
-            if ((mask & (1 << j)) && connected(adj, input.nodes[i], input.nodes[j])) return false;
-          }
-        }
-        return true;
-      });
+  function conflictsWithClass(mask: number, v: number): boolean {
+    for (let i = 0; i < n; i++) {
+      if ((mask & (1 << i)) && connected(adj, input.nodes[i], input.nodes[v])) return true;
     }
+    return false;
+  }
+  function enumerate(v: number): boolean {
+    if (v === n) return true;
     for (let c = 0; c < Math.min(classes.length + 1, input.colors); c++) {
       if (c === classes.length) classes.push(0);
-      classes[c] |= 1 << v;
-      if (enumerate(v + 1)) return true;
-      classes[c] &= ~(1 << v);
+      if (!conflictsWithClass(classes[c], v)) {
+        classes[c] |= 1 << v;
+        if (enumerate(v + 1)) return true;
+        classes[c] &= ~(1 << v);
+      }
       if (classes[c] === 0) classes.pop();
     }
     return false;
@@ -74,8 +76,10 @@ function checkChromatic(input: Input, output: Output): Verdict {
   if (issue) return {ok: false, reason: issue};
   if (new Set(output.coloring).size !== colorsUsed)
     return {ok: false, reason: 'Số màu báo cáo không khớp số màu thực dùng trong cách tô'};
-  if (input.nodes.length > CHROMATIC_ORACLE_MAX_N)
-    return output.chromaticExact ? {ok: true, optimal: true} : {ok: true, optimal: false};
+  // Đồ thị vượt ngưỡng oracle: không tính được χ(G) độc lập để xác nhận, nên dù thuật toán có báo
+  // chromaticExact cũng không được tin — không đưa ra tuyên bố tối ưu nào (bỏ trường optimal) để
+  // tránh báo "tối ưu" cho một tuyên bố chưa hề được kiểm chứng.
+  if (input.nodes.length > CHROMATIC_ORACLE_MAX_N) return {ok: true};
   const chi = chromaticNumberOracle(input);
   if (output.chromaticExact)
     return colorsUsed === chi

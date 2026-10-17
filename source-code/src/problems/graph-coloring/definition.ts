@@ -3,9 +3,13 @@ import {z} from 'zod';
  * 'chromatic': tìm sắc số χ(G), tham số colors bị bỏ qua. */
 export const modeSchema = z.enum(['k-coloring', 'chromatic']);
 export type Mode = z.infer<typeof modeSchema>;
+/** Xuất ra ngoài (dùng lại ở ui.tsx khi kẹp số cạnh của bộ sinh ngẫu nhiên) để hai nơi không bao
+ * giờ lệch nhau — một hằng số duy nhất, không phải hai số viết tay ở hai file. */
+export const MAX_NODES = 320;
+export const MAX_EDGES = 8000;
 export const inputSchema = z.object({
-  nodes: z.array(z.string().trim().min(1).max(20)).max(320),
-  edges: z.array(z.object({from: z.string(), to: z.string()})).max(8000),
+  nodes: z.array(z.string().trim().min(1).max(20)).max(MAX_NODES),
+  edges: z.array(z.object({from: z.string(), to: z.string()})).max(MAX_EDGES),
   colors: z.number().int().min(1).max(10),
   mode: modeSchema.optional(),
 });

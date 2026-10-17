@@ -1,5 +1,5 @@
 import type {SizeClass} from '../../core/contracts';
-import type {Input} from './definition';
+import {MAX_EDGES, type Input} from './definition';
 import {rng} from '../../lib/random';
 export function generate(seed: number, size: SizeClass): Input {
   const r = rng(seed);
@@ -12,12 +12,17 @@ export function generate(seed: number, size: SizeClass): Input {
   return {nodes, edges, colors};
 }
 type Edge = {from: string; to: string};
-/** Đồ thị ngẫu nhiên G(n,p) có seed — dùng cho tab "Ngẫu nhiên" (n, p tuỳ chỉnh) và các ca lớn. */
+/** Đồ thị ngẫu nhiên G(n,p) có seed — dùng cho tab "Ngẫu nhiên" (n, p tuỳ chỉnh) và các ca lớn.
+ * Luôn trả về tối đa MAX_EDGES cạnh (cắt bớt nếu p lớn sinh ra nhiều hơn, ví dụ p=1 — đồ thị đầy
+ * đủ — với n lớn) để output luôn hợp lệ với inputSchema bất kể (n,p) người gọi chọn; không tự ý
+ * hạ p xuống ở đây vì việc đó ảnh hưởng tới phân phối cạnh được sinh ra — nơi gọi (ui.tsx) tự hạ p
+ * trước khi gọi nếu muốn tránh bị cắt và báo người dùng biết. */
 export function randomGraph(seed: number, n: number, p: number, colors = 4): Input {
   const r = rng(seed);
   const nodes = Array.from({length: n}, (_, i) => `V${i}`);
   const edges: Edge[] = [];
-  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (r() < p) edges.push({from: nodes[i], to: nodes[j]});
+  for (let i = 0; i < n && edges.length < MAX_EDGES; i++)
+    for (let j = i + 1; j < n && edges.length < MAX_EDGES; j++) if (r() < p) edges.push({from: nodes[i], to: nodes[j]});
   return {nodes, edges, colors};
 }
 /** Đồ thị vương miện (crown graph): hai nhóm A, B kích thước m, cạnh Ai–Bj với mọi i≠j — đây là

@@ -38,6 +38,33 @@ describe('graph-coloring definition', () => {
       Array.prototype.fill = original;
     }
   });
+  it('existsColoring loại nhánh ngay khi xung đột, không chỉ ở lá — K4 + 18 đỉnh cô lập, k=3 chạy nhanh', () => {
+    // Trước khi thêm pruning theo lớp, hàm này chỉ kiểm xung đột khi đã gán hết n đỉnh, nên với 18
+    // đỉnh cô lập (không cạnh) nó thử mọi tổ hợp lớp cho 18 đỉnh đó (lên tới kⁿ) trước khi chạm tới
+    // 4 đỉnh của K4 — với k=3, n=22 là 3^22 ≈ 3,1×10^10 bước, vượt xa thời gian chờ worker (5 s).
+    // Quay lui (backtracking) trả lời tức khắc vì nó loại nhánh ngay khi xung đột; oracle độc lập
+    // (không dùng backtracking) phải nhanh tương đương bằng cách loại nhánh của riêng nó.
+    const nodes = Array.from({length: 22}, (_, i) => `V${i}`);
+    const edges: {from: string; to: string}[] = [];
+    for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) edges.push({from: nodes[i], to: nodes[j]});
+    const input = {nodes, edges, colors: 3};
+    const start = performance.now();
+    const result = existsColoring(input);
+    const ms = performance.now() - start;
+    expect(result).toBe(false); // K4 cần đúng 4 màu, k=3 không đủ dù có thêm đỉnh cô lập
+    expect(ms).toBeLessThan(1000);
+  });
+  it('check(found:false) trên K4 + 18 đỉnh cô lập, k=3 cũng chạy nhanh (dùng lại existsColoring)', () => {
+    const nodes = Array.from({length: 22}, (_, i) => `V${i}`);
+    const edges: {from: string; to: string}[] = [];
+    for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) edges.push({from: nodes[i], to: nodes[j]});
+    const input = {nodes, edges, colors: 3};
+    const start = performance.now();
+    const verdict = check(input, {found: false, coloring: []});
+    const ms = performance.now() - start;
+    expect(verdict).toEqual({ok: true, optimal: true});
+    expect(ms).toBeLessThan(1000);
+  });
   it('found=false của thuật toán chính xác phải chứng minh vô nghiệm', () => {
     expect(check(triangle, {found: false, coloring: []}).ok).toBe(false);
     expect(check({...triangle, colors: 2}, {found: false, coloring: []})).toEqual({ok: true, optimal: true});
@@ -126,7 +153,7 @@ describe('graph-coloring definition', () => {
       });
       expect(suboptimal).toEqual({ok: true, optimal: false});
     });
-    it('đồ thị lớn hơn ngưỡng oracle: không tính χ(G) độc lập, chỉ ghi nhận tin hoặc không bảo đảm', () => {
+    it('đồ thị lớn hơn ngưỡng oracle: không tính χ(G) độc lập, không đưa ra tuyên bố tối ưu nào', () => {
       const big = {
         nodes: Array.from({length: CHROMATIC_ORACLE_MAX_N + 1}, (_, i) => `V${i}`),
         edges: [],
@@ -134,14 +161,25 @@ describe('graph-coloring definition', () => {
         mode: 'chromatic' as const,
       };
       const coloring = big.nodes.map(() => 0);
-      expect(check(big, {found: true, coloring, colorsUsed: 1, chromaticExact: true})).toEqual({
-        ok: true,
-        optimal: true,
-      });
-      expect(check(big, {found: true, coloring, colorsUsed: 1, heuristic: true})).toEqual({
-        ok: true,
-        optimal: false,
-      });
+      // Dù thuật toán tự xưng chromaticExact (không thể xảy ra trong thực tế vì precondition của
+      // backtracking/exhaustive đã chặn n này, nhưng checker không được PHÉP tin một lời tự xưng
+      // không kiểm chứng được), kết quả vẫn không có trường optimal — không hề là "tối ưu".
+      expect(check(big, {found: true, coloring, colorsUsed: 1, chromaticExact: true})).toEqual({ok: true});
+      expect(check(big, {found: true, coloring, colorsUsed: 1, heuristic: true})).toEqual({ok: true});
+    });
+    it('đồ thị lớn hơn ngưỡng oracle: chromaticExact SAI (coloring hợp lệ nhưng không tối thiểu) không được tin là tối ưu', () => {
+      // Đồ thị hình sao (bipartite, χ thật = 2): V0 nối với V1..V12. Output đưa ra một cách tô HỢP
+      // LỆ nhưng dùng 3 màu (V0=0, V1=1, V2=2, còn lại=1) và tự xưng chromaticExact — tuyên bố χ(G)
+      // = 3 là SAI (χ thật = 2) nhưng không thể phát hiện bằng properColoringIssue vì cách tô vẫn
+      // hợp lệ, chỉ không tối thiểu. Trước khi sửa, checker tin ngay và trả optimal:true cho tuyên
+      // bố sai này vì n > ngưỡng oracle; sau khi sửa phải không còn trường optimal nào cả.
+      const n = CHROMATIC_ORACLE_MAX_N + 1;
+      const nodes = Array.from({length: n}, (_, i) => `V${i}`);
+      const edges = nodes.slice(1).map((v) => ({from: nodes[0], to: v}));
+      const input = {nodes, edges, colors: 1, mode: 'chromatic' as const};
+      const coloring = nodes.map((_, i) => (i === 0 ? 0 : i === 1 ? 1 : i === 2 ? 2 : 1));
+      const verdict = check(input, {found: true, coloring, colorsUsed: 3, chromaticExact: true});
+      expect(verdict).toEqual({ok: true});
     });
     it('từ chối khi số màu báo cáo không khớp số màu thực dùng trong cách tô', () => {
       const input = {...crownGraph(3), mode: 'chromatic' as const};
