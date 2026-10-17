@@ -120,7 +120,7 @@ Dữ liệu vào là JSON gồm ba trường, định nghĩa bằng Zod trong `s
 | Số đỉnh n | 0 ≤ n ≤ 10 | heuristic khoảng 300 đỉnh |
 | Số cạnh m | ≤ 100 | theo n |
 | Số màu k | 1 ≤ k ≤ 10 | |
-| Vét cạn | n ≤ 6 và kⁿ ≤ 200.000 | báo "Không áp dụng" khi vượt |
+| Vét cạn | ghi trace đầy đủ khi n ≤ 6; vượt mức này vẫn chạy nhưng trace bị cắt. Nếu kⁿ > 200.000 thì báo lỗi (`error`) | báo "Không áp dụng" khi vượt |
 
 ### 2.6. Ví dụ Input/Output
 
@@ -174,7 +174,9 @@ Greedy(G, order, k)
 
 - **Đúng đắn:** mỗi đỉnh được gán một màu khác với mọi đỉnh kề đã tô. Vì vậy, nếu thuật toán tô được hết thì cách tô hợp lệ.
 - **Không bảo đảm** tìm được cách tô dù cách tô tồn tại (phản ví dụ: đồ thị vương miện).
-- **Độ phức tạp:** O(n·k + m) với danh sách kề. Mỗi đỉnh quét các đỉnh kề để đánh dấu màu bị cấm, rồi quét k màu.
+- **Độ phức tạp:**
+  - *Lý thuyết* (dùng danh sách kề): O(n·k + m). Mỗi đỉnh quét các đỉnh kề để đánh dấu màu bị cấm, rồi quét k màu.
+  - *Cài đặt trong app:* các cạnh được lưu thành tập cặp đỉnh, nên để tìm màu bị cấm, app phải quét toàn bộ n đỉnh. Chi phí là O(n·(n + k)) = O(n²) với k ≤ n. Muốn đạt O(n·k + m) thì phải chuyển sang danh sách kề.
 
 #### (2) Welsh–Powell
 
@@ -185,7 +187,9 @@ WelshPowell(G, k)
 ```
 
 - **Ý tưởng:** tô đỉnh nhiều ràng buộc trước. Welsh–Powell bảo đảm số màu tối đa là max_i min(d_i + 1, i), với d_1 ≥ d_2 ≥ … là bậc của các đỉnh sau khi sắp.
-- **Độ phức tạp:** O(n log n + n·k + m).
+- **Độ phức tạp:**
+  - *Lý thuyết:* O(n log n + n·k + m).
+  - *Cài đặt trong app:* tính bậc bằng cách quét mọi cặp đỉnh, nên tốn O(n²). Cộng thêm phần sắp xếp và greedy, tổng cộng là O(n²).
 - **Lưu ý:** trên đồ thị vương miện, mọi đỉnh cùng bậc 2. Thứ tự sau khi sắp vẫn giữ nguyên thứ tự xen kẽ ban đầu, nên Welsh–Powell gặp đúng khó khăn của greedy (trace thật, mục 4.3).
 
 #### (3) DSATUR (Brélaz, 1979) – mở rộng ngoài sách, app ghi rõ
@@ -202,7 +206,9 @@ DSATUR(G, k)
 
 - **Tính chất đã biết:** DSATUR luôn tô đúng bằng 2 màu trên đồ thị hai phía.
   - Vì vậy trên ví dụ chung, DSATUR thành công còn greedy thì không. Đây là điểm so sánh chính (trace thật, mục 4.3).
-- **Độ phức tạp:** O(n² + m) với cách chọn đỉnh bằng quét tuyến tính.
+- **Độ phức tạp:**
+  - *Lý thuyết:* O(n² + m), nếu cập nhật độ bão hòa tăng dần sau mỗi lần tô.
+  - *Cài đặt trong app:* ở mỗi vòng, app tính lại độ bão hòa của mọi đỉnh chưa tô bằng cách quét mọi cặp đỉnh. Mỗi vòng tốn O(n²), n vòng tốn **O(n³)**.
 
 #### (4) Quay lui (Levitin §12.1)
 
@@ -222,7 +228,10 @@ Backtrack(i)
   - Thuật toán chỉ mở rộng các cách tô bộ phận hợp lệ. Mọi nhánh bị cắt đều đã vi phạm ràng buộc nên không thể mở rộng thành nghiệm.
   - Vì vậy nếu thuật toán trả về false sau khi duyệt hết, thì chắc chắn không có cách tô k màu.
 - **Dừng:** ở nghiệm đầu tiên, tức là giải bài toán quyết định k màu.
-- **Độ phức tạp:** trường hợp xấu nhất O(kⁿ · Δ). Mỗi nút của cây có tối đa k con, và kiểm tra một màu tốn O(Δ). Trên thực tế việc cắt nhánh làm giảm số nút rất nhiều.
+- **Độ phức tạp:**
+  - Cây tìm kiếm có tối đa O(kⁿ) nút, vì mỗi nút có tối đa k con.
+  - Kiểm tra một màu tốn O(Δ) với danh sách kề, nhưng tốn O(n) trong app, vì app quét mọi đỉnh. Trường hợp xấu nhất trong app là O(kⁿ · n).
+  - Trên thực tế, việc cắt nhánh làm giảm số nút rất nhiều.
 
 #### (5) Vét cạn
 
@@ -233,18 +242,22 @@ Exhaustive(G, k)
   return "vô nghiệm"
 ```
 
-- **Độ phức tạp:** O(kⁿ · m). Đây là mốc để so sánh với quay lui.
-- **Giới hạn trong app:** n ≤ 6 và kⁿ ≤ 200.000.
+- **Độ phức tạp:**
+  - Có kⁿ phép gán. Mỗi phép gán được kiểm tra trong O(m) nếu duyệt danh sách cạnh. App kiểm tra bằng cách quét các cặp đỉnh, nên tốn O(kⁿ · n²).
+  - Đây là mốc để so sánh với quay lui.
+- **Giới hạn trong app:**
+  - Khi n ≤ 6, trace được ghi đầy đủ. Lớn hơn mức này thì thuật toán vẫn chạy, nhưng trace bị cắt.
+  - Nếu kⁿ > 200.000, thuật toán báo lỗi kèm gợi ý dùng quay lui. Đây là trạng thái `error`, không phải "Không áp dụng".
 
 #### Bảng tổng hợp
 
-| Thuật toán | Kết luận chắc chắn bài k màu? | Độ phức tạp | Giới hạn n trong app |
+| Thuật toán | Kết luận chắc chắn bài k màu? | Độ phức tạp lý thuyết / trong app | Giới hạn n trong app |
 |---|---|---|---|
-| Greedy | Không (có thể "chưa tìm được") | O(n·k + m) | 10 [SAU NÂNG CẤP: khoảng 300] |
-| Welsh–Powell | Không | O(n log n + n·k + m) | 10 [SAU NÂNG CẤP] |
-| DSATUR | Không (nhưng đúng trên đồ thị hai phía) | O(n² + m) | 10 [SAU NÂNG CẤP] |
-| Quay lui | Có | O(kⁿ · Δ) | 10 |
-| Vét cạn | Có | O(kⁿ · m) | 6 |
+| Greedy | Không (có thể "chưa tìm được") | O(n·k + m) / O(n²) | 10 [SAU NÂNG CẤP: khoảng 300] |
+| Welsh–Powell | Không | O(n log n + n·k + m) / O(n²) | 10 [SAU NÂNG CẤP] |
+| DSATUR | Không (nhưng đúng trên đồ thị hai phía) | O(n² + m) / O(n³) | 10 [SAU NÂNG CẤP] |
+| Quay lui | Có | O(kⁿ · Δ) / O(kⁿ · n) | 10 |
+| Vét cạn | Có | O(kⁿ · m) / O(kⁿ · n²) | trace đủ khi n ≤ 6; kⁿ ≤ 200.000 |
 
 **Tài liệu tham chiếu:**
 - Levitin, *Introduction to the Design and Analysis of Algorithms*, 3rd ed., §1.3 và §12.1;
@@ -311,7 +324,7 @@ Bảng dưới đây lấy từ lần chạy thật hàm `run()` của app, vớ
   - Hai đỉnh này không kề nhau nên gán như vậy là hợp lệ. Nhưng nó buộc mọi đỉnh A còn lại phải khác màu B1, và mọi đỉnh B còn lại phải khác màu A1. Với hai màu, điều này dẫn tới bế tắc ở A3.
 - **Bước 13:** B1 đổi sang màu 1. Từ đây nhóm A nhận màu 0 và nhóm B nhận màu 1, và không còn bế tắc nào nữa.
 - **Thống kê:** 20 bước, 15 lần thăm nút, 6 lần cắt nhánh (reject), tổng 21 phép toán.
-  - Cây trạng thái có 15 nút gán, so với 2⁶ = 64 lá của vét cạn.
+  - Cây trạng thái có 15 nút thử màu: 9 lần gán (`place`) và 6 lần loại (`reject`). Vét cạn phải tới 2⁶ = 64 lá.
 
 **Kết quả:** found = true, coloring = [0, 1, 0, 1, 0, 1]. Checker kiểm tra cả 6 cạnh, hai đầu mút của mỗi cạnh đều khác màu.
 
@@ -340,33 +353,43 @@ Bảng dưới đây lấy từ lần chạy thật hàm `run()` của app, vớ
 - **Greedy và Welsh–Powell** thất bại vì thứ tự đỉnh. Đây là đúng phản ví dụ ở §3.2.
 - **Quay lui** dùng 20 bước và 21 phép toán, còn vét cạn dùng 69 bước và 67 phép toán. Phần chênh lệch là nhờ cắt nhánh sớm.
 
-Mã giả của từng thuật toán trên Player (trích nguyên văn `pseudocode.ts`):
-- **Greedy:**
-  1. Xét các đỉnh theo thứ tự cho trước.
-  2. Gán màu nhỏ nhất trong k màu chưa dùng ở các đỉnh kề đã tô.
-  3. Nếu không còn màu nào khả dụng: báo không thể với k màu.
-  4. Trả về cách tô nếu tô được hết mọi đỉnh.
-  - Dòng 3 sẽ được sửa thành "chưa tìm được" trong PR nâng cấp, cho đúng bản chất heuristic.
-- **Welsh–Powell:** giống greedy, chỉ khác bước đầu là "Sắp các đỉnh theo bậc giảm dần".
-- **DSATUR:**
-  1. Khởi tạo độ bão hoà bằng 0.
-  2. Chọn đỉnh chưa tô có độ bão hoà lớn nhất, hoà thì chọn bậc lớn hơn.
-  3. Gán màu nhỏ nhất…
-  4. Báo thất bại nếu không còn màu…
-  5. Trả về cách tô.
-- **Quay lui:**
-  1. Tô đỉnh theo thứ tự 0..n−1.
-  2. Thử màu c cho đỉnh hiện tại.
-  3. Nếu c trùng màu một đỉnh kề đã tô: loại bỏ c.
-  4. Nếu c hợp lệ: gán màu, sang đỉnh kế tiếp.
-  5. Nếu hết k màu mà không màu nào hợp lệ: quay lui.
-  6. Trả về cách tô hoặc báo vô nghiệm.
-- **Vét cạn:**
-  1. Sinh mọi cách tô (kⁿ cách).
-  2. Gán màu cho đỉnh hiện tại.
-  3. Khi đã gán hết n đỉnh: kiểm tra toàn bộ đồ thị.
-  4. Nếu không có hai đỉnh kề cùng màu: đây là nghiệm.
-  5. Trả về nghiệm đầu tiên hoặc báo vô nghiệm.
+Mã giả của từng thuật toán trên Player, chép nguyên văn từ `algorithms/graph-coloring/<thuật toán>/pseudocode.ts`:
+
+**Greedy**
+1. Xét các đỉnh theo thứ tự cho trước
+2. Gán màu nhỏ nhất trong k màu chưa dùng ở các đỉnh kề đã tô
+3. Nếu không còn màu nào khả dụng: báo không thể với k màu
+4. Trả về cách tô nếu tô được hết mọi đỉnh
+
+**Welsh–Powell**
+1. Sắp các đỉnh theo bậc giảm dần
+2. Gán màu nhỏ nhất trong k màu chưa dùng ở các đỉnh kề đã tô
+3. Nếu không còn màu nào khả dụng: báo không thể với k màu
+4. Trả về cách tô nếu tô được hết mọi đỉnh
+
+**DSATUR**
+1. Khởi tạo độ bão hoà (số màu khác nhau ở các đỉnh kề) bằng 0
+2. Chọn đỉnh chưa tô có độ bão hoà lớn nhất, hoà thì chọn bậc lớn hơn
+3. Gán màu nhỏ nhất trong k màu chưa dùng ở các đỉnh kề đã tô
+4. Nếu không còn màu nào khả dụng: báo không thể với k màu
+5. Trả về cách tô nếu tô được hết mọi đỉnh
+
+**Quay lui**
+1. Tô đỉnh theo thứ tự 0..n−1
+2. Thử màu c cho đỉnh hiện tại
+3. Nếu c trùng màu một đỉnh kề đã tô: loại bỏ c
+4. Nếu c hợp lệ: gán màu, sang đỉnh kế tiếp
+5. Nếu hết k màu mà không màu nào hợp lệ: quay lui
+6. Trả về cách tô nếu tô được hết n đỉnh, hoặc báo vô nghiệm
+
+**Vét cạn**
+1. Sinh mọi cách tô (mỗi đỉnh chọn một trong k màu, kⁿ cách)
+2. Gán màu cho đỉnh hiện tại
+3. Khi đã gán hết n đỉnh: kiểm tra toàn bộ đồ thị
+4. Nếu không có hai đỉnh kề cùng màu: đây là nghiệm
+5. Trả về nghiệm đầu tiên tìm được, hoặc báo vô nghiệm
+
+> **Ghi chú:** dòng "báo không thể với k màu" của ba heuristic không khớp với lời giải thích từng bước ("chưa tìm được"). Dòng `try` của quay lui không bao giờ được tô sáng. PR nâng cấp đang sửa cả hai chỗ này; sau khi merge, phải chép lại phần mã giả ở đây theo bản mới.
 
 [ẢNH: trang So sánh với ví dụ chung]
 
@@ -385,7 +408,7 @@ Những việc em trực tiếp làm, có lưu vết trong lịch sử làm vi�
 - yêu cầu các mô hình tranh luận về kiến trúc và về chiến lược làm report;
 - merge PR #2 đến #8 vào nhánh chính sau khi review chéo đạt. GitHub ghi `mergedBy: tkhieu`;
 - xử lý các lần agent bị chặn: duyệt ngân sách, đăng nhập lại khi hết phiên, mở khóa keyring;
-- tự kiểm chứng thuật toán bằng chạy tay ([SV XÁC NHẬN], mục 5.6).
+- **[CHƯA LÀM – SV phải làm và xác nhận trước khi nộp; xoá dòng này nếu không làm]** tự kiểm chứng thuật toán bằng chạy tay (mục 5.6).
 
 Em **không** tự viết code và **không** tự review code. Việc review là do một agent của hãng khác thực hiện, và em đọc kết luận review để quyết định có merge hay không.
 
@@ -425,8 +448,8 @@ Bảng chi tiết 8 PR (merge commit, số vòng review) nằm ở Phụ lục A
 - **Prompt giao diện em dùng (nguyên văn, lấy từ lịch sử phiên điều phối, giữ nguyên chính tả gốc):**
   > "Hãy chọn 1 đề tài mà bạn nghĩ là hợp lý,. build theo kiến trúc khuyến nghhị, build cho tới khi xong có thể demo đựoc. UI chọn shadcn ui tông màu sáng. trắng đen."
 - **Cách hiện thực:**
-  - Vì chỉ dùng trắng, đen và xám, các trạng thái (đang xét, đã chọn, bị cắt, tốt nhất) được phân biệt bằng độ đậm, kiểu viền và hoa văn.
-  - Cách này cũng giúp người mù màu đọc được.
+  - Đặc tả yêu cầu: vì chỉ dùng trắng, đen và xám, các trạng thái (đang xét, đã chọn, bị cắt, tốt nhất) phải được phân biệt bằng độ đậm và kiểu viền, không dựa vào màu. Cách này cũng giúp người mù màu đọc được.
+  - Với bài tô màu, khung đồ thị hiển thị màu của từng đỉnh bằng số trên nhãn và làm nổi bật đỉnh đang xét. Cây trạng thái đánh dấu riêng các nhánh bị cắt. Player hiện **chưa** hiển thị bảng chú thích (legend) cho bài này.
 - **Các chức năng chính:**
   - Player từng bước, gồm mã giả có dòng đang chạy, lời giải thích tiếng Việt, tiến/lùi/tua và phím tắt;
   - trang So sánh nhiều thuật toán trên cùng input;
@@ -594,11 +617,11 @@ Nhận xét dự kiến (phải đối chiếu với số liệu thật):
 
 - Mỗi bước đều có dòng mã giả, lời giải thích tiếng Việt và trạng thái đồ thị. Có thể lùi lại bất kỳ bước nào.
 - Cây trạng thái cho thấy rõ lúc nào quay lui.
-- Giao diện trắng đen vẫn phân biệt được trạng thái nhờ hoa văn và viền.
+- Giao diện trắng đen vẫn đọc được trạng thái nhờ số màu trên nhãn đỉnh, đỉnh đang xét được làm nổi bật, và các nhánh bị cắt trên cây. Hạn chế: chưa có bảng chú thích (legend) trên Player.
 
 ### 7.4. Hạn chế
 
-- Thuật toán chính xác chỉ chạy được với đồ thị nhỏ: n ≤ 10, riêng vét cạn n ≤ 6.
+- Thuật toán chính xác chỉ chạy được với đồ thị nhỏ: n ≤ 10. Vét cạn chỉ ghi trace đầy đủ khi n ≤ 6, và báo lỗi khi kⁿ > 200.000.
 - Heuristic không bảo đảm tìm được nghiệm.
 - Oracle độc lập chỉ khả thi với đồ thị nhỏ.
 - Toàn bộ code do AI sinh. Tuy đã qua review chéo và test, vẫn có thể còn lỗi chưa phát hiện.
@@ -621,7 +644,7 @@ Các thành phần dùng chung:
 - Player;
 - trang So sánh;
 - trang Testcase;
-- 10 kiểu hiển thị.
+- 12 kiểu hiển thị.
 
 | Nhóm | Ví dụ bài toán |
 |---|---|
