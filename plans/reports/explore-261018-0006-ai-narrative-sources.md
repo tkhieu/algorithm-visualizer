@@ -38,7 +38,7 @@ Cả 8 PR được hoàn thành trong khoảng 22 giờ, từ 11/10 13:25 đến
    - **Heuristic báo sai:** khi không tô được, heuristic báo "không thể tô", trong khi thực ra chỉ là chưa tìm được. Đã thêm cờ `heuristic`.
    - **Đồ thị rỗng:** quay lui và vét cạn chưa xử lý trường hợp n = 0.
    - **Quay lui không cập nhật hình:** khi quay lui, đồ thị trên màn hình không đổi màu lại.
-2. **Nhánh cận bài cái túi (PR #1).** Nút vừa trở thành nghiệm tốt nhất lại bị đánh dấu là "cắt nhánh". Commit sửa là c0e1741, kèm test `bestNeverPruned`. Có 8 test hồi quy, và cả 8 fail trên code cũ 5fde3ef.
+2. **Nhánh cận bài cái túi (PR #1).** Nút vừa trở thành nghiệm tốt nhất lại bị đánh dấu là "cắt nhánh". Commit sửa là c0e1741; test hồi quy `bestNeverPruned` được thêm ở commit 7857a79. Có 8 test hồi quy, và cả 8 fail trên code cũ 5fde3ef.
 3. **Boyer-Moore thiếu bảng hậu tố tốt, simplex giả (PR #6).** Đã cài bảng hậu tố tốt theo cách của Gusfield, và viết lại simplex hai pha thật theo quy tắc Bland.
 4. **Lời giải tham chiếu tự tham chiếu lặp lại ở B1, B4 và B5.** Các bản thay thế độc lập gồm Held-Karp, quy hoạch động bitmask, monotone chain. Riêng bài cặp điểm gần nhất, reviewer vẫn ghi là "chưa độc lập hoàn toàn".
 5. **Code viết dồn một dòng (PR #3, #4).** 136 trên 184 file bị viết dồn. Lần định dạng lại đầu tiên còn định dạng luôn cả `manifest.ts`, khoảng 1.650 dòng, nên phải trả file này về cách viết cũ. Sau đó quy tắc được ghi vào `adding-an-algorithm.md`.
@@ -54,7 +54,7 @@ Cả 8 PR được hoàn thành trong khoảng 22 giờ, từ 11/10 13:25 đến
   - chọn Cloudflare Pages;
   - đặt domain `hieutk.dev`;
   - yêu cầu tổ chức tranh luận giữa các agent về kiến trúc.
-- **Tự merge các PR #2 đến #8.** Mỗi lần nhận lệnh merge có `--match-head-commit` từ orchestrator, rồi tự chạy hoặc bấm merge trên web.
+- **Merge các PR #2 đến #8.** GitHub ghi `mergedBy: tkhieu` (tài khoản của sinh viên). Lịch sử phiên orchestrator có tin nhắn sinh viên báo đã merge từng PR, ví dụ "merged https://github.com/tkhieu/algorithm-visualizer/pull/6". Lưu ý: commit do agent tạo cũng mang danh tính git của máy, nên chỉ dựa vào tên tác giả commit là không đủ.
 - **Xử lý các lần agent bị chặn:**
   - duyệt ngân sách khi agent chạm ngưỡng;
   - đăng nhập lại khi hết phiên;

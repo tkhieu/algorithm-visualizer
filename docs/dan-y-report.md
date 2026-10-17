@@ -5,7 +5,7 @@
 
 ## Nguyên tắc xuyên suốt
 
-- **Một bài toán trọng tâm: Tô màu đồ thị (bài Sở thú).** Khoảng 80% nội dung chuyên môn dành cho bài này. 47 bài còn lại của app chỉ nằm trong mục "Phát triển mở rộng" và phụ lục.
+- **Một bài toán trọng tâm: Tô màu đồ thị (bài Sở thú).** Khoảng 80% nội dung chuyên môn dành cho bài này. 46 bài còn lại của app (tổng 47 bài) chỉ nằm trong mục "Phát triển mở rộng" và phụ lục.
 - **Một ví dụ chung** (đồ thị khoảng 6–7 đỉnh) dùng cho mô hình, minh họa từng bước, ảnh chụp giao diện và video. Trạng thái trong report phải khớp đúng từng bước trên Player.
 - **Trung thực về AI:** ghi thẳng toàn bộ code do AI viết; chỉ nhận những việc sinh viên thật sự làm; prompt không còn bản gốc thì ghi là "tái dựng", không đặt trong ngoặc kép.
 - **Chỉ ghi thuật toán app thật sự có:** greedy, Welsh-Powell, DSATUR, quay lui, vét cạn. Không có nhánh cận cho bài này.
@@ -17,7 +17,7 @@ Mỗi yêu cầu của đề phải trỏ được tới mục report, chức n�
 
 | Yêu cầu của đề | Mục report | Chức năng demo | Testcase | Cảnh video |
 |---|---|---|---|---|
-| Nhập Input | Ch.2 Mô hình | Nhập tay / nạp file / sinh ngẫu nhiên | nhóm nhỏ, không hợp lệ | Cảnh 4 |
+| Nhập Input | Ch.2 Mô hình | Chỉnh JSON / sinh ngẫu nhiên / chọn ca mẫu | nhóm nhỏ, không hợp lệ | Cảnh 4 |
 | Theo dõi từng bước | Ch.4 Ví dụ minh họa | Player: mã giả, trạng thái, tiến/lùi | ví dụ chung | Cảnh 5 |
 | Xem Output | Ch.2, Ch.4 | Kết quả + kiểm tra hợp lệ/tối ưu | mọi nhóm | Cảnh 5–6 |
 | Nhiều cách giải, so sánh | Ch.3, Ch.6 | Trang So sánh | đồ thị vương miện, ca lớn | Cảnh 6 |
@@ -56,16 +56,16 @@ Mỗi yêu cầu của đề phải trỏ được tới mục report, chức n�
 
 ### Chương 3. Thiết kế cấu trúc dữ liệu và thuật toán
 
-- **Cấu trúc dữ liệu:** danh sách kề, mảng màu, tập màu đã dùng của các đỉnh kề, độ bão hòa (saturation) cho DSATUR. Trace lưu `nodes`, `edges`, `treeNodes` (cây trạng thái) và `note` (`algorithms/graph-coloring/shared.ts`).
+- **Cấu trúc dữ liệu:** tập các cặp đỉnh có cạnh (`Set<string>`, dùng trong checker), mảng màu, tập màu đã dùng của các đỉnh kề, độ bão hòa (saturation) cho DSATUR. Trace lưu `nodes`, `edges`, `treeNodes` (cây trạng thái) và `note` (`algorithms/graph-coloring/shared.ts`).
 - **Phân tích đặc trưng (ý tưởng giải):** chặn dưới (clique lớn nhất), chặn trên (Δ+1), vì sao thứ tự duyệt đỉnh quyết định kết quả của greedy.
-- **Năm thuật toán.** Mỗi thuật toán có mã giả, ý tưởng, vì sao đúng hoặc vì sao không bảo đảm tối ưu, và độ phức tạp:
+- **Năm thuật toán.** Mỗi thuật toán có mã giả, ý tưởng, vì sao kết luận được (thuật toán chính xác chứng minh được vô nghiệm với k màu) hoặc vì sao chỉ là heuristic (có thể báo "chưa tìm được" dù tồn tại cách tô k màu), và độ phức tạp:
   1. **Greedy:** duyệt theo thứ tự `nodes`, mỗi đỉnh nhận màu nhỏ nhất còn dùng được. Hết màu thì báo "chưa tìm được", không kết luận vô nghiệm.
   2. **Welsh-Powell:** sắp đỉnh theo bậc giảm dần; hai đỉnh cùng bậc giữ thứ tự ban đầu. Gán màu như greedy.
   3. **DSATUR** (ngoài sách, app ghi rõ): mỗi vòng chọn đỉnh chưa tô có độ bão hòa lớn nhất; hòa thì chọn đỉnh bậc cao hơn.
   4. **Quay lui:** theo thứ tự `nodes`, thử lần lượt màu 0..k−1, bỏ màu xung đột, quay lui khi nhánh bế tắc. Dừng ở nghiệm đầu tiên hoặc khi đã vét hết nhánh, tức là giải bài toán quyết định k màu.
   5. **Vét cạn:** sinh đủ kⁿ cách gán, kiểm tra khi gán xong mọi đỉnh. Dừng ở nghiệm đầu tiên.
   - App không có nhánh cận cho bài này.
-- **Bảng tổng hợp:** thuật toán, có bảo đảm tối ưu không, độ phức tạp, giới hạn n trong app.
+- **Bảng tổng hợp:** thuật toán, có kết luận chắc chắn được bài toán k màu không, độ phức tạp, giới hạn n trong app. (Nếu bản nâng cấp có chế độ χ(G) được merge, thêm cột "tìm được χ(G) không".)
 - **Trích nguồn:** Levitin, Welsh–Powell 1967, Brélaz 1979.
 
 ### Chương 4. Ví dụ minh họa các bước
@@ -88,7 +88,7 @@ Mỗi yêu cầu của đề phải trỏ được tới mục report, chức n�
   - chọn công nghệ và giao diện;
   - chọn hosting và domain;
   - yêu cầu tổ chức tranh luận về kiến trúc;
-  - tự merge PR #2 đến #8;
+  - merge PR #2 đến #8: GitHub ghi `mergedBy: tkhieu`, và lịch sử phiên orchestrator có tin nhắn của sinh viên báo đã merge từng PR (ví dụ "merged …/pull/6");
   - duyệt ngân sách, đăng nhập lại, mở khóa keyring khi agent bị chặn.
   Không ghi rằng sinh viên tự review code. Tư liệu chi tiết: `plans/reports/explore-261018-0006-ai-narrative-sources.md`.
 - **5.2 Công cụ:** model và phiên bản, vai trò từng agent, quy trình review chéo giữa hai hãng.
@@ -107,7 +107,7 @@ Mỗi yêu cầu của đề phải trỏ được tới mục report, chức n�
   9. bài học.
   - **Sự cố đề xuất cho thân bài:**
     1. tô màu đồ thị (PR #7, commit 4b83502): lời giải tham chiếu tự tham chiếu, heuristic báo "không thể tô", đồ thị rỗng, quay lui không cập nhật hình;
-    2. nhánh cận bài cái túi (PR #1, commit c0e1741, 8 test hồi quy fail trên code cũ);
+    2. nhánh cận bài cái túi (PR #1: commit sửa c0e1741, test hồi quy `bestNeverPruned` thêm ở commit 7857a79; 8 test hồi quy fail trên code cũ 5fde3ef);
     3. lời giải tham chiếu tự tham chiếu lặp lại ở nhiều nhóm;
     4. code viết dồn một dòng, dẫn tới quy tắc mới trong hướng dẫn;
     5. (tuỳ chọn) trang So sánh cần 6 vòng review.
@@ -135,12 +135,12 @@ Mỗi yêu cầu của đề phải trỏ được tới mục report, chức n�
 - Tính đúng: số testcase đạt trên tổng, cách kiểm (bộ kiểm tra hợp lệ, so với vét cạn trên đồ thị nhỏ).
 - Bảng và biểu đồ so sánh 5 thuật toán: số màu, thời gian theo n, điểm mà quay lui bắt đầu chạy quá chậm.
 - Tính trực quan và khả năng minh họa từng bước.
-- Hạn chế: giới hạn n, heuristic không tối ưu, code do AI viết.
+- Hạn chế: giới hạn n, heuristic có thể báo "chưa tìm được" dù tồn tại cách tô, code do AI viết.
 - Hướng phát triển.
 
 ### Chương 8. Phát triển mở rộng (1–2 trang)
 
-- Nền tảng dùng lại cho 47 bài và 126 cách giải của sách Levitin: Player, So sánh, Testcase dùng chung.
+- Nền tảng dùng lại cho 47 bài toán và 126 cách giải (đa số theo sách Levitin; một số như DSATUR, Hungarian là mở rộng ngoài sách, được ghi rõ trong app): Player, So sánh, Testcase dùng chung.
 - Một bảng tóm tắt; chi tiết để ở phụ lục.
 - Câu chốt: phần mở rộng không thay thế chiều sâu của bài trọng tâm.
 
@@ -156,7 +156,7 @@ Mỗi yêu cầu của đề phải trỏ được tới mục report, chức n�
 1. Tên đề tài và domain chính thức (15 giây).
 2. Bài toán Sở thú và ứng dụng (30 giây).
 3. Dạo qua giao diện.
-4. Nhập dữ liệu: nhập tay, nạp file, sinh ngẫu nhiên, và một input không hợp lệ.
+4. Nhập dữ liệu: chỉnh JSON, sinh ngẫu nhiên, chọn ca mẫu, và một input không hợp lệ.
 5. Chạy từng bước **đúng ví dụ chung của Chương 4**, có tiến, lùi và dừng.
 6. So sánh các cách giải, rồi tới đồ thị vương miện.
 7. Trang Testcase: ca lớn và ca biên.
