@@ -49,7 +49,7 @@
 
 ### Cảnh 2 – Bài toán và mô hình (0:40)
 
-- **Hình:** mở trang bài toán `/problems/graph-coloring` (phần mô tả và ràng buộc). Cuộn chậm.
+- **Hình:** mở trang bài toán `/problem/graph-coloring` (phần mô tả và ràng buộc). Cuộn chậm.
 - **Chữ:**
   1. "Sở thú: một số loài không được nhốt chung chuồng. Cần xếp chuồng sao cho không có hai loài 'kỵ nhau' ở chung."
   2. "Mô hình: mỗi loài là một đỉnh, mỗi cặp kỵ nhau là một cạnh, mỗi chuồng là một màu."
@@ -67,12 +67,12 @@
   5. **Khung mã giả.** Chữ: "Dòng mã giả đang chạy được tô đậm".
   6. **Lời giải thích tiếng Việt.** Chữ: "Giải thích từng bước".
   7. **Thanh điều khiển:** tiến, lùi, tua, tốc độ. Chữ: "Điều khiển bước, có phím tắt".
-  8. **Chú thích (legend).** Chữ: "Phân biệt trạng thái bằng độ đậm, viền, hoa văn – không dựa vào màu".
+  8. **Nút chuyển view** "Đồ thị" / "Cây trạng thái". Chữ: "Hai cách xem: đồ thị và cây tìm kiếm".
 - **Lưu ý:** cảnh này chỉ giới thiệu, chưa bấm chạy.
 
 ### Cảnh 4 – Nhập dữ liệu (0:50)
 
-- **Hình 1, nhập ví dụ chung:** mở tab "Chỉnh JSON", dán JSON đồ thị vương miện (mục 5.1), bấm áp dụng.
+- **Hình 1, nhập ví dụ chung:** mở tab "Chỉnh JSON", dán JSON đồ thị vương miện (mục 5.1). Dữ liệu được cập nhật ngay khi dán, không cần bấm nút áp dụng.
   - Chữ: "Ví dụ chung: 6 loài A1, B1, A2, B2, A3, B3; Ai kỵ Bj khi i ≠ j; k = 2 chuồng".
 - **Hình 2, input không hợp lệ:** dán JSON có `colors: 0` (mục 5.3). App hiện thông báo lỗi.
   - Chữ: "Dữ liệu không hợp lệ bị từ chối ngay khi nhập".
@@ -89,7 +89,7 @@
 - **Chữ đặt theo các mốc:**
   1. **Bước 2–3:** "A1 nhận màu 0; B1 không kề A1 nên cũng nhận màu 0".
   2. **Bước 4–7:** "Màu bị trùng với đỉnh kề → loại; A2 và B2 nhận màu 1".
-  3. **Bước 8–9:** "A3 kề B1 (0) và B2 (1): cả 2 màu đều bị loại → bế tắc". Dừng 5 giây, zoom vào cây trạng thái.
+  3. **Bước 8–9:** "A3 kề B1 (0) và B2 (1): cả 2 màu đều bị loại → bế tắc". Dừng 5 giây. **Bấm chuyển sang view "Cây trạng thái"** (Player mặc định đang ở view đồ thị) và zoom vào hai nhánh bị loại. Sau đó chuyển lại view đồ thị.
   4. **Bước 10–12:** "**Quay lui** qua B2, A2 về tới B1 – gốc của bế tắc là B1 = 0".
   5. **Bước 13:** "B1 đổi sang màu 1".
   6. **Bước 14–19:** "Nhóm A màu 0, nhóm B màu 1".
@@ -99,7 +99,7 @@
 
 ### Cảnh 6 – So sánh 5 thuật toán (1:10)
 
-- **Hình 1:** mở `/compare/graph-coloring` với ví dụ chung, thấy các cột ở trạng thái "chờ". Bấm "Chạy tất cả".
+- **Hình 1:** mở `/compare/graph-coloring`. Trang So sánh **không** mang theo dữ liệu từ Player mà tự nạp testcase đầu tiên, nên phải **dán lại JSON ví dụ chung** (mục 5.1) vào trình nhập của trang. Thấy các cột ở trạng thái "chờ", rồi bấm "Chạy tất cả".
 - **Chữ:**
   - "Cùng một input, 5 thuật toán".
   - "Greedy và Welsh–Powell: **chưa tìm được** cách tô 2 màu, do thứ tự đỉnh xấu".
@@ -116,7 +116,7 @@
 - **Hình 2:** cuộn qua từng nhóm, mỗi nhóm khoảng 3 giây.
 - **Hình 3 [SAU NÂNG CẤP]:** mở một ca lớn khoảng 300 đỉnh trên Player bằng DSATUR (hiển thị bằng Canvas).
   - Chữ: "Heuristic chạy được trên đồ thị 300 đỉnh".
-- **Hình 4:** mở quay lui với ca lớn để thấy thông báo "Không áp dụng".
+- **Hình 4 [SAU NÂNG CẤP]:** mở quay lui với ca lớn để thấy thông báo "Không áp dụng". Trên `main` hiện tại, input quá 10 đỉnh bị từ chối ngay ở bước kiểm tra dữ liệu, và quay lui chưa có thông báo "Không áp dụng".
   - Chữ: "Thuật toán chính xác có giới hạn an toàn – báo rõ thay vì treo máy".
 - **Hình 5:** bấm xuất CSV/JSON. Chữ: "Xuất kết quả để đưa vào report".
 
@@ -166,7 +166,7 @@
 > Bên trái là thanh điều hướng. Có thể tìm bài toán theo chương của sách, theo kỹ thuật thiết kế, hoặc theo tên bài toán.
 > Phía trên là nút chuyển nhanh giữa năm cách giải của cùng bài toán: tham lam, Welsh–Powell, DSATUR, quay lui và vét cạn.
 > Đây là trình nhập dữ liệu. Ở giữa là khung đồ thị, cho thấy màu của từng đỉnh và đỉnh đang được xét. Bên cạnh là mã giả, dòng đang chạy được tô đậm, và dưới đó là lời giải thích bằng tiếng Việt cho từng bước.
-> Thanh điều khiển cho phép tiến, lùi, tua và chỉnh tốc độ. Vì giao diện chỉ dùng trắng đen, các trạng thái được phân biệt bằng độ đậm, kiểu viền và hoa văn, như phần chú thích ở đây.
+> Thanh điều khiển cho phép tiến, lùi, tua và chỉnh tốc độ. Giao diện chỉ dùng trắng đen. Màu của mỗi đỉnh được ghi bằng số trên nhãn, và đỉnh đang xét được làm nổi bật. Nút này dùng để chuyển giữa view đồ thị và view cây trạng thái.
 
 **Cảnh 4 – Nhập dữ liệu (0:50)**
 > Bây giờ em nhập ví dụ chung, cũng là ví dụ được phân tích trong report. Đồ thị có sáu loài: A1, B1, A2, B2, A3, B3. Loài Ai kỵ loài Bj khi i khác j. Số chuồng k bằng 2.
@@ -178,13 +178,13 @@
 > Em chạy thuật toán quay lui. Thuật toán tô các đỉnh theo thứ tự đã nhập, mỗi đỉnh thử lần lượt màu 0 rồi màu 1.
 > Ở bước 2 và 3, A1 nhận màu 0. B1 không kề A1, nên cũng nhận màu 0.
 > Từ bước 4 đến bước 7, màu nào trùng với một đỉnh kề đã tô thì bị loại. Vì vậy A2 và B2 đều nhận màu 1.
-> Đến bước 8 và 9 thì A3 kề cả B1 màu 0 lẫn B2 màu 1. Cả hai màu đều bị loại, thuật toán rơi vào bế tắc. Trên cây trạng thái, hai nhánh này được đánh dấu là bị cắt.
+> Đến bước 8 và 9 thì A3 kề cả B1 màu 0 lẫn B2 màu 1. Cả hai màu đều bị loại, thuật toán rơi vào bế tắc. Em chuyển sang view cây trạng thái: hai nhánh này được đánh dấu là bị cắt.
 > Từ bước 10 đến 12, thuật toán quay lui qua B2, qua A2, và dừng lại ở B1. Gốc của bế tắc là quyết định cho B1 cùng màu với A1.
 > Ở bước 13, B1 đổi sang màu 1. Từ đó nhóm A nhận màu 0, nhóm B nhận màu 1, và đến bước 20 thì tô xong. Tổng cộng có hai mươi bước và sáu lần cắt nhánh.
 > Em cũng có thể lùi về bất kỳ bước nào, ví dụ bước 12, để xem lại lúc quay lui. Cuối cùng, bộ kiểm tra của app xác nhận đây là một cách tô hợp lệ.
 
 **Cảnh 6 – So sánh năm thuật toán (1:10)**
-> Đây là trang So sánh. Cả năm thuật toán chạy trên cùng một đồ thị.
+> Đây là trang So sánh. Em dán lại đồ thị vương miện, rồi cho cả năm thuật toán chạy trên cùng một đồ thị.
 > Tham lam và Welsh–Powell đều báo chưa tìm được cách tô hai màu. Lý do là thứ tự đỉnh xen kẽ khiến B1 nhận cùng màu với A1 ngay từ đầu. Với Welsh–Powell, mọi đỉnh đều có bậc 2 nên việc sắp theo bậc không giúp được gì. Cần lưu ý là heuristic chỉ báo "chưa tìm được", chứ không khẳng định là không thể tô.
 > DSATUR thì tô thành công trong mười bốn bước. Thuật toán luôn chọn đỉnh bị ràng buộc nhiều nhất, tức đỉnh có nhiều màu khác nhau ở các đỉnh kề nhất, nên không mắc lỗi như tham lam. Với đồ thị hai phía, DSATUR luôn tô đúng.
 > Quay lui và vét cạn đều kết luận chắc chắn. Nhưng quay lui chỉ cần hai mươi bước, còn vét cạn cần sáu mươi chín bước, vì quay lui cắt bỏ nhánh sai ngay khi phát hiện xung đột. Đây chính là sự đánh đổi giữa nhanh mà không chắc chắn, và chắc chắn mà tốn chi phí.
