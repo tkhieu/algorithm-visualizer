@@ -27,6 +27,19 @@ describe('graph-coloring definition', () => {
     expect(existsColoring(triangle)).toBe(true);
     expect(existsColoring({...triangle, colors: 2})).toBe(false);
   });
+  it('đỉnh thứ 33 không được trùng bit với đỉnh đầu tiên trong oracle và checker', () => {
+    const nodes = Array.from({length: 33}, (_, i) => `V${i}`);
+    const input = {
+      nodes,
+      edges: [{from: 'V0', to: 'V32'}, {from: 'V1', to: 'V32'}],
+      colors: 2,
+    };
+    const constructiveColoring = nodes.map((_, i) => (i === 32 ? 1 : 0));
+    expect(inputSchema.safeParse(input).success).toBe(true);
+    expect(check(input, {found: true, coloring: constructiveColoring}).ok).toBe(true);
+    expect(existsColoring(input)).toBe(true);
+    expect(check(input, {found: false, coloring: []}).ok).toBe(false);
+  });
   it('tham chiếu phân hoạch kiểm tra cả cách tô tồn tại và đồ thị rỗng', () => {
     const original = Array.prototype.fill;
     Array.prototype.fill = (() => { throw new Error('Không dùng mảng tô quay lui'); }) as typeof Array.prototype.fill;

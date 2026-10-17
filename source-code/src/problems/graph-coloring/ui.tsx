@@ -50,26 +50,27 @@ function buildPreset(preset: PresetId, n: number, q: number): Input {
  * đúng cấu trúc khiến χ đã ghi trong tên mẫu không còn đúng (ví dụ K128 cắt còn 8000 cạnh không
  * còn là K128, K(320,1) cắt còn 320 đỉnh phía trái mất hết cạnh nên χ thật thành 1 chứ không phải 2). */
 function presetSize(preset: PresetId, n: number, q: number): {nodes: number; edges: number} | null {
-  if (!Number.isFinite(n) || !Number.isFinite(q)) return null;
+  if (preset === 'petersen') return {nodes: 10, edges: 15};
+  if (preset === 'grotzsch') return {nodes: 11, edges: 20};
+  if (!Number.isInteger(n) || (preset === 'bipartite' && !Number.isInteger(q))) return null;
   if (preset === 'crown') {
-    const m = Math.max(2, Math.round(n));
+    const m = Math.max(2, n);
     return {nodes: 2 * m, edges: m * (m - 1)};
   }
   if (preset === 'complete') {
-    const c = Math.max(1, Math.round(n));
+    const c = Math.max(1, n);
     return {nodes: c, edges: (c * (c - 1)) / 2};
   }
   if (preset === 'cycle') {
-    const c = Math.max(3, Math.round(n));
+    const c = Math.max(3, n);
     return {nodes: c, edges: c};
   }
   if (preset === 'bipartite') {
-    const p = Math.max(1, Math.round(n));
-    const r = Math.max(1, Math.round(q));
+    const p = Math.max(1, n);
+    const r = Math.max(1, q);
     return {nodes: p + r, edges: p * r};
   }
-  if (preset === 'petersen') return {nodes: 10, edges: 15};
-  return {nodes: 11, edges: 20}; // grotzsch
+  return null;
 }
 
 /** Trình nhập liệu riêng cho Tô màu đồ thị: thêm chọn chế độ (k-coloring/chromatic), bộ sinh đồ
@@ -176,8 +177,13 @@ export function InputEditor({input, onChange, disabled = false}: InputEditorProp
               // chối hẳn (không cắt, không lặng lẽ nhận một đồ thị khác với cái vừa báo), giữ nguyên
               // dữ liệu hiện tại.
               const safeN = Math.min(Math.max(1, Math.round(n)), MAX_NODES);
+              if (!Number.isFinite(p)) {
+                setGenNotice('Không áp dụng: xác suất cạnh p phải là một số hữu hạn trong [0,1].');
+                return;
+              }
               const maxPairs = (safeN * (safeN - 1)) / 2;
-              const safeP = maxPairs > 0 ? Math.min(Math.max(0, p), (MAX_EDGES * 0.9) / maxPairs) : Math.max(0, p);
+              const boundedP = Math.min(1, Math.max(0, p));
+              const safeP = maxPairs > 0 ? Math.min(boundedP, (MAX_EDGES * 0.9) / maxPairs) : boundedP;
               const graph = randomGraph(seed, safeN, safeP, data?.colors ?? 4);
               if (graph.edges.length > MAX_EDGES) {
                 setGenNotice(
@@ -188,9 +194,9 @@ export function InputEditor({input, onChange, disabled = false}: InputEditorProp
               }
               const notices: string[] = [];
               if (safeN !== n) notices.push(`giảm n xuống ${safeN} (tối đa ${MAX_NODES} đỉnh)`);
-              if (safeP < p)
+              if (safeP !== p)
                 notices.push(
-                  `giảm xác suất cạnh từ ${p} xuống ${safeP.toFixed(4)} — kỳ vọng khoảng ${Math.round(safeP * maxPairs)} cạnh (tối đa ${MAX_EDGES})`,
+                  `điều chỉnh xác suất cạnh từ ${p} thành p=${safeP.toFixed(4)} — kỳ vọng khoảng ${Math.round(safeP * maxPairs)} cạnh (tối đa ${MAX_EDGES})`,
                 );
               setGenNotice(
                 notices.length
@@ -251,9 +257,13 @@ export function InputEditor({input, onChange, disabled = false}: InputEditorProp
               // Nếu vượt ngưỡng: từ chối hẳn, giữ nguyên dữ liệu hiện tại — không cắt bớt (cắt bớt
               // một mẫu đã biết phá vỡ đúng cấu trúc của nó, xem chú thích ở presetSize).
               const size = presetSize(preset, presetN, presetQ);
-              if (!size || size.nodes > MAX_NODES || size.edges > MAX_EDGES) {
+              if (!size) {
+                setGenNotice('Không áp dụng: kích thước nguyên hợp lệ là bắt buộc. Giữ nguyên dữ liệu hiện tại.');
+                return;
+              }
+              if (size.nodes > MAX_NODES || size.edges > MAX_EDGES) {
                 setGenNotice(
-                  `Không áp dụng: mẫu này cần ${size ? `${size.nodes} đỉnh, ${size.edges} cạnh` : 'một kích thước hợp lệ'} — ` +
+                  `Không áp dụng: mẫu này cần ${size.nodes} đỉnh, ${size.edges} cạnh — ` +
                     `vượt giới hạn (tối đa ${MAX_NODES} đỉnh, ${MAX_EDGES} cạnh). Giữ nguyên dữ liệu hiện tại; hãy chọn kích thước nhỏ hơn.`,
                 );
                 return;

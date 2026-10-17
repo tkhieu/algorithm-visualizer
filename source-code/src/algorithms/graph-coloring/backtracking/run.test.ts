@@ -4,6 +4,30 @@ import {MetricsRecorder, TraceRecorder} from '../../../core/recorder';
 import {TraceStore} from '../../../core/trace/TraceStore';
 import {check, chromaticNumberOracle, existsColoring} from '../../../problems/graph-coloring/checker';
 import {crownGraph, completeGraph, generate} from '../../../problems/graph-coloring/generators';
+
+function joinedOddCycle(cliqueSize: number, padding: number, order: string) {
+  const cycle = Array.from({length: 5}, (_, i) => `C${i}`);
+  const clique = Array.from({length: cliqueSize}, (_, i) => `K${i}`);
+  const isolated = Array.from({length: padding}, (_, i) => `I${i}`);
+  const groups: Record<string, string[]> = {C: cycle, K: clique, I: isolated};
+  const nodes = [...order].flatMap((group) => groups[group]);
+  const edges: {from: string; to: string}[] = [];
+  for (let i = 0; i < cycle.length; i++) {
+    edges.push({from: cycle[i], to: cycle[(i + 1) % cycle.length]});
+  }
+  for (let i = 0; i < clique.length; i++) {
+    for (let j = i + 1; j < clique.length; j++) {
+      edges.push({from: clique[i], to: clique[j]});
+    }
+  }
+  for (const c of cycle) {
+    for (const k of clique) {
+      edges.push({from: c, to: k});
+    }
+  }
+  return {nodes, edges, colors: 1, mode: 'chromatic' as const};
+}
+
 describe('graph-coloring/backtracking', () => {
   it('đúng so với backtracking tham chiếu trên nhiều seed và cỡ', () => {
     for (let seed = 1; seed <= 60; seed++)
@@ -90,11 +114,14 @@ describe('graph-coloring/backtracking', () => {
       const ok = {nodes: Array.from({length: 9}, (_, i) => `V${i}`), edges: [], colors: 2};
       expect(algorithm.precondition?.(ok)).toBeUndefined();
     });
-    it('chromatic: không áp dụng khi n > 12 (ngưỡng riêng, xem giải thích trong index.ts)', () => {
-      const big = {nodes: Array.from({length: 13}, (_, i) => `V${i}`), edges: [], colors: 1, mode: 'chromatic' as const};
+    it('chromatic: không áp dụng khi n > 10 (ngưỡng riêng, xem benchmark trong index.ts)', () => {
+      const big = {nodes: Array.from({length: 11}, (_, i) => `V${i}`), edges: [], colors: 1, mode: 'chromatic' as const};
       expect(algorithm.precondition?.(big)).toMatch(/Không áp dụng/);
-      const ok = {nodes: Array.from({length: 12}, (_, i) => `V${i}`), edges: [], colors: 1, mode: 'chromatic' as const};
+      const ok = {nodes: Array.from({length: 10}, (_, i) => `V${i}`), edges: [], colors: 1, mode: 'chromatic' as const};
       expect(algorithm.precondition?.(ok)).toBeUndefined();
+    });
+    it('chromatic: từ chối K7 nối C5 với chu trình đứng trước (n=12, vượt timeout worker)', () => {
+      expect(algorithm.precondition?.(joinedOddCycle(7, 0, 'CKI'))).toMatch(/Không áp dụng/);
     });
     it('k-coloring: thứ tự đỉnh xấu (18 đỉnh cô lập TRƯỚC một K4) ở n=22 vẫn phải bị chặn — đây là ca mà ngưỡng n ≤ 22 cũ (từ lần review trước) vẫn lọt qua', () => {
       const isolated = Array.from({length: 18}, (_, i) => `I${i}`);
@@ -103,6 +130,32 @@ describe('graph-coloring/backtracking', () => {
       for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) edges.push({from: clique[i], to: clique[j]});
       const input = {nodes: [...isolated, ...clique], edges, colors: 3};
       expect(algorithm.precondition?.(input)).toMatch(/Không áp dụng/);
+    });
+  });
+
+  describe('chromatic: benchmark với trace ở ngưỡng n ≤ 10', () => {
+    const BUDGET_MS = 3000;
+    const constructions = [
+      {clique: 3, padding: 2, order: 'CKI'},
+      {clique: 3, padding: 2, order: 'IKC'},
+      {clique: 4, padding: 1, order: 'CKI'},
+      {clique: 4, padding: 1, order: 'IKC'},
+      {clique: 5, padding: 0, order: 'CKI'},
+      {clique: 5, padding: 0, order: 'KCI'},
+    ];
+    it.each(constructions)('K$clique nối C5, đệm $padding đỉnh, thứ tự $order', ({clique, padding, order}) => {
+      const input = joinedOddCycle(clique, padding, order);
+      expect(algorithm.precondition?.(input)).toBeUndefined();
+      const rec = new TraceRecorder(
+        algorithm.initVisual(input),
+        new Set(algorithm.pseudocode.map((line) => line.id)),
+        algorithm.traceLimit,
+      );
+      const start = performance.now();
+      const output = algorithm.run(input, {rec, signal: new AbortController().signal});
+      const duration = performance.now() - start;
+      expect(output.colorsUsed).toBe(clique + 3);
+      expect(duration).toBeLessThan(BUDGET_MS);
     });
   });
 

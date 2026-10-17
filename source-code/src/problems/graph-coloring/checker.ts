@@ -30,10 +30,10 @@ export function existsColoring(input: Input): boolean {
   const adj = adjacency(input);
   const degree = input.nodes.map((v) => input.nodes.filter((u) => adj.has(`${v}|${u}`)).length);
   const order = input.nodes.map((_, i) => i).sort((a, b) => degree[b] - degree[a]);
-  const classes: number[] = [];
-  function conflictsWithClass(mask: number, v: number): boolean {
-    for (let i = 0; i < n; i++) {
-      if ((mask & (1 << i)) && connected(adj, input.nodes[i], input.nodes[v])) return true;
+  const classes: Set<number>[] = [];
+  function conflictsWithClass(members: Set<number>, v: number): boolean {
+    for (const i of members) {
+      if (connected(adj, input.nodes[i], input.nodes[v])) return true;
     }
     return false;
   }
@@ -41,13 +41,13 @@ export function existsColoring(input: Input): boolean {
     if (depth === n) return true;
     const v = order[depth];
     for (let c = 0; c < Math.min(classes.length + 1, input.colors); c++) {
-      if (c === classes.length) classes.push(0);
+      if (c === classes.length) classes.push(new Set<number>());
       if (!conflictsWithClass(classes[c], v)) {
-        classes[c] |= 1 << v;
+        classes[c].add(v);
         if (enumerate(depth + 1)) return true;
-        classes[c] &= ~(1 << v);
+        classes[c].delete(v);
       }
-      if (classes[c] === 0) classes.pop();
+      if (classes[c].size === 0) classes.pop();
     }
     return false;
   }

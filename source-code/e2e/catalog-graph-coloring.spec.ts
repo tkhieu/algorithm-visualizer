@@ -103,6 +103,36 @@ test('mẫu với giá trị vô lý (Kₙ, n=99999999): bị từ chối ngay, 
   expect(errors).toEqual([]);
 });
 
+test('mẫu với kích thước thập phân bị từ chối trước khi dựng cạnh', async ({page}) => {
+  const errors = trackErrors(page);
+  await page.goto('/play/graph-coloring/dsatur');
+  await page.getByRole('tab', {name: 'Chỉnh JSON'}).click();
+  const jsonBefore = await page.getByLabel('Dữ liệu JSON').inputValue();
+  await page.getByRole('tab', {name: 'Mẫu'}).click();
+  for (const [preset, size] of [['complete', '126.4'], ['cycle', '3.4']] as const) {
+    await page.getByLabel('Mẫu đồ thị').selectOption(preset);
+    await page.getByLabel('Kích thước n').fill(size);
+    await page.getByRole('button', {name: 'Chèn mẫu'}).click();
+    await expect(page.getByText(/kích thước nguyên/)).toBeVisible();
+  }
+  await page.getByRole('tab', {name: 'Chỉnh JSON'}).click();
+  await expect(page.getByLabel('Dữ liệu JSON')).toHaveValue(jsonBefore);
+  expect(errors).toEqual([]);
+});
+
+test('xác suất ngoài [0,1] được kẹp và thông báo đúng giá trị đã dùng', async ({page}) => {
+  const errors = trackErrors(page);
+  await page.goto('/play/graph-coloring/greedy');
+  await page.getByLabel('Số đỉnh n').fill('10');
+  await page.getByLabel('Xác suất cạnh p').fill('-0.2');
+  await page.getByRole('button', {name: 'Sinh đồ thị'}).click();
+  await expect(page.getByText(/p=0.0000/)).toBeVisible();
+  await page.getByLabel('Xác suất cạnh p').fill('2');
+  await page.getByRole('button', {name: 'Sinh đồ thị'}).click();
+  await expect(page.getByText(/p=1.0000/)).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
 test('bộ sinh ngẫu nhiên: n=320, p=1 (đồ thị đầy đủ ở kích thước lớn nhất) vẫn tự điều chỉnh để hợp lệ, không lỗi', async ({page}) => {
   const errors = trackErrors(page);
   await page.goto('/play/graph-coloring/greedy');

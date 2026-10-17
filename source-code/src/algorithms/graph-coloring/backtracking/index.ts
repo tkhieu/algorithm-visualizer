@@ -32,14 +32,16 @@ export const algorithm: Algorithm<Input, Output, VisualState> = {
    * n ≤ 22 cũ (chỉ benchmark theo một thứ tự, không phải mọi thứ tự). `existsColoring` (oracle của
    * checker.ts) đã benchmark riêng và không có cùng vấn đề này ở bất kỳ n nào thử ở trên (luôn
    * dưới 3 ms) nhờ cách liệt kê theo lớp xử lý clique tối ưu ngay từ đầu, nên không cần giảm thêm
-   * CHROMATIC_ORACLE_MAX_N. Ở chế độ χ(G), chặn dưới (clique tham lam) và chặn trên (DSATUR) khớp
-   * chính xác cho đúng cấu trúc "clique + đỉnh cô lập" này (đã benchmark tới n=12, luôn < 1 ms) nên
-   * giữ ngưỡng n ≤ 12 riêng cho chế độ đó. */
+   * CHROMATIC_ORACLE_MAX_N. Ở chế độ χ(G), "clique + đỉnh cô lập" là ca dễ vì hai chặn khớp nhau,
+   * nhưng K7 nối C5 với chu trình đứng trước có chặn dưới 9, chặn trên 10 và mất 8,04 s với trace
+   * ở n=12. Benchmark có trace cho các phép nối K3..K5 với C5, đệm đỉnh cô lập ở trước/sau lõi và
+   * đổi thứ tự chu trình/clique: n≤10 mất tối đa 1,26 s, n=11 có ca 1,72 s. Giữ ngưỡng n≤10 để
+   * còn dư đáng kể so với timeout worker 5 s; không đổi thứ tự duyệt được dạy trong thuật toán. */
   precondition(input) {
     const n = input.nodes.length;
     if ((input.mode ?? 'k-coloring') === 'chromatic')
-      return n > 12
-        ? `Không áp dụng: quay lui tìm χ(G) chỉ an toàn với đồ thị ≤ 12 đỉnh (đồ thị hiện có ${n} đỉnh).`
+      return n > 10
+        ? `Không áp dụng: quay lui tìm χ(G) chỉ an toàn với đồ thị ≤ 10 đỉnh khi giữ thứ tự duyệt đã cho (đồ thị hiện có ${n} đỉnh).`
         : undefined;
     return n > 9
       ? `Không áp dụng: quay lui chỉ an toàn với đồ thị ≤ 9 đỉnh ở chế độ k-coloring, vì thứ tự đỉnh ` +
