@@ -9,6 +9,60 @@ function trackErrors(page: import('@playwright/test').Page) {
   return errors;
 }
 
+test('vét cạn: đồ thị 10 đỉnh có trace phát được và cây trạng thái', async ({page}) => {
+  const errors = trackErrors(page);
+  const input = {
+    nodes: Array.from({length: 10}, (_, i) => `V${i}`),
+    edges: [
+      [0, 5], [0, 7], [1, 3], [1, 7], [2, 4], [2, 7], [2, 9], [3, 4],
+      [3, 5], [3, 6], [3, 9], [4, 5], [5, 7], [5, 8], [6, 8], [7, 8],
+    ].map(([from, to]) => ({from: `V${from}`, to: `V${to}`})),
+    colors: 3,
+    mode: 'k-coloring',
+  };
+  await page.goto('/play/graph-coloring/exhaustive');
+  await page.getByRole('tab', {name: 'Chỉnh JSON'}).click();
+  await page.getByLabel('Dữ liệu JSON').fill(JSON.stringify(input));
+  await page.getByRole('button', {name: 'Cây trạng thái'}).click();
+  await page.getByRole('button', {name: 'Chạy', exact: true}).click();
+  await expect(page.getByTestId('output')).toContainText('Tô được: Có');
+  await expect(page.getByTestId('output')).toContainText('bước đã bị bỏ qua');
+  await expect(page.getByTestId('step-count')).not.toHaveText('0/0');
+  await page.getByRole('button', {name: 'Phát'}).click();
+  await expect(page.getByTestId('visual-state')).toHaveAttribute('data-step', '1');
+  await expect(page.getByRole('img', {name: 'Cây không gian trạng thái'})).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+for (const algorithm of ['backtracking', 'greedy', 'welsh-powell', 'dsatur']) {
+  test(`${algorithm}: cây trạng thái dùng dữ liệu cây thay vì đồ thị`, async ({page}) => {
+    await page.goto(`/play/graph-coloring/${algorithm}`);
+    await page.getByRole('button', {name: 'Cây trạng thái'}).click();
+    await page.getByRole('button', {name: 'Chạy', exact: true}).click();
+    await expect(page.getByTestId('output')).toHaveAttribute('data-status', 'ok');
+    await page.getByRole('button', {name: 'Về cuối'}).click();
+    await expect(page.getByRole('img', {name: 'Cây không gian trạng thái'})).toBeVisible();
+  });
+}
+
+test('trace vượt ngưỡng ghi hình: không phát và không vẽ đồ thị thay cây', async ({page}) => {
+  const input = {
+    nodes: Array.from({length: 11}, (_, i) => `V${i}`),
+    edges: [],
+    colors: 2,
+    mode: 'k-coloring',
+  };
+  await page.goto('/play/graph-coloring/greedy');
+  await page.getByRole('tab', {name: 'Chỉnh JSON'}).click();
+  await page.getByLabel('Dữ liệu JSON').fill(JSON.stringify(input));
+  await page.getByRole('button', {name: 'Cây trạng thái'}).click();
+  await page.getByRole('button', {name: 'Chạy', exact: true}).click();
+  await expect(page.getByTestId('output')).toHaveAttribute('data-status', 'ok');
+  await expect(page.getByTestId('step-count')).toHaveText('0/0');
+  await expect(page.getByRole('button', {name: 'Phát'})).toBeDisabled();
+  await expect(page.getByTestId('visual-state')).toContainText('Không có cây trạng thái để hiển thị');
+});
+
 test('dsatur: chuyển sang chế độ χ(G) và chạy hiện số màu đã dùng', async ({page}) => {
   const errors = trackErrors(page);
   await page.goto('/play/graph-coloring/dsatur');

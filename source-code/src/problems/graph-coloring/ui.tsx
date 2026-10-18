@@ -355,7 +355,7 @@ export function OutputRenderer({output, verdict, truncated}: OutputRendererProps
               : '✓ Hợp lệ'
           : verdict.reason}
       </p>
-      {truncated && <p className="font-semibold">Trace đã rút gọn; kết quả vẫn hoàn chỉnh.</p>}
+      {truncated && <p className="font-semibold">Trace đã rút gọn: một số bước đã bị bỏ qua do giới hạn trace; kết quả vẫn hoàn chỉnh.</p>}
     </>
   );
 }

@@ -5,7 +5,42 @@ import {MetricsRecorder, TraceRecorder} from '../../../core/recorder';
 import {TraceStore} from '../../../core/trace/TraceStore';
 import {check, chromaticNumberOracle} from '../../../problems/graph-coloring/checker';
 import {crownGraph, cycleGraph, generate} from '../../../problems/graph-coloring/generators';
+import {execute} from '../../../core/worker-protocol/execute';
 describe('graph-coloring/exhaustive', () => {
+  it('đồ thị 10 đỉnh được phát lại bằng tiền tố và bước kết quả cuối', async () => {
+    const input = {
+      nodes: Array.from({length: 10}, (_, i) => `V${i}`),
+      edges: [
+        [0, 5], [0, 7], [1, 3], [1, 7], [2, 4], [2, 7], [2, 9], [3, 4],
+        [3, 5], [3, 6], [3, 9], [4, 5], [5, 7], [5, 8], [6, 8], [7, 8],
+      ].map(([from, to]) => ({from: `V${from}`, to: `V${to}`})),
+      colors: 3,
+      mode: 'k-coloring' as const,
+    };
+    const direct = new TraceRecorder(
+      algorithm.initVisual(input),
+      new Set(algorithm.pseudocode.map((line) => line.id)),
+      algorithm.traceLimit,
+    );
+    const output = algorithm.run(input, {rec: direct, signal: new AbortController().signal});
+    expect(output.coloring).toEqual([0, 0, 1, 2, 0, 1, 1, 2, 0, 0]);
+    expect(check(input, output).ok).toBe(true);
+    expect(direct.steps.length).toBeGreaterThan(1);
+    expect(direct.steps.length).toBeLessThanOrEqual(5000);
+    expect(direct.truncated).toBe(true);
+    expect(direct.steps.at(-1)?.lineId).toBe('done');
+    const streamed: typeof direct.steps = [];
+    const result = await execute(algorithm.id, input, true, (step) => streamed.push(step));
+    expect(result.status).toBe('ok');
+    expect(streamed.length).toBe(direct.steps.length);
+    expect(streamed[0]?.lineId).toBe('init');
+    expect(streamed.at(-1)?.lineId).toBe('done');
+    const store = new TraceStore(algorithm.initVisual(input));
+    for (const step of streamed) store.append(step);
+    const final = store.seek(store.length);
+    expect(final.treeNodes.length).toBeGreaterThan(0);
+    expect(final.nodes.map((node) => Number(node.label))).toEqual(output.coloring);
+  }, 20000);
   it('khớp với quay lui trên nhiều seed cỡ nhỏ/trung', () => {
     for (let seed = 1; seed <= 40; seed++)
       for (const size of ['tiny', 'small'] as const) {

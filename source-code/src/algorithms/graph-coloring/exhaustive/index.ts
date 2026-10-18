@@ -23,7 +23,8 @@ export const algorithm: Algorithm<Input, Output, VisualState> = {
   views: ['graph', 'state-space-tree'],
   pseudocode,
   legend,
-  traceLimit: {...limits, maxInputSize: 6},
+  // Ghi tiền tố cho đồ thị 10 đỉnh; giới hạn 5.000 bước / 2,5 MB vẫn chặn cây lớn.
+  traceLimit: {...limits, maxInputSize: 10, reserveFinalStep: true},
   /** Giới hạn an toàn: kⁿ ≤ 200.000 ở chế độ k-coloring (giữ nguyên ngưỡng gốc, chỉ đổi từ throw
    * sang "Không áp dụng"). Ở chế độ χ(G) phải thử lại cho mọi k = 1..n nên dùng tổng Σk^n ≤ cùng
    * ngưỡng — với n = 6 tổng này là 67.171 (an toàn), với n = 7 đã vượt 200.000 (823.543 ở hạng tử

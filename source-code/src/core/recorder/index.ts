@@ -13,15 +13,31 @@ export class TraceRecorder<V> extends MetricsRecorder<V>{
   truncated=false;
   private state:V;
   private bytes=0;
-  constructor(initial:V,private lineIds:ReadonlySet<string>,private limits:{maxSteps:number;maxBytes:number},private onStep?:(step:Step)=>void){super();this.state=initial}
+  constructor(
+    initial:V,
+    private lineIds:ReadonlySet<string>,
+    private limits:{maxSteps:number;maxBytes:number;reserveFinalStep?:boolean},
+    private onStep?:(step:Step)=>void,
+  ){
+    super();
+    this.state=initial;
+  }
   override step(lineId:string,explain:string,mutate:(draft:V)=>void,marks:Mark[]=[],phase?:string){
     if(!this.lineIds.has(lineId))throw new Error(`Dòng mã giả không tồn tại: ${lineId}`);
-    if(this.truncated)return;
-    if(this.steps.length>=this.limits.maxSteps){this.truncated=true;return}
+    const finalStep=this.limits.reserveFinalStep&&phase==='done';
+    if(this.truncated&&!finalStep)return;
+    if(this.truncated&&this.steps.length===0)return;
+    // Chừa chỗ cho bản vá màu kết quả sau khi dừng ghi các bước tìm kiếm.
+    const reservedBytes=this.limits.reserveFinalStep&&!finalStep?16000:0;
+    const stepLimit=this.limits.maxSteps-(this.limits.reserveFinalStep&&!finalStep?1:0);
+    if(this.steps.length>=stepLimit){this.truncated=true;return}
     const [next,patches,inverse]=produceWithPatches(this.state,(draft:Draft<V>)=>mutate(draft as V));
-    const step:Step={seq:this.steps.length+1,lineId,explain,marks,patches,inverse,phase};
+    const explanation=this.truncated&&finalStep
+      ?`Đã bỏ qua các bước ở giữa do giới hạn trace. ${explain}`
+      :explain;
+    const step:Step={seq:this.steps.length+1,lineId,explain:explanation,marks,patches,inverse,phase};
     const bytes=JSON.stringify(step).length;
-    if(this.bytes+bytes>this.limits.maxBytes){this.truncated=true;return}
+    if(this.bytes+bytes>this.limits.maxBytes-reservedBytes){this.truncated=true;return}
     this.bytes+=bytes;this.state=next;this.steps.push(step);this.onStep?.(step);
   }
 }
