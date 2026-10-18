@@ -16,11 +16,11 @@ Report, video và slide tập trung vào bài **Graph Coloring**, với 5 cách 
 | Welsh–Powell | heuristic | Sắp vertex theo degree giảm dần rồi tô greedy |
 | DSATUR | heuristic | Chọn vertex có saturation lớn nhất (không có trong sách Levitin) |
 | Backtracking | exact | Có state-space tree, pruning khi xung đột màu |
-| Exhaustive search | exact | Duyệt mọi kⁿ cách gán màu |
+| Exhaustive search | exact | Duyệt các cách gán màu theo thứ tự, dừng ở nghiệm hợp lệ đầu tiên; worst case là kⁿ cách gán |
 
 Hai chế độ:
-- **k-coloring:** có tô được graph bằng k màu hay không.
-- **Chromatic number χ(G):** tìm số màu ít nhất, có lower bound (clique) và upper bound (DSATUR).
+- **k-coloring:** có tô được graph bằng k màu hay không. Thuật toán exact trả lời chắc chắn có hoặc không; heuristic nếu không tô được thì chỉ báo "chưa tìm được", không chứng minh là vô nghiệm.
+- **Chromatic number χ(G):** tìm số màu ít nhất. Backtracking và exhaustive search cho χ(G) chính xác; backtracking dùng lower bound từ một clique và upper bound từ DSATUR để thu hẹp khoảng thử. Heuristic chỉ cho một upper bound, ví dụ greedy dùng 3 màu trên crown graph có χ = 2.
 
 Phần mở rộng: app còn có catalog **47 bài toán / 126 cách giải**, phần lớn theo sách Levitin, dùng chung cùng một Player, trang So sánh và trang Testcase.
 
@@ -94,8 +94,8 @@ Bộ slide: mở `presentation/algorithm-visualizer-video.pptx`. Nếu sửa n�
 
 ## Kiểm thử
 
-- Mỗi thuật toán có unit test so kết quả với một lời giải tham chiếu độc lập, không viết lại chính thuật toán đó.
-- E2E test tự mở mọi trang Player, So sánh và Testcase có trong catalog, chạy với input mặc định, kiểm tra có kết quả và không có lỗi console.
+- Mỗi thuật toán có unit test. Với thuật toán exact, test so kết quả với một lời giải tham chiếu độc lập, không viết lại chính thuật toán đó. Với heuristic như greedy hay DSATUR, test kiểm tra output là một cách tô hợp lệ bằng bộ chấm (`checker`) và so với các ví dụ cố định.
+- E2E test tự mở mọi trang Player và Testcase trong catalog, cùng trang So sánh của mọi bài toán có từ hai cách giải trở lên. Mỗi trang chạy với input mặc định, kiểm tra có kết quả và không có lỗi console.
 - Bộ testcase chia 6 nhóm dùng chung: `normal`, `edge`, `small`, `large`, `special`, `invalid`. Chi tiết trong [testcases/README.md](testcases/README.md).
 
 ## Quá trình phát triển
