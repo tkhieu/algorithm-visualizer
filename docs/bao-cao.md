@@ -3,11 +3,10 @@
 > **Bản nháp Markdown để review trước khi dựng file .docx.**
 > Ký hiệu dùng trong bản nháp:
 > - **[SV XÁC NHẬN]**: sinh viên phải tự xác nhận hoặc tự viết, vì AI không biết.
-> - Số liệu ở Chương 4 lấy từ lần chạy thật của app trên `main` (5d64b93).
-> - **[SAU NÂNG CẤP]**: phụ thuộc PR nâng cấp bài tô màu đang làm.
+> - Số liệu ở Chương 4 lấy từ lần chạy thật của app. Số bước ở chế độ k màu không đổi sau bản nâng cấp (PR #12).
 > - **[ẢNH]**: chỗ chèn ảnh chụp.
 >
-> Mọi dữ kiện về app trong bản nháp đã được đối chiếu với code trên `main` (commit 5d64b93).
+> Mọi dữ kiện về app trong bản nháp đã được đối chiếu với code trên `main` (commit c018f19, sau khi merge PR #12 nâng cấp bài tô màu). Bản này đã deploy lên https://algorithm-visualizer.hieutk.dev.
 
 ---
 
@@ -69,7 +68,7 @@ Ngoài ra, trước đó em đã xây một nền tảng demo cho nhiều thuậ
 
 Sở thú cần xếp n loài thú vào các chuồng. Có một danh sách các cặp loài "kỵ nhau", tức không được nhốt chung. Sở thú hiện có k chuồng. Câu hỏi đặt ra là có xếp được tất cả các loài vào k chuồng, sao cho không chuồng nào chứa hai loài kỵ nhau, hay không. Nếu có, hãy chỉ ra một cách xếp.
 
-**Mở rộng [SAU NÂNG CẤP]:** cần ít nhất bao nhiêu chuồng?
+**Mở rộng (chế độ "Tìm sắc số χ(G)" của app):** không cho trước k. Hỏi cần ít nhất bao nhiêu chuồng, và chỉ ra một cách xếp dùng đúng số chuồng đó.
 
 ### 2.2. Mô hình hóa
 
@@ -85,42 +84,51 @@ Cần phân biệt ba khái niệm:
 | Khái niệm | Câu hỏi | Trong app |
 |---|---|---|
 | Tô màu hợp lệ | Một cách gán màu cho trước có đúng không? | Do checker kiểm tra |
-| Bài toán k màu (k-coloring) | Có tô được bằng k màu không? | **Bài toán app giải hiện tại** |
-| Sắc số χ(G) | Số màu nhỏ nhất là bao nhiêu? | [SAU NÂNG CẤP] |
+| Bài toán k màu (k-coloring) | Có tô được bằng k màu không? | Chế độ "Tô bằng k màu cho sẵn" (mặc định) |
+| Sắc số χ(G) | Số màu nhỏ nhất là bao nhiêu? | Chế độ "Tìm sắc số χ(G)" |
 
 Bài toán k màu thuộc lớp NP-đầy đủ khi k ≥ 3 (Karp, 1972). Với k = 2, bài toán giải được trong thời gian đa thức, vì nó tương đương với việc kiểm tra đồ thị có phải đồ thị hai phía hay không.
 
 ### 2.3. Input
 
-Dữ liệu vào là JSON gồm ba trường, định nghĩa bằng Zod trong `source-code/src/problems/graph-coloring/definition.ts`:
+Dữ liệu vào là JSON, định nghĩa bằng Zod trong `source-code/src/problems/graph-coloring/definition.ts`:
 
 ```json
 {
   "nodes": ["A1", "B1", "A2", "B2", "A3", "B3"],
   "edges": [{"from": "A1", "to": "B2"}, "..."],
-  "colors": 2
+  "colors": 2,
+  "mode": "k-coloring"
 }
 ```
 
 - **`nodes`:** danh sách tên đỉnh, mỗi tên dài 1–20 ký tự. **Thứ tự trong mảng chính là thứ tự duyệt** của greedy, quay lui và vét cạn.
 - **`edges`:** danh sách cạnh vô hướng, không trọng số.
-- **`colors`:** số màu k.
+- **`colors`:** số màu k. Trường này luôn bắt buộc (số nguyên 1–10), nhưng bị bỏ qua ở chế độ χ.
+- **`mode`** (không bắt buộc): `"k-coloring"` (mặc định, giao diện ghi "Tô bằng k màu cho sẵn") hoặc `"chromatic"` ("Tìm sắc số χ(G)").
 
 ### 2.4. Output
 
-`{found, coloring, heuristic?}`, trong đó:
+`{found, coloring, heuristic?, colorsUsed?, chromaticExact?}`, trong đó:
 - **`found = true`:** `coloring[i]` là màu của đỉnh thứ i.
 - **`found = false` từ thuật toán chính xác:** khẳng định *không tồn tại* cách tô bằng k màu.
 - **`found = false` kèm `heuristic: true`:** chỉ có nghĩa là *heuristic chưa tìm được*, không khẳng định vô nghiệm.
+- **Ở chế độ χ:** `colorsUsed` là số màu thuật toán đã dùng. Với quay lui và vét cạn, đó chính là χ(G) (`chromaticExact`). Với ba heuristic, đó chỉ là một chặn trên của χ(G).
 
 ### 2.5. Ràng buộc
 
-| Ràng buộc | Giá trị hiện tại | [SAU NÂNG CẤP] |
-|---|---|---|
-| Số đỉnh n | 0 ≤ n ≤ 10 | heuristic khoảng 300 đỉnh |
-| Số cạnh m | ≤ 100 | theo n |
-| Số màu k | 1 ≤ k ≤ 10 | |
-| Vét cạn | ngưỡng kích thước input để ghi trace là n ≤ 6 (vượt mức này thuật toán vẫn chạy nhưng không ghi đủ trace); ngoài ra trace luôn bị cắt khi quá 5.000 bước hoặc 2,5 MB. Nếu kⁿ > 200.000 thì báo lỗi (`error`) | báo "Không áp dụng" khi vượt |
+| Ràng buộc | Giá trị |
+|---|---|
+| Số đỉnh n (input) | 0 ≤ n ≤ 320, cả hai chế độ |
+| Số cạnh m | ≤ 8.000 |
+| Số màu k | số nguyên 1 ≤ k ≤ 10 (chỉ dùng ở chế độ k màu) |
+| Greedy, Welsh–Powell, DSATUR | chạy được với mọi input hợp lệ (tới 320 đỉnh). Mức n ≤ 10 chỉ là ngưỡng để ghi trace minh họa, không phải giới hạn chạy |
+| Quay lui | n ≤ 9 ở chế độ k màu, n ≤ 10 ở chế độ χ. Vượt mức thì app báo "Không áp dụng" |
+| Vét cạn | kⁿ ≤ 200.000 ở chế độ k màu; Σkⁿ (k = 1..n) ≤ 200.000 ở chế độ χ, tức tối đa 6 đỉnh. Vượt mức thì báo "Không áp dụng". Ngưỡng ghi trace là n ≤ 6, và trace luôn bị cắt khi quá 5.000 bước hoặc 2,5 MB |
+
+Giới hạn n ≤ 9 của quay lui ở chế độ k màu được chọn sau khi đo ca xấu nhất: nhiều đỉnh cô lập đặt trước một clique không tô được làm quay lui phải thử lại mọi tổ hợp màu của các đỉnh cô lập. Ví dụ, với một đồ thị 12 đỉnh ở chế độ k màu, Player hiện: "Không áp dụng: Quay lui chỉ an toàn với đồ thị ≤ 9 đỉnh ở chế độ k-coloring, vì thứ tự đỉnh xấu (ví dụ nhiều đỉnh cô lập trước một clique không tô được) có thể khiến nó thử lại toàn bộ tổ hợp màu của các đỉnh không liên quan (đồ thị hiện có 12 đỉnh)." Số đỉnh ở cuối câu là số đỉnh thật của input.
+
+> **[CHỜ PR #14]:** trên bản đang chạy (c018f19), chữ "Không áp dụng:" bị lặp hai lần trong thông báo của quay lui và vét cạn, vì lý do đã có sẵn tiền tố và Player/So sánh lại thêm một lần nữa. PR #14 sửa lỗi này; câu trích ở trên là nội dung sau khi sửa. Chỉ chụp ảnh sau khi PR #14 được merge và deploy.
 
 ### 2.6. Ví dụ Input/Output
 
@@ -251,17 +259,29 @@ Exhaustive(G, k)
 - **Giới hạn trong app:**
   - n ≤ 6 là ngưỡng kích thước input để ghi trace. Vượt ngưỡng này thì thuật toán vẫn chạy nhưng không ghi đủ trace.
   - Kể cả khi n ≤ 6, trace vẫn bị cắt nếu quá 5.000 bước hoặc 2,5 MB. Ví dụ K₆ với k = 5 có 5⁶ = 15.625 phép gán, vô nghiệm, nên sinh ra hơn 5.000 bước.
-  - Nếu kⁿ > 200.000, thuật toán báo lỗi kèm gợi ý dùng quay lui. Đây là trạng thái `error`, không phải "Không áp dụng".
+  - Nếu kⁿ > 200.000, app báo "Không áp dụng: Vét cạn chỉ an toàn khi kⁿ ≤ 200.000" thay vì chạy. Ở chế độ χ, ngưỡng tính theo Σkⁿ (k = 1..n): n = 6 cho tổng 67.171, còn n = 7 đã vượt 200.000.
 
 #### Bảng tổng hợp
 
 | Thuật toán | Kết luận chắc chắn bài k màu? | Độ phức tạp lý thuyết / trong app | Giới hạn n trong app |
 |---|---|---|---|
-| Greedy | Không (có thể "chưa tìm được") | O(n·k + m) / O(n·(n + k)) | 10 [SAU NÂNG CẤP: khoảng 300] |
-| Welsh–Powell | Không | O(n log n + n·k + m) / O(n² + n·k) | 10 [SAU NÂNG CẤP] |
-| DSATUR | Không (nhưng đúng trên đồ thị hai phía) | O(n² + m) / O(n³ + n·k) | 10 [SAU NÂNG CẤP] |
-| Quay lui | Có | O((n+1)·kⁿ·(Δ+1)) / O(n²·kⁿ) | 10 |
-| Vét cạn | Có | O(kⁿ·(n + m)) / O(kⁿ·n²) | ngưỡng trace n ≤ 6; báo lỗi nếu kⁿ > 200.000 |
+| Greedy | Không (có thể "chưa tìm được") | O(n·k + m) / O(n·(n + k)) | 320 (ghi trace khi n ≤ 10) |
+| Welsh–Powell | Không | O(n log n + n·k + m) / O(n² + n·k) | 320 (ghi trace khi n ≤ 10) |
+| DSATUR | Không (nhưng đúng trên đồ thị hai phía) | O(n² + m) / O(n³ + n·k) | 320 (ghi trace khi n ≤ 10) |
+| Quay lui | Có | O((n+1)·kⁿ·(Δ+1)) / O(n²·kⁿ) | 9 (chế độ k màu), 10 (chế độ χ) |
+| Vét cạn | Có | O(kⁿ·(n + m)) / O(kⁿ·n²) | kⁿ ≤ 200.000 (chế độ k màu), Σkⁿ ≤ 200.000 tức n ≤ 6 (chế độ χ); ngưỡng trace n ≤ 6 |
+
+#### Chế độ tìm sắc số χ(G)
+
+Khi chọn "Tìm sắc số χ(G)", tham số k bị bỏ qua:
+- **Ba heuristic** tô bằng số màu tùy ý và trả về số màu đã dùng. Con số này chỉ là một **chặn trên** của χ(G).
+- **Quay lui** tính hai chặn trước khi tìm:
+  - **chặn dưới** là kích thước một clique tìm bằng tham lam (xếp đỉnh theo bậc giảm dần, thêm đỉnh nếu nó kề với mọi đỉnh đã chọn), vì một clique có q đỉnh cần ít nhất q màu;
+  - **chặn trên** là số màu DSATUR dùng.
+
+  Sau đó nó thử k tăng dần giữa hai chặn. Giá trị k đầu tiên tô được chính là χ(G), vì mọi k nhỏ hơn đã được chứng minh là vô nghiệm.
+- **Vét cạn** thử lần lượt k = 1, 2, … và duyệt mọi cách gán với mỗi k, nên tổng số cách gán bị chặn bởi Σkⁿ.
+- **Checker:** với n ≤ 12, một lời giải tham chiếu độc lập liệt kê các phân hoạch đỉnh thành lớp màu để tính χ(G) và chấm "tối ưu". Số phân hoạch là số Bell B(n): B(12) ≈ 4,2 triệu còn chạy được, B(15) đã vượt 1,38 tỷ. Với n > 12, checker chỉ xác nhận cách tô hợp lệ, không khẳng định đó là χ(G).
 
 **Tài liệu tham chiếu:**
 - Levitin, *Introduction to the Design and Analysis of Algorithms*, 3rd ed., §1.3 và §12.1;
@@ -332,7 +352,7 @@ Bảng dưới đây lấy từ lần chạy thật hàm `run()` của app, vớ
 
 **Kết quả:** found = true, coloring = [0, 1, 0, 1, 0, 1]. Checker kiểm tra cả 6 cạnh, hai đầu mút của mỗi cạnh đều khác màu.
 
-> **Lưu ý:** PR nâng cấp có thể sửa nhỏ mã giả của quay lui (dòng `try`). Nếu số bước thay đổi, phải cập nhật bảng này theo bản đã deploy trước khi quay video.
+> **Lưu ý:** sau PR #12, trace này vẫn giữ đúng 20 bước. Dòng `try` cũ đã bị bỏ, nên việc thử màu hiện trên dòng `reject` (bước loại) hoặc `place` (bước gán).
 
 [ẢNH: Player ở bước 9 (bế tắc) và bước 12 (quay lui về B1), kèm cây trạng thái]
 [ẢNH: Player ở bước 20]
@@ -357,43 +377,59 @@ Bảng dưới đây lấy từ lần chạy thật hàm `run()` của app, vớ
 - **Greedy và Welsh–Powell** thất bại vì thứ tự đỉnh. Đây là đúng phản ví dụ ở §3.2.
 - **Quay lui** dùng 20 bước và 21 phép toán, còn vét cạn dùng 69 bước và 67 phép toán. Phần chênh lệch là nhờ cắt nhánh sớm.
 
+**Cùng ví dụ ở chế độ "Tìm sắc số χ(G)"** (chạy `run()` của app hai lần, kết quả giống nhau):
+
+| Thuật toán | Số màu dùng | Số bước | Phép toán | Kết quả |
+|---|---:|---:|---:|---|
+| Greedy | 3 | 8 | 6 | Hợp lệ nhưng chưa tối ưu |
+| Welsh–Powell | 3 | 8 | 6 | Hợp lệ nhưng chưa tối ưu |
+| DSATUR | 2 | 14 | 6 | Tối ưu |
+| Quay lui | 2 | 22 | 21 | χ = 2, chính xác |
+| Vét cạn | 2 | 78 | 74 | χ = 2, chính xác |
+
+Ở chế độ này greedy không còn bị giới hạn k = 2. Nó mở thêm màu thứ ba khi tới A3, nên tô được nhưng dùng 3 màu, trong khi χ = 2. Đây là cách nhìn khác của cùng một phản ví dụ: với thứ tự đỉnh xấu, greedy có thể dùng nhiều màu hơn mức cần.
+
 Mã giả của từng thuật toán trên Player, chép nguyên văn từ `algorithms/graph-coloring/<thuật toán>/pseudocode.ts`:
 
 **Greedy**
 1. Xét các đỉnh theo thứ tự cho trước
 2. Gán màu nhỏ nhất trong k màu chưa dùng ở các đỉnh kề đã tô
-3. Nếu không còn màu nào khả dụng: báo không thể với k màu
+3. Nếu không còn màu nào khả dụng: dừng — heuristic chưa tìm được, không chứng minh vô nghiệm
 4. Trả về cách tô nếu tô được hết mọi đỉnh
 
 **Welsh–Powell**
 1. Sắp các đỉnh theo bậc giảm dần
 2. Gán màu nhỏ nhất trong k màu chưa dùng ở các đỉnh kề đã tô
-3. Nếu không còn màu nào khả dụng: báo không thể với k màu
+3. Nếu không còn màu nào khả dụng: dừng — heuristic chưa tìm được, không chứng minh vô nghiệm
 4. Trả về cách tô nếu tô được hết mọi đỉnh
 
 **DSATUR**
 1. Khởi tạo độ bão hoà (số màu khác nhau ở các đỉnh kề) bằng 0
 2. Chọn đỉnh chưa tô có độ bão hoà lớn nhất, hoà thì chọn bậc lớn hơn
 3. Gán màu nhỏ nhất trong k màu chưa dùng ở các đỉnh kề đã tô
-4. Nếu không còn màu nào khả dụng: báo không thể với k màu
+4. Nếu không còn màu nào khả dụng: dừng — heuristic chưa tìm được, không chứng minh vô nghiệm
 5. Trả về cách tô nếu tô được hết mọi đỉnh
 
 **Quay lui**
 1. Tô đỉnh theo thứ tự 0..n−1
-2. Thử màu c cho đỉnh hiện tại
-3. Nếu c trùng màu một đỉnh kề đã tô: loại bỏ c
-4. Nếu c hợp lệ: gán màu, sang đỉnh kế tiếp
-5. Nếu hết k màu mà không màu nào hợp lệ: quay lui
-6. Trả về cách tô nếu tô được hết n đỉnh, hoặc báo vô nghiệm
+2. Thử màu c cho đỉnh hiện tại; nếu trùng màu một đỉnh kề đã tô: loại bỏ c
+3. Nếu c hợp lệ: gán màu, sang đỉnh kế tiếp
+4. Nếu hết k màu mà không màu nào hợp lệ: quay lui
+5. Trả về cách tô nếu tô được hết n đỉnh, hoặc báo vô nghiệm
+6. Chế độ χ(G): tìm một clique bằng tham lam để có chặn dưới
+7. Chế độ χ(G): tô bằng DSATUR để có chặn trên
+8. Chế độ χ(G): tăng k từ chặn dưới, quay lui kiểm tra khả thi với từng k
+9. Chế độ χ(G): k nhỏ nhất khả thi chính là χ(G)
 
 **Vét cạn**
 1. Sinh mọi cách tô (mỗi đỉnh chọn một trong k màu, kⁿ cách)
 2. Gán màu cho đỉnh hiện tại
-3. Khi đã gán hết n đỉnh: kiểm tra toàn bộ đồ thị
-4. Nếu không có hai đỉnh kề cùng màu: đây là nghiệm
-5. Trả về nghiệm đầu tiên tìm được, hoặc báo vô nghiệm
+3. Khi đã gán hết n đỉnh: kiểm tra toàn bộ đồ thị — nếu không có hai đỉnh kề cùng màu, đây là nghiệm
+4. Trả về nghiệm đầu tiên tìm được, hoặc báo vô nghiệm
+5. Chế độ χ(G): thử k = 1, 2, … và vét cạn lại với mỗi k
+6. Chế độ χ(G): k nhỏ nhất khả thi chính là χ(G)
 
-> **Ghi chú:** dòng "báo không thể với k màu" của ba heuristic không khớp với lời giải thích từng bước ("chưa tìm được"). Dòng `try` của quay lui không bao giờ được tô sáng. PR nâng cấp đang sửa cả hai chỗ này; sau khi merge, phải chép lại phần mã giả ở đây theo bản mới.
+> **Ghi chú:** bản trước PR #12 có hai chỗ lệch: dòng "báo không thể với k màu" của heuristic mâu thuẫn với lời giải thích "chưa tìm được", và dòng `try` của quay lui không bao giờ được tô sáng. PR #12 đã sửa cả hai: heuristic ghi rõ "chưa tìm được, không chứng minh vô nghiệm", còn bước thử màu được gộp vào dòng `reject`. Số bước ở chế độ k màu không đổi (7/7/14/20/69).
 
 [ẢNH: trang So sánh với ví dụ chung]
 
@@ -443,7 +479,7 @@ Em **không** tự viết code và **không** tự review code. Việc review l�
 | 8. Tích hợp | Kiểm tra độ phủ, e2e đi qua mọi trang, xuất testcase | PR #8, merge 12/10 |
 | 9. Domain riêng | algorithm-visualizer.hieutk.dev | 17/10 |
 | 10. Chiến lược report | Ba mô hình tranh luận, chọn tô màu làm trọng tâm | 18/10 |
-| 11. Nâng cấp tô màu | Chế độ χ(G), đồ thị lớn, testcase mới | [SAU NÂNG CẤP] |
+| 11. Nâng cấp tô màu | Chế độ χ(G), heuristic chạy tới 320 đỉnh, bộ sinh đồ thị, 22 testcase. Claude Code làm, Codex review; sau 3 vòng CHANGES REQUESTED, vòng sửa cuối do Codex làm và Claude Code review PASS | PR #12, merge 18/10 |
 
 Bảng chi tiết 8 PR (merge commit, số vòng review) nằm ở Phụ lục A.
 
@@ -540,7 +576,7 @@ Mỗi vòng sửa lại lộ thêm một trường hợp biên khi người dùn
   - phạm vi và tính trung thực của báo cáo;
   - việc chạy tay để hiểu thuật toán;
   - quyết định merge.
-- **Giới hạn của oracle hiện tại:** liệt kê phân hoạch chỉ khả thi với đồ thị nhỏ (khoảng n ≤ 10). Với đồ thị lớn, checker chỉ kiểm được cách tô có hợp lệ hay không, không biết được χ(G).
+- **Giới hạn của oracle hiện tại:** liệt kê phân hoạch chỉ khả thi với đồ thị nhỏ (n ≤ 12). Với đồ thị lớn hơn, checker chỉ kiểm được cách tô có hợp lệ hay không, không biết được χ(G).
 
 ---
 
@@ -549,35 +585,37 @@ Mỗi vòng sửa lại lộ thêm một trường hợp biên khi người dùn
 ### 6.1. Cách tạo testcase
 
 - **Viết tay:** các ca nhỏ có đáp án dễ thấy.
-- **Dựng có chủ đích:** các họ đồ thị đã biết χ, gồm vương miện, đầy đủ Kₙ, chu trình chẵn/lẻ, hai phía, Petersen, Grötzsch [SAU NÂNG CẤP].
-- **Sinh ngẫu nhiên theo seed** với tham số n và xác suất cạnh p, để lặp lại được [SAU NÂNG CẤP cho ca lớn].
+- **Dựng có chủ đích:** các họ đồ thị đã biết χ. Trên giao diện, bộ sinh mẫu ghi: "Vương miện (2 nhóm kích thước m, χ = 2)", "Đầy đủ Kₙ (χ = n)", "Chu trình Cₙ (χ = 2 nếu n chẵn, 3 nếu n lẻ)", "Hai phía đầy đủ K(p,q) (χ = 2)", "Petersen (10 đỉnh, χ = 3)", "Grötzsch — Mycielski của C5, không tam giác (11 đỉnh, χ = 4)". Tham số được kiểm tra trước khi dựng; vượt giới hạn thì app từ chối, không cắt bớt cạnh.
+- **Sinh ngẫu nhiên theo seed** với n (1–320) và xác suất cạnh p (đưa về [0, 1]). Cùng seed luôn cho cùng đồ thị. App tự hạ p để số cạnh kỳ vọng không quá 7.200, và từ chối nếu số cạnh thực vượt 8.000.
 - **Xuất file:** testcase được xuất bằng lệnh export của app ra `testcases/graph-coloring/`.
 
 ### 6.2. Phân nhóm
 
-**Hiện tại có 10 file:**
+**Có 22 file** trong `testcases/graph-coloring/`. Cột "Kỳ vọng" là χ đã biết; "—" là ca không khai báo kỳ vọng, khi đó checker tự kiểm (cách tô hợp lệ, hoặc oracle độc lập với ca vô nghiệm).
 
-| Nhóm | File | n / m / k | Mục đích |
-|---|---|---|---|
-| Thường | normal-1, normal-2 | 3/3/3 và 3/3/2 | Tam giác, có nghiệm / vô nghiệm |
-| Biên | edge-single, edge-no-edges | 1/0/1, 3/0/1 | Một đỉnh; không có cạnh |
-| Nhỏ | small-1, small-2 | 5/3/3, 5/4/4 | |
-| Lớn | large-1, large-2 | 7/10/2, 7/9/1 | |
-| Đặc biệt | special-complete4 | 4/6/4 | K4 cần đúng 4 màu |
-| Không hợp lệ | invalid-zero-colors | 1/0/0 | Bị từ chối |
+| Nhóm | File | n / m | Chế độ, k | Kỳ vọng | Mục đích |
+|---|---|---|---|---|---|
+| Thông thường | normal-1, normal-2 | 3/3 | k màu, k = 3 và 2 | — | Tam giác, có nghiệm / vô nghiệm |
+| Thông thường | chromatic-cycle-odd, chromatic-cycle-even | 5/5, 6/6 | χ | 3, 2 | Chu trình lẻ cần 3 màu, chẵn cần 2 |
+| Thông thường | chromatic-bipartite | 7/12 | χ | 2 | Đồ thị hai phía |
+| Biên | edge-single, edge-no-edges | 1/0, 3/0 | k màu, k = 1 | — | Một đỉnh; không có cạnh |
+| Biên | chromatic-empty | 0/0 | χ | 0 | Đồ thị rỗng |
+| Nhỏ | small-1, small-2 | 5/3, 5/4 | k màu, k = 3 và 4 | — | |
+| Lớn | large-1, large-2 | 7/10, 7/9 | k màu, k = 2 và 1 | — | |
+| Lớn | chromatic-large-100, -200, -300 | 100/166, 200/409, 310/709 | χ | — | Ca lớn sinh theo seed. Chỉ heuristic chạy được; trang Testcase tự chuyển sang heuristic khi thuật toán tham chiếu báo "Không áp dụng" |
+| Đặc biệt | special-complete4 | 4/6 | k màu, k = 4 | — | K₄ cần đúng 4 màu |
+| Đặc biệt | chromatic-crown | 6/6 | χ | 2 | Ví dụ chung, bẫy của greedy |
+| Đặc biệt | chromatic-complete-k6 | 6/15 | χ | 6 | K₆ |
+| Đặc biệt | chromatic-petersen, chromatic-grotzsch | 10/15, 11/20 | χ | 3, 4 | Đồ thị kinh điển; Grötzsch không có tam giác mà vẫn cần 4 màu |
+| Không hợp lệ | invalid-zero-colors, invalid-mode | 1/0 | k = 0; mode sai | bị từ chối | Kiểm tra dữ liệu vào |
 
-**[SAU NÂNG CẤP]** Bổ sung:
-- các ca có kết quả kỳ vọng thật (χ đã biết);
-- các ca lớn 100–300 đỉnh;
-- ca không hợp lệ cho chế độ mới.
-
-Bảng này sẽ được cập nhật theo bộ testcase mới.
+Lưu ý: ca "chromatic-large-300" thực tế có 310 đỉnh.
 
 ### 6.3. Đo đạc
 
 - **Số đo:** đúng/sai theo checker, số bước, số phép toán, thời gian.
 - **Cách đo thời gian:** trang So sánh đo nhiều lần và lấy trung vị, ở chế độ chỉ đếm, không ghi trace.
-- **Cấu hình máy đo:** [SV ĐIỀN: CPU, RAM, trình duyệt, phiên bản].
+- **Cấu hình máy đo:** số liệu ở §7.2 đo bằng Node v24.21.0 trên Intel Core Ultra 7 270K Plus (24 CPU logic), gọi thẳng `run()` của app với bộ đếm chỉ tính metrics, không ghi trace. Nếu chụp thêm số liệu từ trang So sánh trên trình duyệt thì ghi rõ [SV ĐIỀN: trình duyệt, phiên bản, RAM].
 - **Ca vượt giới hạn:** ghi "Không áp dụng", không đưa vào biểu đồ.
 
 ### 6.4. Bảo đảm độ phủ
@@ -588,11 +626,13 @@ Mỗi nhánh của thuật toán phải có ít nhất một testcase đi qua:
 |---|---|
 | Có nghiệm | normal-1 |
 | Vô nghiệm, thuật toán chính xác chứng minh | normal-2, large-2 |
-| Heuristic "chưa tìm được" dù có nghiệm | đồ thị vương miện [SAU NÂNG CẤP: thêm vào testcase; hiện có trong unit test] |
+| Heuristic "chưa tìm được" dù có nghiệm | đồ thị vương miện ở chế độ k màu, k = 2 (unit test của greedy; chưa có file testcase riêng) |
+| Heuristic tô được nhưng chưa tối ưu | chromatic-crown ở chế độ χ: greedy trả về cách tô hợp lệ với 3 màu, trong khi χ = 2 |
 | Đồ thị rỗng hoặc không có cạnh | edge-no-edges, ca n = 0 trong unit test |
 | Đồ thị đầy đủ | special-complete4 |
-| Dữ liệu sai | invalid-zero-colors |
-| Vượt giới hạn | [SAU NÂNG CẤP] |
+| Dữ liệu sai | invalid-zero-colors, invalid-mode |
+| Chế độ χ, có χ đã biết | chromatic-cycle-*, chromatic-bipartite, chromatic-complete-k6, chromatic-petersen, chromatic-grotzsch |
+| Vượt giới hạn của thuật toán chính xác | chromatic-large-100/200/300 (quay lui và vét cạn báo "Không áp dụng") |
 
 ---
 
@@ -600,22 +640,34 @@ Mỗi nhánh của thuật toán phải có ít nhất một testcase đi qua:
 
 ### 7.1. Tính đúng
 
-- **Trang Testcase:** đạt [N/N] [ĐIỀN SỐ THẬT, SAU NÂNG CẤP].
+- **Trang Testcase:** "Đạt 22/22", không ca nào "Không áp dụng". Bằng chứng gồm hai lần chạy riêng: (1) bộ e2e chạy local trên dev server lúc merge PR #12; (2) ngày 18/10, cùng bộ e2e được chạy lại với một cấu hình Playwright tạm có `baseURL` trỏ thẳng tới https://algorithm-visualizer.hieutk.dev, không bật dev server, và pass 314/314, trong đó có kiểm tra "Đạt 22/22" của trang Testcase. [ẢNH: trang Testcase]
 - **Unit test:**
   - Quay lui được so với oracle độc lập `existsColoring`.
   - Vét cạn được so với quay lui.
   - Có test hồi quy riêng cho các lỗi đã gặp.
-- **Toàn app:** lúc merge PR #8 có 760 unit test và 305 e2e đều pass, trong đó có e2e tự đi qua mọi trang Player, So sánh và Testcase.
+- **Toàn app:** lúc merge PR #12 có 825 unit test và 314 e2e đều pass (cộng 2 e2e chạy dưới đường dẫn con), trong đó có e2e tự đi qua mọi trang Player, So sánh và Testcase.
   - **Ý nghĩa và giới hạn:** các con số này cho thấy mọi trang chạy được với input mặc định. Chúng không thay thế việc chứng minh đúng đắn ở Chương 3.
 
 ### 7.2. Kết quả so sánh
 
-[ẢNH/BẢNG từ trang So sánh trên ví dụ chung và trên ca lớn, SAU NÂNG CẤP]
+**Trên ví dụ chung:** xem bảng ở §4.3. Ở chế độ χ, greedy và Welsh–Powell dùng 3 màu, còn DSATUR, quay lui và vét cạn dùng đúng χ = 2. Quay lui cần 22 bước, vét cạn 78 bước.
 
-Nhận xét dự kiến (phải đối chiếu với số liệu thật):
-- **Greedy và Welsh–Powell:** nhanh nhất, nhưng phụ thuộc thứ tự đỉnh.
-- **DSATUR:** chậm hơn một chút, nhưng tránh được bẫy của đồ thị vương miện.
-- **Quay lui:** cắt nhánh nên duyệt ít hơn rất nhiều so với vét cạn. Cả hai đều tăng theo kⁿ.
+**Trên đồ thị ngẫu nhiên lớn** G(n, p = 0,1), 5 seed (1–5), lấy trung vị. Mỗi ô ghi thời gian (ms) / số màu dùng:
+
+| n | Greedy | Welsh–Powell | DSATUR |
+|---:|---:|---:|---:|
+| 50 | 0,098 / 5 | 0,241 / 4 | 1,173 / 4 |
+| 100 | 0,279 / 7 | 0,692 / 6 | 7,958 / 6 |
+| 200 | 1,359 / 12 | 3,181 / 10 | 64,816 / 8 |
+| 300 | 3,579 / 14 | 7,363 / 13 | 203,489 / 11 |
+
+[ẢNH: trang So sánh trên ví dụ chung và trên một ca lớn]
+
+**Nhận xét:**
+- **Chất lượng:** ở mọi kích thước, DSATUR dùng ít màu nhất, rồi tới Welsh–Powell, cuối cùng là greedy. Ở n = 300, DSATUR dùng 11 màu so với 14 của greedy.
+- **Thời gian:** greedy nhanh nhất. DSATUR chậm hơn rõ rệt và tăng nhanh theo n: từ n = 100 lên n = 200, thời gian tăng khoảng 8 lần, khớp với độ phức tạp O(n³) trong app ở §3.3 (gấp đôi n thì gấp 8 lần). Dù vậy 300 đỉnh vẫn chỉ mất khoảng 0,2 giây.
+- **Không biết χ thật:** với các đồ thị trên 12 đỉnh này app không tính được χ(G), nên chỉ so được các heuristic với nhau, không khẳng định được cái nào tối ưu.
+- **Quay lui:** chế độ χ trên đồ thị ngẫu nhiên thưa n = 8, 9, 10 chạy rất nhanh (khoảng 0,04 ms, đều ra 2 màu). Đây là trường hợp dễ. Giới hạn n ≤ 10 được chọn theo ca xấu nhất, không theo ca trung bình (xem §2.5).
 
 ### 7.3. Tính trực quan và khả năng minh họa
 
@@ -625,11 +677,13 @@ Nhận xét dự kiến (phải đối chiếu với số liệu thật):
 
 ### 7.4. Hạn chế
 
-- Thuật toán chính xác chỉ chạy được với đồ thị nhỏ: n ≤ 10. Vét cạn có ngưỡng ghi trace n ≤ 6, mọi trace đều bị cắt khi quá 5.000 bước hoặc 2,5 MB, và thuật toán báo lỗi khi kⁿ > 200.000.
+- Thuật toán chính xác chỉ chạy với đồ thị nhỏ: quay lui tới 9 đỉnh (chế độ k màu) hoặc 10 đỉnh (chế độ χ), vét cạn tới kⁿ ≤ 200.000 hoặc 6 đỉnh. Giới hạn của quay lui chọn theo ca xấu nhất khi giữ nguyên thứ tự đỉnh như bài giảng, nên thấp hơn khả năng của một quay lui có sắp xếp đỉnh.
+- Với đồ thị trên 12 đỉnh, app không biết χ(G) thật, nên không chấm được heuristic có tối ưu hay không.
+- Trường `colors` vẫn bắt buộc ở chế độ χ dù bị bỏ qua.
+- Trace minh họa chỉ ghi đủ với đồ thị nhỏ (heuristic n ≤ 10, vét cạn n ≤ 6) và bị cắt khi quá 5.000 bước hoặc 2,5 MB.
 - Heuristic không bảo đảm tìm được nghiệm.
 - Oracle độc lập chỉ khả thi với đồ thị nhỏ.
 - Toàn bộ code do AI sinh. Tuy đã qua review chéo và test, vẫn có thể còn lỗi chưa phát hiện.
-- [Hiện tại] Chưa có chế độ tìm χ(G) [SAU NÂNG CẤP: bỏ dòng này nếu đã có].
 
 ### 7.5. Hướng phát triển
 
