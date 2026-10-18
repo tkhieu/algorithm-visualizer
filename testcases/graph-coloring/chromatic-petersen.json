@@ -1,0 +1,85 @@
+{
+  "id": "chromatic-petersen",
+  "name": "χ(G): đồ thị Petersen — χ = 3",
+  "group": "special",
+  "input": {
+    "nodes": [
+      "O0",
+      "O1",
+      "O2",
+      "O3",
+      "O4",
+      "I0",
+      "I1",
+      "I2",
+      "I3",
+      "I4"
+    ],
+    "edges": [
+      {
+        "from": "O0",
+        "to": "O1"
+      },
+      {
+        "from": "O1",
+        "to": "O2"
+      },
+      {
+        "from": "O2",
+        "to": "O3"
+      },
+      {
+        "from": "O3",
+        "to": "O4"
+      },
+      {
+        "from": "O4",
+        "to": "O0"
+      },
+      {
+        "from": "I0",
+        "to": "I2"
+      },
+      {
+        "from": "I1",
+        "to": "I3"
+      },
+      {
+        "from": "I2",
+        "to": "I4"
+      },
+      {
+        "from": "I3",
+        "to": "I0"
+      },
+      {
+        "from": "I4",
+        "to": "I1"
+      },
+      {
+        "from": "O0",
+        "to": "I0"
+      },
+      {
+        "from": "O1",
+        "to": "I1"
+      },
+      {
+        "from": "O2",
+        "to": "I2"
+      },
+      {
+        "from": "O3",
+        "to": "I3"
+      },
+      {
+        "from": "O4",
+        "to": "I4"
+      }
+    ],
+    "colors": 3,
+    "mode": "chromatic"
+  },
+  "expected": 3,
+  "note": null
+}

@@ -1,0 +1,106 @@
+{
+  "id": "chromatic-grotzsch",
+  "name": "χ(G): đồ thị Grötzsch (Mycielski của C5, không tam giác) — χ = 4",
+  "group": "special",
+  "input": {
+    "nodes": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C1'",
+      "C2'",
+      "C3'",
+      "C4'",
+      "C5'",
+      "U"
+    ],
+    "edges": [
+      {
+        "from": "C1",
+        "to": "C2"
+      },
+      {
+        "from": "C2",
+        "to": "C3"
+      },
+      {
+        "from": "C3",
+        "to": "C4"
+      },
+      {
+        "from": "C4",
+        "to": "C5"
+      },
+      {
+        "from": "C5",
+        "to": "C1"
+      },
+      {
+        "from": "C1'",
+        "to": "C2"
+      },
+      {
+        "from": "C2'",
+        "to": "C1"
+      },
+      {
+        "from": "C2'",
+        "to": "C3"
+      },
+      {
+        "from": "C3'",
+        "to": "C2"
+      },
+      {
+        "from": "C3'",
+        "to": "C4"
+      },
+      {
+        "from": "C4'",
+        "to": "C3"
+      },
+      {
+        "from": "C4'",
+        "to": "C5"
+      },
+      {
+        "from": "C5'",
+        "to": "C4"
+      },
+      {
+        "from": "C5'",
+        "to": "C1"
+      },
+      {
+        "from": "C1'",
+        "to": "C5"
+      },
+      {
+        "from": "U",
+        "to": "C1'"
+      },
+      {
+        "from": "U",
+        "to": "C2'"
+      },
+      {
+        "from": "U",
+        "to": "C3'"
+      },
+      {
+        "from": "U",
+        "to": "C4'"
+      },
+      {
+        "from": "U",
+        "to": "C5'"
+      }
+    ],
+    "colors": 4,
+    "mode": "chromatic"
+  },
+  "expected": 4,
+  "note": null
+}

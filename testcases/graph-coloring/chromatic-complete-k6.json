@@ -1,0 +1,81 @@
+{
+  "id": "chromatic-complete-k6",
+  "name": "χ(G): đồ thị đủ K6 — χ = 6",
+  "group": "special",
+  "input": {
+    "nodes": [
+      "K1",
+      "K2",
+      "K3",
+      "K4",
+      "K5",
+      "K6"
+    ],
+    "edges": [
+      {
+        "from": "K1",
+        "to": "K2"
+      },
+      {
+        "from": "K1",
+        "to": "K3"
+      },
+      {
+        "from": "K1",
+        "to": "K4"
+      },
+      {
+        "from": "K1",
+        "to": "K5"
+      },
+      {
+        "from": "K1",
+        "to": "K6"
+      },
+      {
+        "from": "K2",
+        "to": "K3"
+      },
+      {
+        "from": "K2",
+        "to": "K4"
+      },
+      {
+        "from": "K2",
+        "to": "K5"
+      },
+      {
+        "from": "K2",
+        "to": "K6"
+      },
+      {
+        "from": "K3",
+        "to": "K4"
+      },
+      {
+        "from": "K3",
+        "to": "K5"
+      },
+      {
+        "from": "K3",
+        "to": "K6"
+      },
+      {
+        "from": "K4",
+        "to": "K5"
+      },
+      {
+        "from": "K4",
+        "to": "K6"
+      },
+      {
+        "from": "K5",
+        "to": "K6"
+      }
+    ],
+    "colors": 6,
+    "mode": "chromatic"
+  },
+  "expected": 6,
+  "note": null
+}

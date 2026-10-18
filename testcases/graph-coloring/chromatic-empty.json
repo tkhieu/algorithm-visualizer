@@ -1,0 +1,13 @@
+{
+  "id": "chromatic-empty",
+  "name": "χ(G): đồ thị rỗng (0 đỉnh) — χ = 0",
+  "group": "edge",
+  "input": {
+    "nodes": [],
+    "edges": [],
+    "colors": 1,
+    "mode": "chromatic"
+  },
+  "expected": 0,
+  "note": null
+}

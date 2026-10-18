@@ -1,0 +1,45 @@
+{
+  "id": "chromatic-cycle-even",
+  "name": "χ(G): chu trình chẵn C6 — χ = 2",
+  "group": "normal",
+  "input": {
+    "nodes": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6"
+    ],
+    "edges": [
+      {
+        "from": "C1",
+        "to": "C2"
+      },
+      {
+        "from": "C2",
+        "to": "C3"
+      },
+      {
+        "from": "C3",
+        "to": "C4"
+      },
+      {
+        "from": "C4",
+        "to": "C5"
+      },
+      {
+        "from": "C5",
+        "to": "C6"
+      },
+      {
+        "from": "C6",
+        "to": "C1"
+      }
+    ],
+    "colors": 3,
+    "mode": "chromatic"
+  },
+  "expected": 2,
+  "note": null
+}

@@ -1,10 +1,20 @@
 import type {RunContext} from '../../../core/contracts';
 import type {Input, Output} from '../../../problems/graph-coloring/definition';
-import {assertActive, markColoring, pack, smallestAvailableColor, type VisualState} from '../shared';
+import {
+  assertActive,
+  countColorsUsed,
+  effectiveColorLimit,
+  markColoring,
+  pack,
+  smallestAvailableColor,
+  type VisualState,
+} from '../shared';
 import {adjacency} from '../../../problems/graph-coloring/checker';
 export function run(input: Input, {rec, signal}: RunContext<VisualState>): Output {
-  const {nodes, colors: k} = input;
+  const {nodes} = input;
   const n = nodes.length;
+  const chromatic = input.mode === 'chromatic';
+  const k = effectiveColorLimit(input);
   const adj = adjacency(input);
   const degree = nodes.map((v) => nodes.filter((u) => adj.has(`${v}|${u}`)).length);
   const order = nodes.map((_, i) => i).sort((a, b) => degree[b] - degree[a] || a - b);
@@ -14,7 +24,9 @@ export function run(input: Input, {rec, signal}: RunContext<VisualState>): Outpu
   let ok = true;
   rec.step(
     'init',
-    `Sắp đỉnh theo bậc giảm dần: ${order.map((i) => nodes[i]).join(', ')}.`,
+    chromatic
+      ? `Sắp đỉnh theo bậc giảm dần: ${order.map((i) => nodes[i]).join(', ')}; không giới hạn số màu (chế độ χ(G)).`
+      : `Sắp đỉnh theo bậc giảm dần: ${order.map((i) => nodes[i]).join(', ')}.`,
     (d) => {
       markColoring(d, coloring);
     },
@@ -53,14 +65,19 @@ export function run(input: Input, {rec, signal}: RunContext<VisualState>): Outpu
     );
     parent = id;
   }
+  const colorsUsed = countColorsUsed(coloring);
   rec.step(
     'done',
-    ok ? `Tô thành công với tối đa ${k} màu.` : 'Cách chọn màu này chưa tìm được cách tô với số màu đã cho.',
+    chromatic
+      ? `Tô xong, dùng ${colorsUsed} màu — đây là chặn trên của χ(G), chưa chắc tối ưu.`
+      : ok
+        ? `Tô thành công với tối đa ${k} màu.`
+        : 'Cách chọn màu này chưa tìm được cách tô với số màu đã cho.',
     (d) => {
-      d.note = ok ? 'Tô thành công' : 'Thất bại';
+      d.note = chromatic ? `Dùng ${colorsUsed} màu` : ok ? 'Tô thành công' : 'Thất bại';
     },
     [],
     'done',
   );
-  return {...pack(ok ? (coloring as number[]) : null), heuristic: true};
+  return {...pack(ok ? (coloring as number[]) : null), heuristic: true, colorsUsed: ok ? colorsUsed : undefined};
 }

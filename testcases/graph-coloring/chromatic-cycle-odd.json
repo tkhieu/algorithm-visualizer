@@ -1,0 +1,40 @@
+{
+  "id": "chromatic-cycle-odd",
+  "name": "χ(G): chu trình lẻ C5 — χ = 3",
+  "group": "normal",
+  "input": {
+    "nodes": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5"
+    ],
+    "edges": [
+      {
+        "from": "C1",
+        "to": "C2"
+      },
+      {
+        "from": "C2",
+        "to": "C3"
+      },
+      {
+        "from": "C3",
+        "to": "C4"
+      },
+      {
+        "from": "C4",
+        "to": "C5"
+      },
+      {
+        "from": "C5",
+        "to": "C1"
+      }
+    ],
+    "colors": 3,
+    "mode": "chromatic"
+  },
+  "expected": 3,
+  "note": null
+}

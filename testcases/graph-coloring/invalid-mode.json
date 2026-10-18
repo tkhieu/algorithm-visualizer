@@ -1,0 +1,15 @@
+{
+  "id": "invalid-mode",
+  "name": "Chế độ không hợp lệ",
+  "group": "invalid",
+  "input": {
+    "nodes": [
+      "A"
+    ],
+    "edges": [],
+    "colors": 1,
+    "mode": "invalid-mode"
+  },
+  "expected": null,
+  "note": null
+}

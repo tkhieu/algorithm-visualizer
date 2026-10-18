@@ -13,4 +13,10 @@ export const problem: Problem<Input, Output> = {
   generate,
   cases,
   check,
+  // "Số màu đã dùng" — cột "Giá trị" ở trang So sánh (nổi bật nhất ở chế độ chromatic, nơi càng ít
+  // càng tốt); dùng colorsUsed nếu thuật toán đã báo, hoặc tự đếm từ coloring khi chưa có.
+  objective: {
+    sense: 'min',
+    score: (_input, output) => output.colorsUsed ?? new Set(output.coloring).size,
+  },
 };
