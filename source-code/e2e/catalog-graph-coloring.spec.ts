@@ -40,7 +40,10 @@ test('backtracking: đồ thị quá lớn ở chế độ χ(G) báo "Không á
   await page.getByLabel('Xác suất cạnh p').fill('0.2');
   await page.getByRole('button', {name: 'Sinh đồ thị'}).click();
   await page.getByRole('button', {name: 'Chạy', exact: true}).click();
-  await expect(page.getByTestId('output')).toContainText('Không áp dụng');
+  const output = page.getByTestId('output');
+  await expect(output).toContainText('Không áp dụng');
+  await expect(output).not.toContainText('Không áp dụng: Không áp dụng');
+  await expect.poll(async () => (await output.innerText()).match(/Không áp dụng/g)?.length ?? 0).toBe(1);
   expect(errors).toEqual([]);
 });
 

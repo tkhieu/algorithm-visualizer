@@ -41,10 +41,10 @@ export const algorithm: Algorithm<Input, Output, VisualState> = {
     const n = input.nodes.length;
     if ((input.mode ?? 'k-coloring') === 'chromatic')
       return n > 10
-        ? `Không áp dụng: quay lui tìm χ(G) chỉ an toàn với đồ thị ≤ 10 đỉnh khi giữ thứ tự duyệt đã cho (đồ thị hiện có ${n} đỉnh).`
+        ? `Quay lui tìm χ(G) chỉ an toàn với đồ thị ≤ 10 đỉnh khi giữ thứ tự duyệt đã cho (đồ thị hiện có ${n} đỉnh).`
         : undefined;
     return n > 9
-      ? `Không áp dụng: quay lui chỉ an toàn với đồ thị ≤ 9 đỉnh ở chế độ k-coloring, vì thứ tự đỉnh ` +
+      ? `Quay lui chỉ an toàn với đồ thị ≤ 9 đỉnh ở chế độ k-coloring, vì thứ tự đỉnh ` +
           `xấu (ví dụ nhiều đỉnh cô lập trước một clique không tô được) có thể khiến nó thử lại toàn ` +
           `bộ tổ hợp màu của các đỉnh không liên quan (đồ thị hiện có ${n} đỉnh).`
       : undefined;

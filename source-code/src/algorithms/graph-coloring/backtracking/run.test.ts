@@ -110,18 +110,18 @@ describe('graph-coloring/backtracking', () => {
   describe('precondition — giới hạn an toàn riêng cho quay lui', () => {
     it('k-coloring: không áp dụng khi n > 9', () => {
       const big = {nodes: Array.from({length: 10}, (_, i) => `V${i}`), edges: [], colors: 2};
-      expect(algorithm.precondition?.(big)).toMatch(/Không áp dụng/);
+      expect(algorithm.precondition?.(big)).toMatch(/^Quay lui chỉ an toàn/);
       const ok = {nodes: Array.from({length: 9}, (_, i) => `V${i}`), edges: [], colors: 2};
       expect(algorithm.precondition?.(ok)).toBeUndefined();
     });
     it('chromatic: không áp dụng khi n > 10 (ngưỡng riêng, xem benchmark trong index.ts)', () => {
       const big = {nodes: Array.from({length: 11}, (_, i) => `V${i}`), edges: [], colors: 1, mode: 'chromatic' as const};
-      expect(algorithm.precondition?.(big)).toMatch(/Không áp dụng/);
+      expect(algorithm.precondition?.(big)).toMatch(/^Quay lui tìm χ\(G\) chỉ an toàn/);
       const ok = {nodes: Array.from({length: 10}, (_, i) => `V${i}`), edges: [], colors: 1, mode: 'chromatic' as const};
       expect(algorithm.precondition?.(ok)).toBeUndefined();
     });
     it('chromatic: từ chối K7 nối C5 với chu trình đứng trước (n=12, vượt timeout worker)', () => {
-      expect(algorithm.precondition?.(joinedOddCycle(7, 0, 'CKI'))).toMatch(/Không áp dụng/);
+      expect(algorithm.precondition?.(joinedOddCycle(7, 0, 'CKI'))).toMatch(/^Quay lui tìm χ\(G\) chỉ an toàn/);
     });
     it('k-coloring: thứ tự đỉnh xấu (18 đỉnh cô lập TRƯỚC một K4) ở n=22 vẫn phải bị chặn — đây là ca mà ngưỡng n ≤ 22 cũ (từ lần review trước) vẫn lọt qua', () => {
       const isolated = Array.from({length: 18}, (_, i) => `I${i}`);
@@ -129,7 +129,7 @@ describe('graph-coloring/backtracking', () => {
       const edges = [];
       for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) edges.push({from: clique[i], to: clique[j]});
       const input = {nodes: [...isolated, ...clique], edges, colors: 3};
-      expect(algorithm.precondition?.(input)).toMatch(/Không áp dụng/);
+      expect(algorithm.precondition?.(input)).toMatch(/^Quay lui chỉ an toàn/);
     });
   });
 

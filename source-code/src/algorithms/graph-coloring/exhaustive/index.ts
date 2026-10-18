@@ -33,12 +33,12 @@ export const algorithm: Algorithm<Input, Output, VisualState> = {
     if ((input.mode ?? 'k-coloring') === 'chromatic') {
       const total = chromaticWorstCase(n);
       return total > SAFE_LIMIT
-        ? `Không áp dụng: vét cạn tìm χ(G) chỉ an toàn khi Σk^n (k=1..n) ≤ ${SAFE_LIMIT.toLocaleString('vi-VN')} (đồ thị ${n} đỉnh cho tổng ${total.toLocaleString('vi-VN')}).`
+        ? `Vét cạn tìm χ(G) chỉ an toàn khi Σk^n (k=1..n) ≤ ${SAFE_LIMIT.toLocaleString('vi-VN')} (đồ thị ${n} đỉnh cho tổng ${total.toLocaleString('vi-VN')}).`
         : undefined;
     }
     const total = Math.pow(input.colors, n);
     return total > SAFE_LIMIT
-      ? `Không áp dụng: vét cạn chỉ an toàn khi kⁿ ≤ ${SAFE_LIMIT.toLocaleString('vi-VN')} (hiện tại ${input.colors}^${n} = ${total.toLocaleString('vi-VN')}).`
+      ? `Vét cạn chỉ an toàn khi kⁿ ≤ ${SAFE_LIMIT.toLocaleString('vi-VN')} (hiện tại ${input.colors}^${n} = ${total.toLocaleString('vi-VN')}).`
       : undefined;
   },
   initVisual,
