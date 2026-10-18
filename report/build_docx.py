@@ -500,6 +500,7 @@ def convert():
     # intentionally dropped here rather than rendered anywhere in the output.
     mode = "preamble"  # preamble -> cover -> toc -> body
     cover_lines = []
+    md_title = None  # captured from the md's single "# ..." line (level 1)
 
     while i < n:
         raw = lines[i]
@@ -518,11 +519,12 @@ def convert():
             level = len(hm.group(1))
             text = hm.group(2).strip()
             if level == 1:
+                md_title = text  # rendered as a prominent cover-page title below
                 i += 1
                 continue
             # close out whatever special section we were in before this heading
             if mode == "cover":
-                render_cover(doc, b, cover_lines)
+                render_cover(doc, b, cover_lines, md_title)
                 doc.add_page_break()
                 mode = "preamble"
             if text == "Trang bìa":
@@ -624,8 +626,14 @@ def convert():
     print(f"Wrote {OUT_PATH}")
 
 
-def render_cover(doc, b, cover_lines):
+def render_cover(doc, b, cover_lines, md_title):
     doc.add_paragraph().paragraph_format.space_after = Pt(0)
+    if md_title:
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p.paragraph_format.space_before = Pt(0)
+        p.paragraph_format.space_after = Pt(18)
+        render_inline(p, md_title, base_size=22, base_bold=True)
     sizes = [13, 13, 18, 20, 14, 14, 13, 13]
     space_before = [0, 0, 36, 18, 48, 6, 36, 12]
     for idx, raw in enumerate(cover_lines):
