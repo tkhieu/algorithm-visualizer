@@ -124,7 +124,7 @@ Dữ liệu vào là JSON, định nghĩa bằng Zod trong `source-code/src/prob
 | Số màu k | số nguyên 1 ≤ k ≤ 10 (chỉ dùng ở chế độ k màu) |
 | Greedy, Welsh–Powell, DSATUR | chạy được với mọi input hợp lệ (tới 320 đỉnh). Mức n ≤ 10 chỉ là ngưỡng để ghi trace minh họa, không phải giới hạn chạy |
 | Quay lui | n ≤ 9 ở chế độ k màu, n ≤ 10 ở chế độ χ. Vượt mức thì app báo "Không áp dụng" |
-| Vét cạn | kⁿ ≤ 200.000 ở chế độ k màu; Σkⁿ (k = 1..n) ≤ 200.000 ở chế độ χ, tức tối đa 6 đỉnh. Vượt mức thì báo "Không áp dụng". Ngưỡng ghi trace là n ≤ 6, và trace luôn bị cắt khi quá 5.000 bước hoặc 2,5 MB |
+| Vét cạn | kⁿ ≤ 200.000 ở chế độ k màu; Σkⁿ (k = 1..n) ≤ 200.000 ở chế độ χ, tức tối đa 6 đỉnh. Vượt mức thì báo "Không áp dụng". Ngưỡng ghi trace là n ≤ 10; khi quá 5.000 bước hoặc 2,5 MB, trace giữ phần đầu và luôn giữ bước kết quả cuối |
 
 Giới hạn n ≤ 9 của quay lui ở chế độ k màu được chọn sau khi đo ca xấu nhất: nhiều đỉnh cô lập đặt trước một clique không tô được làm quay lui phải thử lại mọi tổ hợp màu của các đỉnh cô lập. Ví dụ, với một đồ thị 12 đỉnh ở chế độ k màu, Player hiện: "Không áp dụng: Quay lui chỉ an toàn với đồ thị ≤ 9 đỉnh ở chế độ k-coloring, vì thứ tự đỉnh xấu (ví dụ nhiều đỉnh cô lập trước một clique không tô được) có thể khiến nó thử lại toàn bộ tổ hợp màu của các đỉnh không liên quan (đồ thị hiện có 12 đỉnh)." Số đỉnh ở cuối câu là số đỉnh thật của input.
 
@@ -257,8 +257,8 @@ Exhaustive(G, k)
   - App kiểm tra bằng cách quét các cặp đỉnh, nên trong app là **O(kⁿ·n²)**.
   - Đây là mốc để so sánh với quay lui.
 - **Giới hạn trong app:**
-  - n ≤ 6 là ngưỡng kích thước input để ghi trace. Vượt ngưỡng này thì thuật toán vẫn chạy nhưng không ghi đủ trace.
-  - Kể cả khi n ≤ 6, trace vẫn bị cắt nếu quá 5.000 bước hoặc 2,5 MB. Ví dụ K₆ với k = 5 có 5⁶ = 15.625 phép gán, vô nghiệm, nên sinh ra hơn 5.000 bước.
+  - n ≤ 10 là ngưỡng kích thước input để ghi trace. Input vượt ngưỡng này nhưng vẫn nằm trong giới hạn chạy (kⁿ ≤ 200.000 ở chế độ k màu) thì thuật toán vẫn chạy và trả kết quả, nhưng không ghi bước nào; khi đó Player khóa nút Play và giải thích lý do, còn view "Cây trạng thái" hiện thông báo trống.
+  - Kể cả khi n ≤ 10, trace vẫn bị cắt nếu quá 5.000 bước hoặc 2,5 MB. Ví dụ K₆ với k = 5 có 5⁶ = 15.625 phép gán, vô nghiệm, nên sinh ra hơn 5.000 bước. Khi bị cắt, trace giữ phần đầu (vẫn phát được trên Player) và luôn chừa chỗ cho bước kết quả cuối, nên bước cuối vẫn hiện đúng kết quả: cách tô tìm được, hoặc kết luận không thể tô bằng k màu như với K₆, k = 5.
   - Nếu kⁿ > 200.000, app báo "Không áp dụng" thay vì chạy. Ví dụ với 12 đỉnh và k = 3, Player hiện: "Không áp dụng: Vét cạn chỉ an toàn khi kⁿ ≤ 200.000 (hiện tại 3^12 = 531.441)."
   - Ở chế độ χ, ngưỡng tính theo Σkⁿ (k = 1..n): n = 6 cho tổng 67.171, còn n = 7 cho tổng 1.200.304, đã vượt 200.000. Khi đó Player hiện: "Không áp dụng: Vét cạn tìm χ(G) chỉ an toàn khi Σk^n (k=1..n) ≤ 200.000 (đồ thị 7 đỉnh cho tổng 1.200.304)."
 
@@ -270,7 +270,7 @@ Exhaustive(G, k)
 | Welsh–Powell | Không | O(n log n + n·k + m) / O(n² + n·k) | 320 (ghi trace khi n ≤ 10) |
 | DSATUR | Không (nhưng đúng trên đồ thị hai phía) | O(n² + m) / O(n³ + n·k) | 320 (ghi trace khi n ≤ 10) |
 | Quay lui | Có | O((n+1)·kⁿ·(Δ+1)) / O(n²·kⁿ) | 9 (chế độ k màu), 10 (chế độ χ) |
-| Vét cạn | Có | O(kⁿ·(n + m)) / O(kⁿ·n²) | kⁿ ≤ 200.000 (chế độ k màu), Σkⁿ ≤ 200.000 tức n ≤ 6 (chế độ χ); ngưỡng trace n ≤ 6 |
+| Vét cạn | Có | O(kⁿ·(n + m)) / O(kⁿ·n²) | kⁿ ≤ 200.000 (chế độ k màu), Σkⁿ ≤ 200.000 tức n ≤ 6 (chế độ χ); ngưỡng trace n ≤ 10 |
 
 #### Chế độ tìm sắc số χ(G)
 
@@ -681,7 +681,7 @@ Mỗi nhánh của thuật toán phải có ít nhất một testcase đi qua:
 - Thuật toán chính xác chỉ chạy với đồ thị nhỏ: quay lui tới 9 đỉnh (chế độ k màu) hoặc 10 đỉnh (chế độ χ), vét cạn tới kⁿ ≤ 200.000 hoặc 6 đỉnh. Giới hạn của quay lui chọn theo ca xấu nhất khi giữ nguyên thứ tự đỉnh như bài giảng, nên thấp hơn khả năng của một quay lui có sắp xếp đỉnh.
 - Với đồ thị trên 12 đỉnh, app không biết χ(G) thật, nên không chấm được heuristic có tối ưu hay không.
 - Trường `colors` vẫn bắt buộc ở chế độ χ dù bị bỏ qua.
-- Trace minh họa chỉ ghi đủ với đồ thị nhỏ (heuristic n ≤ 10, vét cạn n ≤ 6) và bị cắt khi quá 5.000 bước hoặc 2,5 MB.
+- Trace minh họa chỉ ghi đủ với đồ thị nhỏ (heuristic và vét cạn n ≤ 10) và bị cắt khi quá 5.000 bước hoặc 2,5 MB; với vét cạn, phần trace bị cắt vẫn giữ bước kết quả cuối.
 - Heuristic không bảo đảm tìm được nghiệm.
 - Oracle độc lập chỉ khả thi với đồ thị nhỏ.
 - Toàn bộ code do AI sinh. Tuy đã qua review chéo và test, vẫn có thể còn lỗi chưa phát hiện.
