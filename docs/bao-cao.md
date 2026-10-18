@@ -257,8 +257,8 @@ Exhaustive(G, k)
   - App kiểm tra bằng cách quét các cặp đỉnh, nên trong app là **O(kⁿ·n²)**.
   - Đây là mốc để so sánh với quay lui.
 - **Giới hạn trong app:**
-  - n ≤ 10 là ngưỡng kích thước input để ghi trace. Vượt ngưỡng này thì thuật toán vẫn chạy và trả kết quả, nhưng không ghi bước nào; khi đó Player khóa nút Play và giải thích lý do, còn view "Cây trạng thái" hiện thông báo trống.
-  - Kể cả khi n ≤ 10, trace vẫn bị cắt nếu quá 5.000 bước hoặc 2,5 MB. Ví dụ K₆ với k = 5 có 5⁶ = 15.625 phép gán, vô nghiệm, nên sinh ra hơn 5.000 bước. Khi bị cắt, trace giữ phần đầu (vẫn phát được trên Player) và luôn chừa chỗ cho bước kết quả cuối, nên bước cuối vẫn hiện đúng cách tô tìm được.
+  - n ≤ 10 là ngưỡng kích thước input để ghi trace. Input vượt ngưỡng này nhưng vẫn nằm trong giới hạn chạy (kⁿ ≤ 200.000 ở chế độ k màu) thì thuật toán vẫn chạy và trả kết quả, nhưng không ghi bước nào; khi đó Player khóa nút Play và giải thích lý do, còn view "Cây trạng thái" hiện thông báo trống.
+  - Kể cả khi n ≤ 10, trace vẫn bị cắt nếu quá 5.000 bước hoặc 2,5 MB. Ví dụ K₆ với k = 5 có 5⁶ = 15.625 phép gán, vô nghiệm, nên sinh ra hơn 5.000 bước. Khi bị cắt, trace giữ phần đầu (vẫn phát được trên Player) và luôn chừa chỗ cho bước kết quả cuối, nên bước cuối vẫn hiện đúng kết quả: cách tô tìm được, hoặc kết luận không thể tô bằng k màu như với K₆, k = 5.
   - Nếu kⁿ > 200.000, app báo "Không áp dụng" thay vì chạy. Ví dụ với 12 đỉnh và k = 3, Player hiện: "Không áp dụng: Vét cạn chỉ an toàn khi kⁿ ≤ 200.000 (hiện tại 3^12 = 531.441)."
   - Ở chế độ χ, ngưỡng tính theo Σkⁿ (k = 1..n): n = 6 cho tổng 67.171, còn n = 7 cho tổng 1.200.304, đã vượt 200.000. Khi đó Player hiện: "Không áp dụng: Vét cạn tìm χ(G) chỉ an toàn khi Σk^n (k=1..n) ≤ 200.000 (đồ thị 7 đỉnh cho tổng 1.200.304)."
 
