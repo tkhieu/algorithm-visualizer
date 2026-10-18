@@ -143,7 +143,9 @@ function LoadedPlayerPage({problemId,algoId,problem,algo}:{problemId:string;algo
    </div>
    <Card className="min-w-0"><CardHeader><CardTitle>Trực quan hóa</CardTitle></CardHeader><CardContent>
     <div className="flex gap-2 mb-3 flex-wrap">{algo.views.map(v=><Button key={v} size="sm" variant={effectiveView===v?'default':'outline'} onClick={()=>setView(v)}>{viewLabel[v]??v}</Button>)}</div>
-    <div data-testid="visual-state" data-step={cursor}>{current&&valid?<Visualizer kind={effectiveView} state={current} input={valid}/>:<p>Đầu vào chưa hợp lệ</p>}</div>
+    <div data-testid="visual-state" data-step={cursor}>{effectiveView==='state-space-tree'&&length===0&&result?.status==='ok'&&result.truncated
+     ?<p className="muted">Không có bước trace cho đầu vào này vì giới hạn ghi trace. Không có cây trạng thái để hiển thị.</p>
+     :current&&valid?<Visualizer kind={effectiveView} state={current} input={valid}/>:<p>Đầu vào chưa hợp lệ</p>}</div>
    </CardContent></Card>
    <div className="space-y-3">
     <Card><CardHeader><CardTitle>Mã giả</CardTitle></CardHeader><CardContent><ol className="pseudo">{algo.pseudocode.map(line=><li key={line.id} data-testid={step?.lineId===line.id?'active-line':undefined} className={step?.lineId===line.id?'active':''} style={{paddingLeft:8+line.indent*16}}>{line.text}</li>)}</ol></CardContent></Card>
@@ -157,7 +159,7 @@ function LoadedPlayerPage({problemId,algoId,problem,algo}:{problemId:string;algo
    <div className="flex items-center gap-2 flex-wrap">
     <Button aria-label="Về đầu" size="icon" variant="outline" onClick={()=>move(0)}><SkipBack size={16}/></Button>
     <Button aria-label="Lùi bước" size="icon" variant="outline" onClick={()=>move(cursor-1)}><StepBack size={16}/></Button>
-    <Button aria-label={playing?'Tạm dừng':'Phát'} size="icon" onClick={()=>setPlaying(!playing)}>{playing?<Pause size={16}/>:<Play size={16}/>}</Button>
+    <Button aria-label={playing?'Tạm dừng':'Phát'} size="icon" disabled={length===0} onClick={()=>setPlaying(!playing)}>{playing?<Pause size={16}/>:<Play size={16}/>}</Button>
     <Button aria-label="Tiến bước" size="icon" variant="outline" onClick={()=>move(cursor+1)}><StepForward size={16}/></Button>
     <Button aria-label="Về cuối" size="icon" variant="outline" onClick={()=>move(length)}><SkipForward size={16}/></Button>
     <input className="flex-1 min-w-32" aria-label="Thanh tiến độ" type="range" min="0" max={length} value={Math.min(cursor,length)} onChange={e=>move(Number(e.target.value))}/>
@@ -165,6 +167,7 @@ function LoadedPlayerPage({problemId,algoId,problem,algo}:{problemId:string;algo
     <select aria-label="Tốc độ" value={speed} onChange={e=>setSpeed(Number(e.target.value))}>{[0.25,0.5,1,2,4,8].map(x=><option key={x} value={x}>{x}×</option>)}</select>
    </div>
    <p className="text-sm muted mt-2">Phép toán: {counters.map(([k,v])=>`${k} ${v}`).join(' · ')||'—'} · Giai đoạn: {step?.phase||'—'}</p>
+   {length===0&&result?.status==='ok'&&result.truncated&&<p className="text-sm muted mt-2">Không có bước trace vì giới hạn ghi trace; không thể phát.</p>}
   </CardContent></Card>
  </div>;
 }

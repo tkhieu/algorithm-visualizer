@@ -145,6 +145,7 @@ export function run(input: Input, ctx: RunContext<VisualState>): Output {
     'done',
     found ? 'Hoàn tất: tìm được cách tô hợp lệ.' : 'Hoàn tất: đã thử hết mọi cách, không thể tô.',
     (d) => {
+      if (found) markColoring(d, found);
       d.note = found ? 'Tô thành công' : 'Không thể tô';
     },
     [],

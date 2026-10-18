@@ -57,8 +57,11 @@ function compatible(kind:VisualKind,state:unknown,input?:unknown):boolean{
  const inputValue=(input??{}) as Record<string,unknown>;
  switch(kind){
   case 'matrix':return Array.isArray(value.matrix);
-  case 'state-space-tree':return Array.isArray(value.nodes)&&!Array.isArray(value.edges)&&
-   (value.nodes.length===0||typeof value.nodes[0]?.id==='number');
+  case 'state-space-tree':{
+   if(Array.isArray(value.treeNodes))return value.treeNodes.length===0||typeof value.treeNodes[0]?.id==='number';
+   return Array.isArray(value.nodes)&&!Array.isArray(value.edges)&&
+    (value.nodes.length===0||typeof value.nodes[0]?.id==='number');
+  }
   case 'tree':return Array.isArray(value.nodes)&&!Array.isArray(value.edges)&&
    (value.nodes.length===0||typeof value.nodes[0]?.id==='string');
   case 'items':return Array.isArray(value.items)&&Array.isArray(inputValue.items);
