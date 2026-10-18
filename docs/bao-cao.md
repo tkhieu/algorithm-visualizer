@@ -128,7 +128,7 @@ Dữ liệu vào là JSON, định nghĩa bằng Zod trong `source-code/src/prob
 
 Giới hạn n ≤ 9 của quay lui ở chế độ k màu được chọn sau khi đo ca xấu nhất: nhiều đỉnh cô lập đặt trước một clique không tô được làm quay lui phải thử lại mọi tổ hợp màu của các đỉnh cô lập. Ví dụ, với một đồ thị 12 đỉnh ở chế độ k màu, Player hiện: "Không áp dụng: Quay lui chỉ an toàn với đồ thị ≤ 9 đỉnh ở chế độ k-coloring, vì thứ tự đỉnh xấu (ví dụ nhiều đỉnh cô lập trước một clique không tô được) có thể khiến nó thử lại toàn bộ tổ hợp màu của các đỉnh không liên quan (đồ thị hiện có 12 đỉnh)." Số đỉnh ở cuối câu là số đỉnh thật của input.
 
-> **[CHỜ PR #14]:** trên bản đang chạy (c018f19), chữ "Không áp dụng:" bị lặp hai lần trong thông báo của quay lui và vét cạn, vì lý do đã có sẵn tiền tố và Player/So sánh lại thêm một lần nữa. PR #14 sửa lỗi này; câu trích ở trên là nội dung sau khi sửa. Chỉ chụp ảnh sau khi PR #14 được merge và deploy.
+> **Ghi chú:** ở bản c018f19, chữ "Không áp dụng:" từng bị lặp hai lần trong thông báo của quay lui và vét cạn, vì lý do đã có sẵn tiền tố và Player/So sánh lại thêm một lần nữa. PR #14 (merge commit b0880e1) sửa lỗi này và đã được deploy; câu trích ở trên là nội dung hiển thị trên bản đang chạy.
 
 ### 2.6. Ví dụ Input/Output
 
@@ -259,7 +259,8 @@ Exhaustive(G, k)
 - **Giới hạn trong app:**
   - n ≤ 6 là ngưỡng kích thước input để ghi trace. Vượt ngưỡng này thì thuật toán vẫn chạy nhưng không ghi đủ trace.
   - Kể cả khi n ≤ 6, trace vẫn bị cắt nếu quá 5.000 bước hoặc 2,5 MB. Ví dụ K₆ với k = 5 có 5⁶ = 15.625 phép gán, vô nghiệm, nên sinh ra hơn 5.000 bước.
-  - Nếu kⁿ > 200.000, app báo "Không áp dụng: Vét cạn chỉ an toàn khi kⁿ ≤ 200.000" thay vì chạy. Ở chế độ χ, ngưỡng tính theo Σkⁿ (k = 1..n): n = 6 cho tổng 67.171, còn n = 7 đã vượt 200.000.
+  - Nếu kⁿ > 200.000, app báo "Không áp dụng" thay vì chạy. Ví dụ với 12 đỉnh và k = 3, Player hiện: "Không áp dụng: Vét cạn chỉ an toàn khi kⁿ ≤ 200.000 (hiện tại 3^12 = 531.441)."
+  - Ở chế độ χ, ngưỡng tính theo Σkⁿ (k = 1..n): n = 6 cho tổng 67.171, còn n = 7 cho tổng 1.200.304, đã vượt 200.000. Khi đó Player hiện: "Không áp dụng: Vét cạn tìm χ(G) chỉ an toàn khi Σk^n (k=1..n) ≤ 200.000 (đồ thị 7 đỉnh cho tổng 1.200.304)."
 
 #### Bảng tổng hợp
 
@@ -640,7 +641,7 @@ Mỗi nhánh của thuật toán phải có ít nhất một testcase đi qua:
 
 ### 7.1. Tính đúng
 
-- **Trang Testcase:** "Đạt 22/22", không ca nào "Không áp dụng". Bằng chứng gồm hai lần chạy riêng: (1) bộ e2e chạy local trên dev server lúc merge PR #12; (2) ngày 18/10, cùng bộ e2e được chạy lại với một cấu hình Playwright tạm có `baseURL` trỏ thẳng tới https://algorithm-visualizer.hieutk.dev, không bật dev server, và pass 314/314, trong đó có kiểm tra "Đạt 22/22" của trang Testcase. [ẢNH: trang Testcase]
+- **Trang Testcase:** "Đạt 22/22", không ca nào "Không áp dụng". Bằng chứng gồm hai lần chạy riêng: (1) bộ e2e chạy local trên dev server lúc merge PR #12; (2) ngày 18/10, cùng bộ e2e được chạy lại với một cấu hình Playwright tạm có `baseURL` trỏ thẳng tới https://algorithm-visualizer.hieutk.dev, không bật dev server, và pass 314/314, trong đó có kiểm tra "Đạt 22/22" của trang Testcase. Sau khi deploy bản sửa PR #14 (b0880e1), lần chạy lại cùng cấu hình đó cũng pass 314/314. [ẢNH: trang Testcase]
 - **Unit test:**
   - Quay lui được so với oracle độc lập `existsColoring`.
   - Vét cạn được so với quay lui.

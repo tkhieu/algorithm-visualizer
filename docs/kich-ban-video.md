@@ -122,7 +122,6 @@
   - **[KIỂM TRÊN WEB TRƯỚC KHI QUAY]:** trace từng bước của heuristic chỉ được ghi khi n ≤ 10, nên đồ thị lớn chỉ xem được kết quả, không xem từng bước.
 - **Hình 5, giới hạn an toàn:** mở Player quay lui `/play/graph-coloring/backtracking`. Player không giữ dữ liệu từ trang So sánh, nên phải **sinh lại** đồ thị: chế độ "Tìm sắc số χ(G)", bộ sinh ngẫu nhiên n = 300, p = 0,1, seed = 1, rồi bấm "Chạy". App hiện "Không áp dụng: Quay lui tìm χ(G) chỉ an toàn với đồ thị ≤ 10 đỉnh khi giữ thứ tự duyệt đã cho (đồ thị hiện có 300 đỉnh)."
   - Chữ: "Thuật toán chính xác có giới hạn an toàn – báo rõ thay vì treo máy".
-  - **[CHỜ PR #14]:** trên bản c018f19, chữ "Không áp dụng:" đang bị lặp hai lần. Chỉ quay hình này sau khi PR #14 được merge và deploy.
 
 ### Cảnh 8 – Phần mở rộng: cả sách (0:30)
 
