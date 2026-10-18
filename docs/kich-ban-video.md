@@ -2,7 +2,7 @@
 
 > Bản nháp để review. Tổng thời lượng mục tiêu là **7–8 phút**, tối đa 9 phút. Video **có thu âm lời đọc** (mục 4), kèm chú thích chữ ngắn trên màn hình để nhấn các ý chính.
 > Ví dụ chung của video và Chương 4 report: **đồ thị vương miện 6 đỉnh** (xem mục "Dữ liệu dùng trong video").
-> Ký hiệu **[SAU NÂNG CẤP]** đánh dấu cảnh chỉ quay được khi PR nâng cấp bài tô màu (chế độ χ(G), đồ thị lớn, testcase mới) đã được merge và deploy.
+> Mọi cảnh đều quay được trên bản đang chạy ở https://algorithm-visualizer.hieutk.dev (build từ `main` c018f19, đã có chế độ χ(G), đồ thị lớn và 22 testcase của PR #12).
 
 ## 1. Chuẩn bị trước khi quay
 
@@ -54,7 +54,7 @@
   1. "Sở thú: một số loài không được nhốt chung chuồng. Cần xếp chuồng sao cho không có hai loài 'kỵ nhau' ở chung."
   2. "Mô hình: mỗi loài là một đỉnh, mỗi cặp kỵ nhau là một cạnh, mỗi chuồng là một màu."
   3. "Bài toán k màu: có tô được bằng k màu không? Nếu có thì tô thế nào?"
-  4. **[SAU NÂNG CẤP]** "Bài toán sắc số: cần ít nhất bao nhiêu chuồng, tức χ(G)?"
+  4. "Bài toán sắc số: cần ít nhất bao nhiêu chuồng, tức χ(G)?" (chế độ "Tìm sắc số χ(G)")
 - **Lưu ý:** dừng ở dòng ràng buộc (n, k) khoảng 3 giây.
 
 ### Cảnh 3 – Dạo qua giao diện (0:50)
@@ -78,7 +78,8 @@
   - Chữ: "Dữ liệu không hợp lệ bị từ chối ngay khi nhập".
 - **Hình 3, sinh ngẫu nhiên:** dùng bộ sinh ngẫu nhiên theo seed, chỉ lướt nhanh.
   - Chữ: "Sinh đồ thị ngẫu nhiên theo seed – lặp lại được".
-- **Hình 4 [SAU NÂNG CẤP]:** mở danh sách ca mẫu (Petersen, Grötzsch…), chỉ lướt.
+- **Hình 4, đồ thị mẫu:** mở danh sách đồ thị mẫu (Vương miện, Kₙ, Cₙ, K(p,q), Petersen, Grötzsch), chỉ lướt.
+  - Chữ: "Các đồ thị kinh điển đã biết χ".
 - **Cuối cảnh:** dán lại JSON ví dụ chung để sang cảnh 5.
 
 ### Cảnh 5 – Chạy từng bước: quay lui trên ví dụ chung (1:30)
@@ -106,17 +107,19 @@
   - "DSATUR: tô thành công trong 14 bước – ưu tiên đỉnh bị ép nhiều nhất; với đồ thị hai phía, DSATUR luôn tô đúng".
   - "Quay lui 20 bước, vét cạn 69 bước: cắt nhánh sớm giúp quay lui duyệt ít hơn".
 - **Hình 2:** zoom vào cột số bước, số phép toán và thời gian (trung vị). Chữ: "Đánh đổi: nhanh nhưng không chắc chắn, hay chắc chắn nhưng chậm".
-- **Hình 3 [SAU NÂNG CẤP]:** chuyển sang chế độ χ(G). Chữ: "Greedy dùng 3 màu, trong khi χ = 2. Thứ tự đỉnh quyết định chất lượng của tham lam".
+- **Hình 3, chế độ χ:** trong trình nhập, đổi chế độ sang "Tìm sắc số χ(G)" rồi bấm "Chạy tất cả" lại. Cột "Giá trị" hiện số màu: greedy và Welsh–Powell 3, DSATUR, quay lui, vét cạn 2.
+  - Chữ: "Greedy dùng 3 màu, trong khi χ = 2. Thứ tự đỉnh quyết định chất lượng của tham lam".
 - **Hình 4:** biểu đồ thời gian theo n. Chữ: "Vét cạn tăng theo kⁿ".
 
 ### Cảnh 7 – Testcase và dữ liệu lớn (0:50)
 
-- **Hình 1:** mở `/testcases/graph-coloring`, bấm chạy toàn bộ. Dừng ở bảng kết quả "Đạt N/N".
+- **Hình 1:** mở `/testcases/graph-coloring`, bấm chạy toàn bộ. Dừng ở dòng kết quả "Đạt 22/22".
   - Chữ: "Bộ testcase chia 6 nhóm: thường, biên, nhỏ, lớn, đặc biệt, không hợp lệ".
 - **Hình 2:** cuộn qua từng nhóm, mỗi nhóm khoảng 3 giây.
-- **Hình 3 [SAU NÂNG CẤP]:** mở một ca lớn khoảng 300 đỉnh trên Player bằng DSATUR (hiển thị bằng Canvas).
-  - Chữ: "Heuristic chạy được trên đồ thị 300 đỉnh".
-- **Hình 4 [SAU NÂNG CẤP]:** mở quay lui với ca lớn để thấy thông báo "Không áp dụng". Trên `main` hiện tại, input quá 10 đỉnh bị từ chối ngay ở bước kiểm tra dữ liệu, và quay lui chưa có thông báo "Không áp dụng".
+- **Hình 3, đồ thị lớn:** trên trang So sánh, chế độ χ, dùng bộ sinh ngẫu nhiên với n = 300, p = 0,1, seed = 1, rồi bấm "Chạy tất cả". Ba heuristic cho số màu và thời gian; quay lui và vét cạn hiện "Không áp dụng".
+  - Chữ: "Heuristic chạy được trên đồ thị 300 đỉnh; DSATUR dùng ít màu nhất".
+  - **[KIỂM TRÊN WEB TRƯỚC KHI QUAY]:** trace từng bước của heuristic chỉ được ghi khi n ≤ 10, nên đồ thị lớn chỉ xem được kết quả, không xem từng bước. Hãy thử trước để chọn trang (So sánh hay Player) cho hình đẹp nhất.
+- **Hình 4, giới hạn an toàn:** mở Player quay lui (`/play/graph-coloring/backtracking`) với cùng đồ thị 300 đỉnh. App hiện "Không áp dụng: quay lui tìm χ(G) chỉ an toàn với đồ thị ≤ 10 đỉnh…".
   - Chữ: "Thuật toán chính xác có giới hạn an toàn – báo rõ thay vì treo máy".
 - **Hình 5:** bấm xuất CSV/JSON. Chữ: "Xuất kết quả để đưa vào report".
 
@@ -159,7 +162,7 @@
 > Bài toán bắt đầu từ một sở thú. Có những loài không thể nhốt chung chuồng với nhau. Câu hỏi là: với k chuồng, có xếp được tất cả các loài sao cho không chuồng nào có hai loài kỵ nhau hay không.
 > Em mô hình hoá bài toán bằng đồ thị. Mỗi loài là một đỉnh, mỗi cặp kỵ nhau là một cạnh, và mỗi chuồng là một màu. Như vậy câu hỏi trở thành: có tô được các đỉnh bằng k màu, sao cho hai đỉnh kề nhau luôn khác màu hay không.
 > Trên màn hình là phần mô tả và ràng buộc của bài toán trong app: số đỉnh, số cạnh và số màu k.
-> [SAU NÂNG CẤP, thêm câu:] Ngoài ra app còn có chế độ tìm sắc số, tức số chuồng ít nhất cần dùng.
+> Ngoài ra app còn có chế độ tìm sắc số, tức số chuồng ít nhất cần dùng.
 
 **Cảnh 3 – Dạo qua giao diện (0:50)**
 > Đây là trang Player, nơi chạy từng bước một thuật toán.
@@ -188,11 +191,11 @@
 > Tham lam và Welsh–Powell đều báo chưa tìm được cách tô hai màu. Lý do là thứ tự đỉnh xen kẽ khiến B1 nhận cùng màu với A1 ngay từ đầu. Với Welsh–Powell, mọi đỉnh đều có bậc 2 nên việc sắp theo bậc không giúp được gì. Cần lưu ý là heuristic chỉ báo "chưa tìm được", chứ không khẳng định là không thể tô.
 > DSATUR thì tô thành công trong mười bốn bước. Thuật toán luôn chọn đỉnh bị ràng buộc nhiều nhất, tức đỉnh có nhiều màu khác nhau ở các đỉnh kề nhất, nên không mắc lỗi như tham lam. Với đồ thị hai phía, DSATUR luôn tô đúng.
 > Quay lui và vét cạn đều kết luận chắc chắn. Nhưng quay lui chỉ cần hai mươi bước, còn vét cạn cần sáu mươi chín bước, vì quay lui cắt bỏ nhánh sai ngay khi phát hiện xung đột. Đây chính là sự đánh đổi giữa nhanh mà không chắc chắn, và chắc chắn mà tốn chi phí.
-> [SAU NÂNG CẤP, thêm câu:] Ở chế độ tìm sắc số, tham lam dùng ba màu, trong khi chỉ cần hai.
+> Khi chuyển sang chế độ tìm sắc số, tham lam không còn bị giới hạn hai màu nữa. Nó tô được, nhưng dùng tới ba màu, trong khi chỉ cần hai.
 
 **Cảnh 7 – Testcase và dữ liệu lớn (0:50)**
-> Trang Testcase chạy toàn bộ bộ dữ liệu thử nghiệm, chia thành sáu nhóm: thông thường, biên, nhỏ, lớn, đặc biệt và không hợp lệ. Kết quả là đạt [N] trên [N] ca.
-> [SAU NÂNG CẤP:] Với đồ thị lớn khoảng ba trăm đỉnh, các heuristic vẫn chạy được. Còn thuật toán chính xác thì báo rõ là không áp dụng, thay vì làm treo trình duyệt.
+> Trang Testcase chạy toàn bộ bộ dữ liệu thử nghiệm, chia thành sáu nhóm: thông thường, biên, nhỏ, lớn, đặc biệt và không hợp lệ. Kết quả là đạt hai mươi hai trên hai mươi hai ca.
+> Với đồ thị ngẫu nhiên ba trăm đỉnh, các heuristic vẫn chạy được, và DSATUR dùng ít màu nhất. Còn thuật toán chính xác thì báo rõ là không áp dụng, thay vì làm treo trình duyệt. Quay lui chỉ nhận tới chín đỉnh ở chế độ k màu và mười đỉnh ở chế độ sắc số.
 > Kết quả có thể xuất ra file CSV hoặc JSON để đưa vào report.
 
 **Cảnh 8 – Phần mở rộng (0:30)**
@@ -240,7 +243,7 @@ Giữ nguyên JSON 4.1, đổi `"colors": 3`. Dùng để cho thấy greedy tô 
 - **Hiệu ứng zoom 120–150%:** dùng ở ba chỗ:
   - bước quay lui (cảnh 5);
   - bảng so sánh (cảnh 6);
-  - bảng "Đạt N/N" (cảnh 7).
+  - dòng "Đạt 22/22" (cảnh 7).
 - **Chú thích chữ:** mỗi dòng hiển thị ít nhất 3 giây; câu dài chia làm hai dòng.
 - **Âm thanh:**
   - Ghép lời đọc theo từng cảnh, căn cho lời bắt đầu ngay khi thao tác tương ứng xuất hiện.
