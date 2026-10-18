@@ -218,9 +218,12 @@ function drawCrownGraph(slide, pptx, x, y, w, h, opts = {}) {
   }
   const colors = opts.coloring || {};
   const order = opts.order || null;
-  let i = 0;
+  // Visit/input order for numbering is A1,B1,A2,B2,A3,B3 (bao-cao §4.1-4.3 — this is
+  // the order greedy/backtracking/exhaustive actually traverse), which is NOT the same
+  // as the drawing order above (A-row then B-row) used only to lay out the two rows.
+  const VISIT_ORDER = ['A1', 'B1', 'A2', 'B2', 'A3', 'B3'];
   for (const [name, [cx, cy]] of Object.entries(nodes)) {
-    i += 1;
+    const visitIndex = VISIT_ORDER.indexOf(name) + 1;
     const fill = colors[name] === 0 ? C.ink : colors[name] === 1 ? C.panel : C.bg;
     const fontCol = colors[name] === 0 ? C.badgeFg : C.ink;
     slide.addShape(pptx.ShapeType.ellipse, {
@@ -232,7 +235,7 @@ function drawCrownGraph(slide, pptx, x, y, w, h, opts = {}) {
       align: 'center', valign: 'middle', fontFace: FONT, fontSize: 12, bold: true, color: fontCol,
     });
     if (order) {
-      slide.addText(String(i), {
+      slide.addText(String(visitIndex), {
         x: cx + r - 0.06, y: cy - r - 0.22, w: 0.4, h: 0.3,
         align: 'center', fontFace: FONT, fontSize: 11, bold: true, color: C.sub,
       });
@@ -290,18 +293,18 @@ SLIDES.push({
   ],
   side: { type: 'table', title: 'Nguồn gốc', headers: ['Nguồn', 'Ghi chú'], widths: [1.9, 2.9], fontSize: 12, rows: [
     ['Bài toán 4 màu', 'Guthrie 1852, Appel–Haken chứng minh 1976'],
-    ['Levitin §1.3, §12.1', 'Giới thiệu & quay lui m màu'],
+    ['Levitin §1.3, §12.1', 'Giới thiệu & backtracking m màu'],
     ['Bài Sở thú', 'Đề thi, buổi ôn tập của môn'],
-    ['Welsh–Powell (1967)', 'Heuristic theo bậc'],
+    ['Welsh–Powell (1967)', 'Heuristic theo degree'],
     ['DSATUR — Brélaz (1979)', 'Heuristic theo độ bão hòa'],
   ]},
   notes:
-    'Thời lượng: ~42s.\n' +
-    'Lời đọc: "Lý do đầu tiên: cô nhận xét phần thiết kế thuật toán của nhiều bạn còn yếu, và nêu đúng ' +
-    'ví dụ bài Sở thú là bài toán tô màu đồ thị. Lý do thứ hai: em cho ba mô hình AI tranh luận chiến ' +
-    'lược làm bài, và cả ba cùng đề xuất tô màu đồ thị, vì có nhiều cách giải để so sánh và trạng thái ' +
-    'từng bước dễ minh họa. Bài toán bắt nguồn từ bài toán bốn màu của Guthrie, được trình bày trong sách ' +
-    'Levitin, với hai heuristic nổi tiếng là Welsh–Powell và DSATUR."\n' +
+    'Thời lượng: ~35s.\n' +
+    'Lời đọc: "Lý do đầu tiên: cô nhận xét thiết kế thuật toán của nhiều bạn còn yếu, và nêu đúng ví dụ ' +
+    'Sở thú là bài tô màu đồ thị. Lý do thứ hai: ba mô hình AI em cho tranh luận đều đề xuất tô màu đồ ' +
+    'thị, vì có nhiều cách giải để so sánh và trạng thái từng bước dễ minh họa. Bài toán bắt nguồn từ ' +
+    'bài toán bốn màu của Guthrie, trình bày trong sách Levitin, với hai heuristic nổi tiếng Welsh–Powell ' +
+    'và DSATUR."\n' +
     '[SV XÁC NHẬN: viết lại lý do bằng lời của chính mình trước khi quay]',
 });
 
@@ -312,18 +315,18 @@ SLIDES.push({
   durationSec: 20,
   blocks: [
     { type: 'table', headers: ['Ứng dụng', 'Ánh xạ sang tô màu đồ thị'], widths: [3.0, 6.8], fontSize: 14, rows: [
-      ['Xếp lịch thi', 'Môn = đỉnh; hai môn chung sinh viên = cạnh; ca thi = màu'],
+      ['Xếp lịch thi', 'Môn = vertex; hai môn chung sinh viên = edge; ca thi = màu'],
       ['Sở thú / xếp phòng', 'Loài/khách kỵ nhau không ở chung chuồng/phòng'],
       ['Cấp phát thanh ghi (compiler)', 'Biến "sống" cùng lúc không dùng chung thanh ghi'],
       ['Phân tần số trạm phát sóng', 'Hai trạm gần nhau phải khác tần số'],
-      ['Giải Sudoku', 'Bài toán tô 9 màu trên đồ thị 81 đỉnh'],
+      ['Giải Sudoku', 'Bài toán tô 9 màu trên đồ thị 81 vertex'],
     ]},
   ],
   notes:
     'Thời lượng: ~16s.\n' +
     'Lời đọc: "Tô màu đồ thị có nhiều ứng dụng: xếp lịch thi, phân chuồng sở thú hay phân phòng khách, ' +
     'cấp phát thanh ghi trong trình biên dịch, phân tần số trạm phát sóng — và ngay cả Sudoku cũng là ' +
-    'một bài toán tô chín màu trên đồ thị tám mươi mốt đỉnh."',
+    'một bài toán tô chín màu trên đồ thị tám mươi mốt vertex."',
 });
 
 // ---- 4. Phát biểu bài toán -------------------------------------------------
@@ -335,7 +338,7 @@ SLIDES.push({
     { type: 'bullets', items: [
       { text: 'Bài toán k-coloring (mặc định):', bold: true },
       'Sở thú cần xếp n loài thú vào các chuồng. Có danh sách các cặp loài "kỵ nhau", không được nhốt chung. Sở thú hiện có k chuồng. Có xếp được tất cả các loài vào k chuồng, sao cho không chuồng nào chứa hai loài kỵ nhau, hay không? Nếu có, hãy chỉ ra cách xếp.',
-      { text: 'Mở rộng — tìm sắc số χ(G) (chromatic):', bold: true },
+      { text: 'Mở rộng — tìm chromatic number χ(G):', bold: true },
       'Không cho trước k. Hỏi cần ít nhất bao nhiêu chuồng, và chỉ ra một cách xếp dùng đúng số chuồng đó.',
     ], fontSize: 16 },
   ],
@@ -343,7 +346,7 @@ SLIDES.push({
     'Thời lượng: ~16s.\n' +
     'Lời đọc: "Bài toán bắt đầu từ một sở thú: có những loài không thể nhốt chung chuồng. Với k chuồng, ' +
     'có xếp được tất cả các loài sao cho không chuồng nào có hai loài kỵ nhau hay không. App còn có chế ' +
-    'độ mở rộng: tìm sắc số, tức số chuồng ít nhất cần dùng."',
+    'độ mở rộng: tìm chromatic number, tức số chuồng ít nhất cần dùng."',
 });
 
 // ---- 5. Mô hình hóa ---------------------------------------------------------
@@ -353,7 +356,7 @@ SLIDES.push({
   durationSec: 32,
   blocks: [
     { type: 'bullets', items: [
-      'Đồ thị vô hướng G = (V, E): mỗi loài là một đỉnh; mỗi cặp kỵ nhau là một cạnh; mỗi chuồng là một màu.',
+      'Đồ thị vô hướng G = (V, E): mỗi loài là một vertex; mỗi cặp kỵ nhau là một edge; mỗi chuồng là một màu.',
       'Tô màu hợp lệ: hàm c: V → {0,…,k−1} sao cho (u,v) ∈ E ⇒ c(u) ≠ c(v).',
       'k-coloring (k ≥ 3) thuộc lớp NP-đầy đủ (Karp, 1972). k = 2 giải được trong thời gian đa thức — tương đương kiểm tra đồ thị hai phía.',
     ], fontSize: 16 },
@@ -361,14 +364,14 @@ SLIDES.push({
   side: { type: 'table', title: 'Ba khái niệm cần phân biệt', headers: ['Khái niệm', 'Câu hỏi'], widths: [2.0, 2.8], fontSize: 11.5, rows: [
     ['Tô màu hợp lệ', 'Một cách gán cho trước có đúng không? (checker)'],
     ['k-coloring', 'Có tô được bằng k màu không? (mặc định)'],
-    ['Sắc số χ(G)', 'Số màu nhỏ nhất là bao nhiêu? (chromatic)'],
+    ['Chromatic number χ(G)', 'Số màu nhỏ nhất là bao nhiêu? (chromatic)'],
   ]},
   notes:
     'Thời lượng: ~32s.\n' +
-    'Lời đọc: "Em mô hình hoá bài toán bằng đồ thị: mỗi loài là một đỉnh, mỗi cặp kỵ nhau là một cạnh, ' +
+    'Lời đọc: "Em mô hình hoá bài toán bằng đồ thị: mỗi loài là một vertex, mỗi cặp kỵ nhau là một edge, ' +
     'mỗi chuồng là một màu. Cần phân biệt ba khái niệm: tô màu hợp lệ do checker kiểm tra, bài toán k ' +
-    'màu — app gọi là k-coloring — và sắc số χ(G), tức chế độ chromatic. Với k từ 3 bài toán thuộc lớp ' +
-    'NP-đầy đủ; k bằng 2 giải được trong thời gian đa thức."',
+    'màu — app gọi là k-coloring — và chromatic number χ(G), tức chế độ chromatic. Với k từ 3 bài toán ' +
+    'thuộc lớp NP-đầy đủ; k bằng 2 giải được trong thời gian đa thức."',
 });
 
 // ---- 6. Input/Output/Ràng buộc ---------------------------------------------
@@ -379,24 +382,24 @@ SLIDES.push({
   blocks: [
     { type: 'bullets', items: [
       { text: 'Input (JSON, định nghĩa bằng Zod):', bold: true },
-      '{ nodes, edges, colors, mode? } — nodes quyết định thứ tự duyệt của greedy/quay lui/vét cạn.',
+      '{ nodes, edges, colors, mode? } — nodes quyết định thứ tự duyệt của greedy/backtracking/exhaustive search.',
       { text: 'Output:', bold: true },
       '{ found, coloring, heuristic?, colorsUsed?, chromaticExact? } — heuristic báo "chưa tìm được" không khẳng định vô nghiệm.',
     ], fontSize: 15 },
   ],
   side: { type: 'table', title: 'Ràng buộc chính', headers: ['Đại lượng', 'Giá trị'], widths: [2.0, 2.8], fontSize: 11, rows: [
-    ['Số đỉnh n', '0 ≤ n ≤ 320'],
-    ['Số cạnh m', '≤ 8.000'],
+    ['Số vertex n', '0 ≤ n ≤ 320'],
+    ['Số edge m', '≤ 8.000'],
     ['Số màu k', '1 ≤ k ≤ 10 (chỉ k-coloring)'],
-    ['Quay lui', 'n ≤ 9 (k-coloring), ≤ 10 (χ)'],
-    ['Vét cạn', 'kⁿ ≤ 200.000 (k-coloring); Σkⁿ ≤ 200.000 (χ, ~n ≤ 6)'],
+    ['Backtracking', 'n ≤ 9 (k-coloring), ≤ 10 (χ)'],
+    ['Exhaustive search', 'kⁿ ≤ 200.000 (k-coloring); Σkⁿ ≤ 200.000 (χ, ~n ≤ 6)'],
   ]},
   notes:
-    'Thời lượng: ~22s.\n' +
-    'Lời đọc: "Dữ liệu vào là JSON: danh sách đỉnh, danh sách cạnh, số màu k, và chế độ. Thứ tự đỉnh ' +
-    'chính là thứ tự duyệt của greedy, quay lui và vét cạn. Found bằng false từ heuristic chỉ nghĩa là ' +
-    'chưa tìm được, không khẳng định vô nghiệm; từ thuật toán chính xác thì khẳng định chắc chắn. App ' +
-    'giới hạn 320 đỉnh cho heuristic, 9–10 đỉnh cho quay lui, một ngưỡng an toàn theo kⁿ cho vét cạn."',
+    'Thời lượng: ~20s.\n' +
+    'Lời đọc: "Dữ liệu vào là JSON: vertex, edge, số màu k, chế độ. Thứ tự vertex là thứ tự duyệt của ' +
+    'greedy, backtracking, exhaustive search. Found=false từ heuristic chỉ nghĩa chưa tìm được, không ' +
+    'khẳng định vô nghiệm; từ thuật toán chính xác thì khẳng định chắc chắn. App giới hạn 320 vertex ' +
+    'cho heuristic, 9–10 cho backtracking, một ngưỡng an toàn kⁿ cho exhaustive search."',
 });
 
 // ---- 7. Ví dụ Input/Output --------------------------------------------------
@@ -408,7 +411,7 @@ SLIDES.push({
     { type: 'table', headers: ['#', 'Đồ thị', 'k', 'Output đúng'], widths: [0.5, 3.5, 0.6, 5.7], fontSize: 13, rows: [
       ['1', 'Tam giác A–B–C', '3', 'found=true, ví dụ A=0, B=1, C=2'],
       ['2', 'Tam giác A–B–C', '2', 'found=false (chính xác: vô nghiệm; heuristic: chưa tìm được)'],
-      ['3', 'Vương miện 6 đỉnh (ví dụ chung)', '2', 'found=true, coloring=[0,1,0,1,0,1] (greedy/WP báo chưa tìm được)'],
+      ['3', 'Đồ thị vương miện 6 vertex (ví dụ chung)', '2', 'found=true, coloring=[0,1,0,1,0,1] (greedy/WP báo chưa tìm được)'],
       ['4', 'Đồ thị rỗng, n = 0', '1', 'found=true, coloring=[]'],
       ['5', 'colors = 0', '—', 'Bị từ chối vì dữ liệu không hợp lệ'],
     ]},
@@ -416,7 +419,7 @@ SLIDES.push({
   notes:
     'Thời lượng: ~21s.\n' +
     'Lời đọc: "Một tam giác cần đúng ba màu; với hai màu thì vô nghiệm. Đồ thị vương miện — ví dụ chung ' +
-    'của toàn bài — tô được bằng hai màu nhưng tham lam và Welsh–Powell lại thất bại. Dữ liệu sai như ' +
+    'của toàn bài — tô được bằng hai màu nhưng greedy và Welsh–Powell lại thất bại. Dữ liệu sai như ' +
     'số màu bằng không bị app từ chối ngay."',
 });
 
@@ -427,19 +430,19 @@ SLIDES.push({
   durationSec: 22,
   blocks: [
     { type: 'bullets', items: [
-      'Danh sách đỉnh có thứ tự (nodes) — quyết định thứ tự duyệt.',
-      'Tập cạnh dạng Set<string> các cặp đỉnh — kiểm tra kề nhau trong O(1).',
+      'Danh sách vertex có thứ tự (nodes) — quyết định thứ tự duyệt.',
+      'Tập edge dạng Set<string> các cặp vertex — kiểm tra kề nhau trong O(1).',
       'Mảng màu color[v], với −1 là chưa tô.',
-      'Tập màu bị cấm của đỉnh v: các màu đang có ở đỉnh kề v.',
-      'Độ bão hòa sat(v) (chỉ DSATUR): số màu khác nhau ở các đỉnh kề v.',
-      'Trace từng bước: lineId mã giả, trạng thái đồ thị, cây trạng thái (treeNodes), lời giải thích.',
+      'Tập màu bị cấm của vertex v: các màu đang có ở vertex kề v.',
+      'Độ bão hòa sat(v) (chỉ DSATUR): số màu khác nhau ở các vertex kề v.',
+      'Trace từng bước: lineId mã giả, trạng thái đồ thị, state-space tree (treeNodes), lời giải thích.',
     ], fontSize: 15 },
   ],
   notes:
     'Thời lượng: ~16s.\n' +
-    'Lời đọc: "Danh sách đỉnh có thứ tự quyết định thứ tự duyệt; tập cạnh lưu dạng tập hợp để kiểm tra ' +
-    'kề nhau nhanh; độ bão hòa dùng riêng cho DSATUR. Quan trọng nhất là bản ghi trace từng bước — chính ' +
-    'là thứ Player dùng để minh họa."',
+    'Lời đọc: "Danh sách vertex có thứ tự quyết định thứ tự duyệt; tập edge lưu dạng tập hợp để kiểm ' +
+    'tra kề nhau nhanh; độ bão hòa dùng riêng cho DSATUR. Quan trọng nhất là bản ghi trace từng bước — ' +
+    'chính là thứ Player dùng để minh họa."',
 });
 
 // ---- 9. Phân tích đặc trưng --------------------------------------------------
@@ -449,21 +452,21 @@ SLIDES.push({
   durationSec: 32,
   blocks: [
     { type: 'bullets', items: [
-      'Chặn dưới: một clique kích thước ω cần ít nhất ω màu (tam giác cần 3 màu).',
-      'Chặn trên: mọi đồ thị tô được bằng Δ+1 màu (Δ = bậc lớn nhất).',
-      'Thứ tự duyệt quyết định chất lượng tham lam — luôn có thứ tự cho đúng χ(G), nhưng cũng có thứ tự xấu.',
-      'Ưu tiên đỉnh "khó" trước (bậc cao / bị ràng buộc nhiều) để tránh hết màu.',
-      'Không gian tìm kiếm có kⁿ cách gán; quay lui cắt nhánh sớm để duyệt ít hơn vét cạn.',
+      'Lower bound: một clique kích thước ω cần ít nhất ω màu (tam giác cần 3 màu).',
+      'Upper bound: mọi đồ thị tô được bằng Δ+1 màu (Δ = degree lớn nhất).',
+      'Thứ tự duyệt quyết định chất lượng greedy — luôn có thứ tự cho đúng χ(G), nhưng cũng có thứ tự xấu.',
+      'Ưu tiên vertex "khó" trước (degree cao / bị ràng buộc nhiều) để tránh hết màu.',
+      'Không gian tìm kiếm có kⁿ cách gán; backtracking pruning sớm để duyệt ít hơn exhaustive search.',
     ], fontSize: 14.5 },
   ],
-  side: { type: 'diagram', kind: 'crown', title: 'Thứ tự xấu cho greedy', caption: 'Vương miện 6 đỉnh, χ=2 — nhưng thứ tự xen kẽ A1,B1,A2,B2,A3,B3 buộc greedy dùng tới n màu.',
+  side: { type: 'diagram', kind: 'crown', title: 'Thứ tự xấu cho greedy', caption: 'Đồ thị vương miện 6 vertex, χ=2 — thứ tự xen kẽ A1,B1,A2,B2,A3,B3: ở k-coloring (k=2) greedy bị bế tắc; ở chromatic mode greedy dùng 3 màu thay vì 2.',
     order: true, coloring: {} },
   notes:
-    'Thời lượng: ~24s.\n' +
-    'Lời đọc: "Một clique kích thước ω cần ít nhất ω màu — chặn dưới. Mọi đồ thị tô được bằng Δ cộng 1 ' +
-    'màu — chặn trên. Thứ tự duyệt quyết định chất lượng tham lam: trên đồ thị vương miện bên phải, thứ ' +
-    'tự xen kẽ A1, B1, A2, B2 buộc tham lam dùng nhiều màu hơn cần. Nên ưu tiên tô đỉnh khó trước, và với ' +
-    'thuật toán chính xác, cắt nhánh sớm giúp duyệt ít hơn vét cạn."',
+    'Thời lượng: ~32s.\n' +
+    'Lời đọc: "Một clique kích thước ω cần ít nhất ω màu — lower bound. Mọi đồ thị tô được bằng Δ cộng ' +
+    '1 màu — upper bound. Thứ tự duyệt quyết định chất lượng greedy: trên vương miện bên phải, thứ tự ' +
+    'xen kẽ A1, B1, A2, B2 khiến greedy bị bế tắc ở k bằng hai, còn ở chromatic mode thì dùng ba màu thay ' +
+    'vì hai. Nên ưu tiên vertex khó trước; pruning sớm giúp backtracking duyệt ít hơn exhaustive search."',
 });
 
 // ---- 10. Greedy & Welsh–Powell ------------------------------------------------
@@ -474,28 +477,41 @@ SLIDES.push({
   blocks: [
     { type: 'bullets', items: [
       { text: 'Greedy:', bold: true },
-      'Xét đỉnh theo thứ tự cho sẵn; gán màu nhỏ nhất chưa có ở đỉnh kề; không có màu → "chưa tìm được".',
+      'Xét vertex theo thứ tự cho sẵn; gán màu nhỏ nhất chưa có ở vertex kề; không có màu → "chưa tìm được".',
       { text: 'Welsh–Powell:', bold: true },
-      'order ← đỉnh sắp theo bậc giảm dần, rồi chạy Greedy(order). Trên vương miện mọi đỉnh cùng bậc 2 → thứ tự không đổi → gặp đúng khó khăn của greedy.',
+      'order ← vertex sắp theo degree giảm dần, rồi chạy Greedy(order). Trên vương miện mọi vertex cùng degree 2 → thứ tự không đổi → gặp đúng khó khăn của greedy.',
       { text: 'Độ phức tạp (lý thuyết / trong app):', bold: true },
       'Greedy: O(n·k+m) / O(n·(n+k)).  Welsh–Powell: O(n log n+n·k+m) / O(n²+n·k).',
     ], fontSize: 13.5 },
   ],
-  side: { type: 'code', title: 'Mã giả (trích mục 4.3 — mã nguyên văn Player hiển thị)', lines: [
-    '1. Xét các đỉnh theo thứ tự cho trước',
-    '   (Welsh–Powell: sắp theo bậc giảm dần)',
-    '2. Gán màu nhỏ nhất trong k màu chưa',
-    '   dùng ở các đỉnh kề đã tô',
-    '3. Không còn màu nào khả dụng: dừng —',
-    '   heuristic chưa tìm được, KHÔNG',
-    '   chứng minh vô nghiệm',
-    '4. Trả về cách tô nếu tô được hết',
-  ], fontSize: 11.5 },
+  side: { type: 'code-stack', blocks: [
+    { title: 'Greedy — pseudocode.ts (nguyên văn)', lines: [
+      '1. Xét các đỉnh theo thứ tự cho trước',
+      '2. Gán màu nhỏ nhất trong k màu chưa',
+      '   dùng ở các đỉnh kề đã tô',
+      '3. Nếu không còn màu nào khả dụng: dừng',
+      '   — heuristic chưa tìm được, không',
+      '   chứng minh vô nghiệm',
+      '4. Trả về cách tô nếu tô được hết mọi',
+      '   đỉnh',
+    ] },
+    { title: 'Welsh–Powell — pseudocode.ts (nguyên văn)', lines: [
+      '1. Sắp các đỉnh theo bậc giảm dần',
+      '2. Gán màu nhỏ nhất trong k màu chưa',
+      '   dùng ở các đỉnh kề đã tô',
+      '3. Nếu không còn màu nào khả dụng: dừng',
+      '   — heuristic chưa tìm được, không',
+      '   chứng minh vô nghiệm',
+      '4. Trả về cách tô nếu tô được hết mọi',
+      '   đỉnh',
+    ] },
+  ] },
   notes:
     'Thời lượng: ~22s.\n' +
-    'Lời đọc: "Greedy tô mỗi đỉnh bằng màu nhỏ nhất chưa dùng ở đỉnh kề — không bảo đảm tìm được cách tô ' +
-    'dù nó tồn tại. Welsh–Powell chỉ khác ở một điểm: sắp đỉnh theo bậc giảm dần trước. Nhưng trên vương ' +
-    'miện mọi đỉnh cùng bậc hai, nên thứ tự không đổi — Welsh–Powell gặp đúng khó khăn của greedy."',
+    'Lời đọc: "Greedy tô mỗi vertex bằng màu nhỏ nhất chưa dùng ở vertex kề — không bảo đảm tìm được ' +
+    'cách tô dù nó tồn tại. Welsh–Powell chỉ khác ở một điểm: sắp vertex theo degree giảm dần trước. ' +
+    'Nhưng trên vương miện mọi vertex cùng degree hai, nên thứ tự không đổi — Welsh–Powell gặp đúng ' +
+    'khó khăn của greedy."',
 });
 
 // ---- 11. DSATUR -------------------------------------------------------------
@@ -505,26 +521,26 @@ SLIDES.push({
   durationSec: 28,
   blocks: [
     { type: 'bullets', items: [
-      'Mở rộng ngoài sách — chọn đỉnh chưa tô có độ bão hòa sat(v) lớn nhất; hòa thì chọn bậc lớn hơn.',
+      'Mở rộng ngoài sách — chọn vertex chưa tô có độ bão hòa sat(v) lớn nhất; hòa thì chọn degree lớn hơn.',
       'Tính chất đã biết: DSATUR luôn tô đúng bằng 2 màu trên đồ thị hai phía → thành công trên ví dụ chung, trong khi greedy thất bại.',
-      'Độ phức tạp lý thuyết O(n²+m); trong app O(n³+n·k) vì mỗi vòng tính lại độ bão hòa bằng cách quét mọi cặp đỉnh.',
+      'Độ phức tạp lý thuyết O(n²+m); trong app O(n³+n·k) vì mỗi vòng tính lại độ bão hòa bằng cách quét mọi cặp vertex.',
     ], fontSize: 15 },
   ],
   side: { type: 'code', title: 'Mã giả', lines: [
-    '1. sat(v) ← 0 cho mọi đỉnh',
-    '2. Chọn đỉnh chưa tô có sat(v) lớn',
-    '   nhất; hòa → bậc lớn hơn',
-    '3. Gán màu nhỏ nhất chưa có ở đỉnh kề',
+    '1. sat(v) ← 0 cho mọi vertex',
+    '2. Chọn vertex chưa tô có sat(v) lớn',
+    '   nhất; hòa → degree lớn hơn',
+    '3. Gán màu nhỏ nhất chưa có ở vertex kề',
     '4. Không còn màu: dừng — chưa tìm',
     '   được, không chứng minh vô nghiệm',
     '5. Trả về cách tô nếu tô được hết',
   ], fontSize: 12 },
   notes:
     'Thời lượng: ~22s.\n' +
-    'Lời đọc: "DSATUR, do Brélaz công bố năm 1979, mỗi vòng chọn đỉnh chưa tô có độ bão hòa lớn nhất — ' +
-    'hòa thì chọn bậc lớn hơn. Nó luôn tô đúng hai màu trên đồ thị hai phía, nên trên ví dụ chung nó ' +
-    'thành công trong khi greedy thất bại. Trong app, vì mỗi vòng quét lại mọi cặp đỉnh, chi phí là ' +
-    'O(n lập phương cộng n·k)."',
+    'Lời đọc: "DSATUR, do Brélaz công bố năm 1979, mỗi vòng chọn vertex chưa tô có độ bão hòa lớn nhất ' +
+    '— hòa thì chọn degree lớn hơn. Nó luôn tô đúng hai màu trên đồ thị hai phía, nên trên ví dụ chung ' +
+    'nó thành công trong khi greedy thất bại. Trong app, vì mỗi vòng quét lại mọi cặp vertex, chi phí ' +
+    'là O(n lập phương cộng n·k)."',
 });
 
 // ---- 12. Quay lui ------------------------------------------------------------
@@ -536,8 +552,8 @@ SLIDES.push({
     { type: 'bullets', items: [
       'Đúng đắn: chỉ mở rộng cách tô bộ phận hợp lệ → trả về false sau khi duyệt hết nghĩa là chắc chắn vô nghiệm.',
       'Dừng ở nghiệm đầu tiên (bài toán quyết định k màu).',
-      'Cây tìm kiếm ≤ (n+1)·kⁿ nút. Cận lý thuyết O((n+1)·kⁿ·(Δ+1)); trong app O(n²·kⁿ) vì quét mọi đỉnh mỗi nút.',
-      'Chế độ χ(G): chặn dưới = clique tham lam, chặn trên = DSATUR, tăng k dần tới nghiệm đầu tiên.',
+      'State-space tree có ≤ (n+1)·kⁿ nút. Cận lý thuyết O((n+1)·kⁿ·(Δ+1)); trong app O(n²·kⁿ) vì quét mọi vertex mỗi nút.',
+      'Chế độ χ(G): lower bound = clique greedy, upper bound = DSATUR, tăng k dần tới nghiệm đầu tiên.',
     ], fontSize: 14 },
   ],
   side: { type: 'code', title: 'Mã giả', lines: [
@@ -545,18 +561,19 @@ SLIDES.push({
     '  if i = n: return true',
     '  v ← order[i]',
     '  for c in 0..k-1:',
-    '    if không đỉnh kề nào màu c:',
+    '    if không vertex kề nào màu c:',
     '      color[v] ← c',
     '      if Backtrack(i+1): return true',
-    '      color[v] ← chưa tô  // quay lui',
+    '      color[v] ← chưa tô  // backtrack',
     '  return false',
   ], fontSize: 11.5 },
   notes:
     'Thời lượng: ~24s.\n' +
-    'Lời đọc: "Quay lui thử từng màu cho mỗi đỉnh; trùng màu đỉnh kề thì loại, hết màu thì quay lui lên ' +
-    'đỉnh trước. Vì mọi nhánh bị cắt đã vi phạm ràng buộc, trả về false sau khi duyệt hết nghĩa là chắc ' +
-    'chắn không có cách tô — khác biệt quan trọng so với heuristic. Việc cắt nhánh giảm số nút phải ' +
-    'thăm rất nhiều. Ở chế độ sắc số, nó còn tính chặn dưới bằng clique và chặn trên bằng DSATUR."',
+    'Lời đọc: "Backtracking thử từng màu cho mỗi vertex; trùng màu vertex kề thì loại, hết màu thì ' +
+    'backtrack lên vertex trước. Vì mọi nhánh bị cắt đã vi phạm ràng buộc, trả về false sau khi duyệt ' +
+    'hết nghĩa là chắc chắn không có cách tô — khác biệt quan trọng so với heuristic. Việc pruning giảm ' +
+    'số nút phải thăm rất nhiều. Ở chromatic mode, nó còn tính lower bound bằng clique và upper bound ' +
+    'bằng DSATUR."',
 });
 
 // ---- 13. Vét cạn --------------------------------------------------------------
@@ -567,9 +584,9 @@ SLIDES.push({
   blocks: [
     { type: 'bullets', items: [
       'Sinh mọi kⁿ phép gán theo thứ tự từ điển; dừng ở nghiệm đầu tiên hợp lệ.',
-      'Cận lý thuyết O(kⁿ·(n+m)); trong app O(kⁿ·n²) vì kiểm tra bằng quét mọi cặp đỉnh.',
+      'Cận lý thuyết O(kⁿ·(n+m)); trong app O(kⁿ·n²) vì kiểm tra bằng quét mọi cặp vertex.',
       'Giới hạn an toàn trong app: kⁿ ≤ 200.000 (k-coloring) hoặc Σkⁿ ≤ 200.000, k=1..n (χ, tức n ≤ 6).',
-      'Mốc để so sánh "chi phí cắt nhánh" của quay lui (20 bước so với 69 bước trên ví dụ chung).',
+      'Mốc để so sánh "chi phí pruning" của backtracking (20 bước so với 69 bước trên ví dụ chung).',
     ], fontSize: 15 },
   ],
   side: { type: 'code', title: 'Mã giả', lines: [
@@ -581,8 +598,9 @@ SLIDES.push({
   ], fontSize: 13 },
   notes:
     'Thời lượng: ~16s.\n' +
-    'Lời đọc: "Vét cạn sinh tất cả kⁿ cách gán màu, trả về nghiệm đầu tiên hợp lệ — mốc để so sánh hiệu ' +
-    'quả cắt nhánh của quay lui. App chỉ cho chạy an toàn khi kⁿ không vượt hai trăm nghìn."',
+    'Lời đọc: "Exhaustive search sinh tất cả kⁿ cách gán màu, trả về nghiệm đầu tiên hợp lệ — mốc để ' +
+    'so sánh hiệu quả pruning của backtracking. App chỉ cho chạy an toàn khi kⁿ không vượt hai trăm ' +
+    'nghìn."',
 });
 
 // ---- 14. Bảng so sánh ----------------------------------------------------------
@@ -595,15 +613,15 @@ SLIDES.push({
       ['Greedy', 'Không', 'O(n·k+m) / O(n·(n+k))', '320'],
       ['Welsh–Powell', 'Không', 'O(n log n+n·k+m) / O(n²+n·k)', '320'],
       ['DSATUR', 'Không (đúng trên đồ thị 2 phía)', 'O(n²+m) / O(n³+n·k)', '320'],
-      ['Quay lui', 'Có', 'O((n+1)·kⁿ·(Δ+1)) / O(n²·kⁿ)', '9 (k màu) / 10 (χ)'],
-      ['Vét cạn', 'Có', 'O(kⁿ·(n+m)) / O(kⁿ·n²)', 'kⁿ ≤ 200.000 (~6, χ)'],
+      ['Backtracking', 'Có', 'O((n+1)·kⁿ·(Δ+1)) / O(n²·kⁿ)', '9 (k màu) / 10 (χ)'],
+      ['Exhaustive search', 'Có', 'O(kⁿ·(n+m)) / O(kⁿ·n²)', 'kⁿ ≤ 200.000 (~6, χ)'],
     ]},
   ],
   notes:
     'Thời lượng: ~16s.\n' +
-    'Lời đọc: "Ba heuristic chạy nhanh nhưng không kết luận chắc chắn. Quay lui và vét cạn chắc chắn, ' +
-    'nhưng chỉ an toàn với đồ thị rất nhỏ — đánh đổi giữa nhanh mà không chắc chắn, và chắc chắn mà tốn ' +
-    'chi phí."',
+    'Lời đọc: "Ba heuristic chạy nhanh nhưng không kết luận chắc chắn. Backtracking và exhaustive search ' +
+    'chắc chắn, nhưng chỉ an toàn với đồ thị rất nhỏ — đánh đổi giữa nhanh mà không chắc chắn, và chắc ' +
+    'chắn mà tốn chi phí."',
 });
 
 // ---- 15. Vì sao heuristic thất bại ---------------------------------------------
@@ -613,18 +631,18 @@ SLIDES.push({
   durationSec: 26,
   blocks: [
     { type: 'bullets', items: [
-      'Đồ thị vương miện 6 đỉnh: nhóm A = {A1,A2,A3}, nhóm B = {B1,B2,B3}; Ai kỵ mọi Bj trừ Bi → hai phía, χ = 2.',
+      'Đồ thị vương miện 6 vertex: nhóm A = {A1,A2,A3}, nhóm B = {B1,B2,B3}; Ai kỵ mọi Bj trừ Bi → hai phía, χ = 2.',
       'Thứ tự nhập cố ý xen kẽ A1,B1,A2,B2,A3,B3 — đây là thứ tự "xấu" cho greedy/Welsh–Powell.',
-      'DSATUR tránh được vì luôn ưu tiên đỉnh bị ràng buộc nhiều nhất, không phụ thuộc thứ tự nhập.',
+      'DSATUR tránh được vì luôn ưu tiên vertex bị ràng buộc nhiều nhất, không phụ thuộc thứ tự nhập.',
       'Đây là ví dụ chung dùng xuyên suốt report, demo và video — số bước phải khớp nhau ở mọi nơi.',
     ], fontSize: 15 },
   ],
-  side: { type: 'diagram', kind: 'crown', title: 'Đồ thị vương miện 6 đỉnh (χ=2)', order: true, coloring: {} },
+  side: { type: 'diagram', kind: 'crown', title: 'Đồ thị vương miện 6 vertex (χ=2)', order: true, coloring: {} },
   notes:
     'Thời lượng: ~18s.\n' +
-    'Lời đọc: "Ví dụ chung là đồ thị vương miện sáu đỉnh: nhóm A và nhóm B, loài Ai kỵ mọi loài Bj trừ ' +
-    'Bi. Đây là đồ thị hai phía nên χ bằng 2, nhưng em cố ý nhập thứ tự xen kẽ A, B, A, B để thử thách ' +
-    'các thuật toán. DSATUR tránh được bẫy này vì luôn ưu tiên đỉnh bị ràng buộc nhiều nhất."',
+    'Lời đọc: "Ví dụ chung là đồ thị vương miện sáu vertex: nhóm A và nhóm B, loài Ai kỵ mọi loài Bj ' +
+    'trừ Bi. Đây là đồ thị hai phía nên χ bằng 2, nhưng em cố ý nhập thứ tự xen kẽ A, B, A, B để thử thách ' +
+    'các thuật toán. DSATUR tránh được bẫy này vì luôn ưu tiên vertex bị ràng buộc nhiều nhất."',
 });
 
 // ---- 16. Ví dụ chung: thiết lập dữ liệu (DEMO) ---------------------------------
@@ -636,7 +654,7 @@ SLIDES.push({
   blocks: [
     { type: 'bullets', items: [
       '6 loài: A1, B1, A2, B2, A3, B3 (đúng thứ tự nhập).',
-      'Cạnh: Ai–Bj với i ≠ j (6 cạnh).',
+      'Edge: Ai–Bj với i ≠ j (6 edge).',
       'Chế độ "Tô bằng k màu cho sẵn", k = 2.',
       'JSON dán trực tiếp vào tab "Chỉnh JSON" — dữ liệu cập nhật ngay, không cần nút áp dụng.',
     ], fontSize: 15.5 },
@@ -670,7 +688,7 @@ SLIDES.push({
   demo: true,
   durationSec: 25,
   blocks: [
-    { type: 'table', headers: ['Bước', 'Đỉnh', 'Thao tác', 'Mảng màu (A1 B1 A2 B2 A3 B3)'], widths: [0.9, 0.8, 4.2, 3.6], fontSize: 12, rows: [
+    { type: 'table', headers: ['Bước', 'Vertex', 'Thao tác', 'Mảng màu (A1 B1 A2 B2 A3 B3)'], widths: [0.9, 0.8, 4.2, 3.6], fontSize: 12, rows: [
       ['1', '—', 'Khởi tạo, thứ tự A1 B1 A2 B2 A3 B3', '– – – – – –'],
       ['2', 'A1', 'Gán màu 0', '0 – – – – –'],
       ['3', 'B1', 'Gán màu 0 (không kề A1)', '0 0 – – – –'],
@@ -684,9 +702,9 @@ SLIDES.push({
   ],
   notes:
     'Thời lượng slide: ~16s + demo ~20s (tổng ~36s).\n' +
-    'Lời đọc: "Em bấm Tiến bước từng bước. Bước 2–3: A1 và B1 nhận màu 0. Bước 4–7: màu trùng đỉnh kề bị ' +
-    'loại, A2 và B2 nhận màu 1. Bước 8–9: A3 kề cả B1 (0) lẫn B2 (1), cả hai màu bị loại — bế tắc. Em ' +
-    'chuyển sang view cây trạng thái để xem hai nhánh này bị cắt."\n' +
+    'Lời đọc: "Em bấm Tiến bước từng bước. Bước 2–3: A1 và B1 nhận màu 0. Bước 4–7: màu trùng vertex kề ' +
+    'bị loại, A2 và B2 nhận màu 1. Bước 8–9: A3 kề cả B1 (0) lẫn B2 (1), cả hai màu bị loại — bế tắc. Em ' +
+    'chuyển sang state-space tree view để xem hai nhánh này bị cắt."\n' +
     '[CHUYỂN SANG DEMO: Player quay lui, bấm "Chạy" rồi bấm "Tiến bước" 9 lần tới bước 9; dừng ~5 giây ở bước 9; ' +
     'bấm nút chuyển view sang "Cây trạng thái" và zoom vào hai nhánh bị loại dưới A3; chuyển lại view "Đồ thị"]',
 });
@@ -698,19 +716,19 @@ SLIDES.push({
   demo: true,
   durationSec: 30,
   blocks: [
-    { type: 'table', headers: ['Bước', 'Đỉnh', 'Thao tác', 'Mảng màu (A1 B1 A2 B2 A3 B3)'], widths: [0.9, 0.8, 4.2, 3.6], fontSize: 11.5, rows: [
-      ['10', '—', 'Quay lui: bỏ B2=1 (hết màu khả thi)', '0 0 1 – – –'],
-      ['11', '—', 'Quay lui: bỏ A2=1', '0 0 – – – –'],
-      ['12', '—', 'Quay lui: bỏ B1=0 — gốc của bế tắc', '0 – – – – –'],
+    { type: 'table', headers: ['Bước', 'Vertex', 'Thao tác', 'Mảng màu (A1 B1 A2 B2 A3 B3)'], widths: [0.9, 0.8, 4.2, 3.6], fontSize: 11.5, rows: [
+      ['10', '—', 'Backtrack: bỏ B2=1 (hết màu khả thi)', '0 0 1 – – –'],
+      ['11', '—', 'Backtrack: bỏ A2=1', '0 0 – – – –'],
+      ['12', '—', 'Backtrack: bỏ B1=0 — gốc của bế tắc', '0 – – – – –'],
       ['13', 'B1', 'Gán màu 1 (đổi màu)', '0 1 – – – –'],
       ['14–19', '…', 'A2=0, B2=1, A3=0, B3=1 — không còn bế tắc', '→ 0 1 0 1 0 1'],
-      ['20', '—', 'Hoàn tất: tô thành công, 20 bước, 6 lần cắt nhánh', '0 1 0 1 0 1'],
+      ['20', '—', 'Hoàn tất: tô thành công, 20 bước, 6 lần pruning', '0 1 0 1 0 1'],
     ]},
   ],
   notes:
     'Thời lượng slide: ~20s + demo ~20s (tổng ~40s).\n' +
-    'Lời đọc: "Bước 10–12: quay lui qua B2, qua A2, dừng ở B1 — gốc của bế tắc là B1 cùng màu với A1. ' +
-    'Bước 13: B1 đổi sang màu 1, và đến bước 20 thì tô xong — hai mươi bước, sáu lần cắt nhánh. Em có ' +
+    'Lời đọc: "Bước 10–12: backtrack qua B2, qua A2, dừng ở B1 — gốc của bế tắc là B1 cùng màu với A1. ' +
+    'Bước 13: B1 đổi sang màu 1, và đến bước 20 thì tô xong — hai mươi bước, sáu lần pruning. Em có ' +
     'thể lùi về bất kỳ bước nào. Checker xác nhận đây là cách tô hợp lệ."\n' +
     '[CHUYỂN SANG DEMO: tiếp tục bấm "Tiến bước" tới bước 20; bấm "Lùi bước" về bước 12 để minh họa có thể xem ' +
     'lại; chỉ vào vùng kết quả/checker ở dưới Player]',
@@ -721,23 +739,29 @@ SLIDES.push({
   kicker: 'Chương 4 · Ví dụ minh họa từng bước',
   title: 'So sánh 5 thuật toán trên ví dụ chung',
   demo: true,
-  durationSec: 22,
+  durationSec: 30,
   blocks: [
-    { type: 'table', headers: ['Thuật toán', 'Số bước', 'Phép toán', 'Kết quả'], widths: [2.0, 1.3, 1.3, 4.8], fontSize: 13, rows: [
+    { type: 'bullets', items: [
+      'Mỗi thuật toán có checkbox riêng để bật/tắt khỏi so sánh; dropdown "Đồng bộ" đồng bộ các lane: Độc lập / % tiến độ / Giai đoạn / Số bước.',
+      'Mỗi lane có thanh trượt "Bước {tên thuật toán}" riêng; bảng kết quả có cột "Trung vị ms", và nút "Đo hiệu năng theo n" mở biểu đồ benchmark.',
+    ], fontSize: 12.5 },
+    { type: 'table', headers: ['Thuật toán', 'Số bước', 'Phép toán', 'Kết quả'], widths: [2.0, 1.3, 1.3, 4.8], fontSize: 12.5, rows: [
       ['Greedy', '7', '5', '"Chưa tìm được" — hết màu ở A3'],
-      ['Welsh–Powell', '7', '5', 'Giống Greedy — mọi đỉnh cùng bậc 2'],
+      ['Welsh–Powell', '7', '5', 'Giống Greedy — mọi vertex cùng degree 2'],
       ['DSATUR', '14', '6', 'Tô thành công: [0,1,0,1,0,1]'],
-      ['Quay lui', '20', '21', 'Tô thành công: [0,1,0,1,0,1]'],
-      ['Vét cạn', '69', '67', 'Tô thành công: nghiệm đầu tiên ở lá thứ 22'],
+      ['Backtracking', '20', '21', 'Tô thành công: [0,1,0,1,0,1]'],
+      ['Exhaustive search', '69', '67', 'Tô thành công: nghiệm đầu tiên ở lá thứ 22'],
     ]},
   ],
   notes:
-    'Thời lượng slide: ~16s + demo ~18s (tổng ~34s).\n' +
-    'Lời đọc: "Trên trang So sánh, cả năm thuật toán chạy cùng lúc trên cùng đồ thị. Greedy và Welsh– ' +
-    'Powell đều báo chưa tìm được. DSATUR thành công trong mười bốn bước. Quay lui chỉ cần hai mươi ' +
-    'bước so với sáu mươi chín của vét cạn — hiệu quả của cắt nhánh sớm."\n' +
+    'Thời lượng slide: ~20s + demo ~18s (tổng ~38s).\n' +
+    'Lời đọc: "Trên trang So sánh, năm thuật toán chạy cùng lúc — mỗi thuật toán có checkbox riêng, và ' +
+    'dropdown Đồng bộ đồng bộ các lane theo phần trăm tiến độ, giai đoạn hoặc số bước. Greedy và ' +
+    'Welsh–Powell báo chưa tìm được. DSATUR thành công trong mười bốn bước. Backtracking chỉ cần hai ' +
+    'mươi bước so với sáu mươi chín của exhaustive search."\n' +
     '[CHUYỂN SANG DEMO: https://algorithm-visualizer.hieutk.dev/compare/graph-coloring → dán lại JSON ví dụ chung ' +
-    'vào trình nhập → bấm "Chạy tất cả" → zoom vào cột số bước/phép toán]',
+    'vào trình nhập → bấm "Chạy tất cả" → tắt/bật thử 1 checkbox thuật toán → mở dropdown "Đồng bộ" và chọn ' +
+    '"% tiến độ" → kéo thử thanh trượt "Bước" của một lane → zoom vào cột số bước/phép toán và cột "Trung vị ms"]',
 });
 
 // ---- 20. Chế độ χ(G) (DEMO) ------------------------------------------------------
@@ -751,14 +775,14 @@ SLIDES.push({
       ['Greedy', '3', '8', 'Hợp lệ nhưng chưa tối ưu'],
       ['Welsh–Powell', '3', '8', 'Hợp lệ nhưng chưa tối ưu'],
       ['DSATUR', '2', '14', 'Tối ưu'],
-      ['Quay lui', '2', '22', 'χ = 2, chính xác'],
-      ['Vét cạn', '2', '78', 'χ = 2, chính xác'],
+      ['Backtracking', '2', '22', 'χ = 2, chính xác'],
+      ['Exhaustive search', '2', '78', 'χ = 2, chính xác'],
     ]},
   ],
   notes:
     'Thời lượng slide: ~14s + demo ~14s (tổng ~28s).\n' +
-    'Lời đọc: "Ở chế độ tìm sắc số, greedy tô được nhưng dùng ba màu, trong khi χ thật chỉ bằng hai. ' +
-    'DSATUR, quay lui và vét cạn đều dùng đúng hai màu — một góc nhìn khác của cùng phản ví dụ."\n' +
+    'Lời đọc: "Ở chromatic mode, greedy tô được nhưng dùng ba màu, trong khi χ thật chỉ bằng hai. ' +
+    'DSATUR, backtracking và exhaustive search đều dùng đúng hai màu — một góc nhìn khác của cùng phản ví dụ."\n' +
     '[CHUYỂN SANG DEMO: vẫn ở trang So sánh, trong trình nhập đổi chế độ sang "Tìm sắc số χ(G)" → bấm "Chạy tất ' +
     'cả" lại → chỉ vào cột "Giá trị" (số màu)]',
 });
@@ -772,16 +796,16 @@ SLIDES.push({
   blocks: [
     { type: 'bullets', items: [
       'Thanh bên: tìm bài theo chương sách, theo kỹ thuật thiết kế, hoặc theo tên bài toán (Ctrl+K).',
-      'Nút chuyển nhanh giữa 5 cách giải của cùng bài toán: Greedy, Welsh–Powell, DSATUR, Quay lui, Vét cạn.',
+      'Nút chuyển nhanh giữa 5 cách giải của cùng bài toán: Greedy, Welsh–Powell, DSATUR, Backtracking, Exhaustive search.',
       'Trình nhập dữ liệu: JSON, bộ sinh ngẫu nhiên theo seed, đồ thị mẫu kinh điển (Vương miện, Kₙ, Cₙ, K(p,q), Petersen, Grötzsch).',
-      'Khung đồ thị: màu từng đỉnh ghi bằng số trên nhãn, đỉnh đang xét được làm nổi bật.',
+      'Khung đồ thị: màu từng vertex ghi bằng số trên nhãn, vertex đang xét được làm nổi bật.',
     ], fontSize: 15 },
   ],
   notes:
     'Thời lượng slide: ~14s + demo ~16s (tổng ~30s).\n' +
     'Lời đọc: "Đây là trang Player. Bên trái là thanh điều hướng theo chương, kỹ thuật hoặc tên bài. ' +
-    'Phía trên là nút chuyển nhanh giữa năm cách giải. Giữa là khung đồ thị, cho thấy màu từng đỉnh và ' +
-    'đỉnh đang xét."\n' +
+    'Phía trên là nút chuyển nhanh giữa năm cách giải. Giữa là khung đồ thị, cho thấy màu từng vertex và ' +
+    'vertex đang xét."\n' +
     '[CHUYỂN SANG DEMO: /play/graph-coloring/backtracking → lướt qua thanh bên, nút chuyển 5 thuật toán, trình ' +
     'nhập liệu (JSON / sinh ngẫu nhiên / mẫu), rồi khung đồ thị — không bấm chạy]',
 });
@@ -791,23 +815,25 @@ SLIDES.push({
   kicker: 'Dạo qua giao diện',
   title: 'Giao diện Player (2/2) — điều khiển và 2 cách xem',
   demo: true,
-  durationSec: 20,
+  durationSec: 26,
   blocks: [
     { type: 'bullets', items: [
       'Khung mã giả: dòng đang chạy được tô đậm.',
-      'Lời giải thích tiếng Việt cho từng bước.',
+      'Thẻ "Giải thích bước": lời giải thích tiếng Việt cho từng bước.',
+      'Thẻ "Trạng thái": hiển thị Giai đoạn hiện tại của thuật toán (place / reject / backtrack / done).',
       'Thanh điều khiển: tiến / lùi / tua / tốc độ, có phím tắt.',
-      'Nút chuyển view "Đồ thị" ↔ "Cây trạng thái" — cây đánh dấu riêng các nhánh bị cắt.',
+      'Nút chuyển view giữa "Đồ thị" và "Cây trạng thái" — cây đánh dấu riêng các nhánh bị cắt (pruned).',
       'Toàn giao diện chỉ dùng trắng/đen/xám — trạng thái phân biệt bằng độ đậm và viền, không phụ thuộc màu sắc.',
-    ], fontSize: 15 },
+    ], fontSize: 13 },
   ],
   notes:
-    'Thời lượng slide: ~16s + demo ~16s (tổng ~32s).\n' +
-    'Lời đọc: "Bên cạnh là mã giả với dòng đang chạy tô đậm, và lời giải thích tiếng Việt cho từng bước. ' +
-    'Thanh điều khiển cho tiến, lùi, tua, tốc độ, có phím tắt. Giao diện chỉ dùng trắng đen — trạng thái ' +
-    'phân biệt bằng độ đậm và viền, không dựa vào màu sắc."\n' +
-    '[CHUYỂN SANG DEMO: tiếp tục ở Player — khoanh khung mã giả, lời giải thích, thanh điều khiển, rồi bấm nút ' +
-    'chuyển view sang "Cây trạng thái" rồi chuyển lại]',
+    'Thời lượng slide: ~19s + demo ~16s (tổng ~35s).\n' +
+    'Lời đọc: "Bên cạnh là mã giả với dòng đang chạy tô đậm, thẻ Giải thích bước bằng tiếng Việt, và thẻ ' +
+    'Trạng thái hiển thị giai đoạn hiện tại — place, reject, backtrack hoặc done. Thanh điều khiển cho ' +
+    'tiến, lùi, tua, tốc độ, có phím tắt. Giao diện chỉ dùng trắng đen — trạng thái phân biệt bằng độ ' +
+    'đậm và viền, không dựa vào màu sắc."\n' +
+    '[CHUYỂN SANG DEMO: tiếp tục ở Player — khoanh khung mã giả, thẻ "Giải thích bước", thẻ "Trạng thái" (chỉ ' +
+    'vào dòng "Giai đoạn: …"), thanh điều khiển, rồi bấm nút chuyển view sang "Cây trạng thái" rồi chuyển lại]',
 });
 
 // ---- 23. Input không hợp lệ (DEMO) --------------------------------------------------
@@ -842,19 +868,21 @@ SLIDES.push({
   kicker: 'Dạo qua giao diện',
   title: 'Trang Testcase — 22 ca, xuất CSV/JSON',
   demo: true,
-  durationSec: 20,
+  durationSec: 29,
   blocks: [
     { type: 'bullets', items: [
       '22 testcase, chia 6 nhóm: thông thường, biên, nhỏ, lớn, đặc biệt, không hợp lệ.',
       'Chạy toàn bộ bằng một nút, kết quả "Đạt 22/22".',
-      'Mỗi nhánh thuật toán có ít nhất 1 testcase phủ (có nghiệm, vô nghiệm, bế tắc heuristic, χ đã biết, vượt giới hạn…).',
+      'Hầu hết các nhánh thuật toán được phủ bằng 22 file testcase này (có nghiệm, vô nghiệm, χ đã biết, vượt giới hạn…).',
+      'Riêng nhánh "heuristic bế tắc dù đồ thị có nghiệm" được phủ bằng 1 unit test của greedy — chưa có file testcase riêng.',
       'Xuất kết quả CSV/JSON để đưa trực tiếp vào report.',
-    ], fontSize: 15 },
+    ], fontSize: 13.5 },
   ],
   notes:
-    'Thời lượng slide: ~13s + demo ~16s (tổng ~29s).\n' +
-    'Lời đọc: "Trang Testcase chạy toàn bộ dữ liệu, chia sáu nhóm, đạt hai mươi hai trên hai mươi hai ' +
-    'ca. Kết quả xuất được ra CSV hoặc JSON để đưa vào report."\n' +
+    'Thời lượng slide: ~17s + demo ~16s (tổng ~33s).\n' +
+    'Lời đọc: "Trang Testcase chạy toàn bộ dữ liệu, chia sáu nhóm, đạt 22 trên 22 ca. Phần lớn nhánh ' +
+    'thuật toán được phủ ngay trong 22 file này; riêng heuristic bế tắc dù đồ thị có nghiệm thì được ' +
+    'phủ bằng một unit test của greedy, chưa có file riêng. Kết quả xuất CSV hoặc JSON để đưa vào report."\n' +
     '[CHUYỂN SANG DEMO: /testcases/graph-coloring → bấm chạy toàn bộ → dừng ở dòng "Đạt 22/22" → cuộn qua các ' +
     'nhóm → bấm xuất CSV/JSON]',
 });
@@ -869,7 +897,7 @@ SLIDES.push({
     { type: 'bullets', items: [
       'Sinh ngẫu nhiên n = 300, p = 0,1, seed = 1, chế độ χ(G).',
       'Ba heuristic vẫn chạy ra kết quả (không ghi trace vì n > 10) — DSATUR dùng ít màu nhất.',
-      'Quay lui/vét cạn báo "Không áp dụng" thay vì treo trình duyệt.',
+      'Backtracking/exhaustive search báo "Không áp dụng" thay vì treo trình duyệt.',
     ], fontSize: 16 },
   ],
   side: { type: 'code', title: 'Thông báo thật của app (precondition)', fontSize: 11, lines: [
@@ -879,8 +907,8 @@ SLIDES.push({
     'thị hiện có 300 đỉnh).',
   ]},
   notes:
-    'Thời lượng slide: ~13s + demo ~16s (tổng ~29s).\n' +
-    'Lời đọc: "Với đồ thị ba trăm đỉnh, các heuristic vẫn chạy được, DSATUR dùng ít màu nhất. Thuật ' +
+    'Thời lượng slide: ~15s + demo ~16s (tổng ~31s).\n' +
+    'Lời đọc: "Với đồ thị ba trăm vertex, các heuristic vẫn chạy được, DSATUR dùng ít màu nhất. Thuật ' +
     'toán chính xác báo rõ "không áp dụng" thay vì treo trình duyệt."\n' +
     '[CHUYỂN SANG DEMO: /compare/graph-coloring → trình nhập chọn "Tìm sắc số χ(G)", bộ sinh ngẫu nhiên n=300, ' +
     'p=0,1, seed=1 → "Chạy tất cả" (xem 3 heuristic ra kết quả); sau đó mở /play/graph-coloring/backtracking, ' +
@@ -971,9 +999,9 @@ SLIDES.push({
   notes:
     'Thời lượng: ~24s.\n' +
     'Lời đọc: "Bốn sự cố. Checker bài tô màu từng tự tham chiếu chính thuật toán đang kiểm — sửa bằng ' +
-    'oracle độc lập. Ở bài cái túi, nút tìm được nghiệm tốt nhất bị đánh dấu sai là bị cắt — tám test ' +
-    'hồi quy fail trên code cũ xác nhận. Nhiều lời giải tham chiếu khác cũng tự tham chiếu. Và 136 file ' +
-    'bị viết dồn một dòng. Cả bốn đều do reviewer hãng khác phát hiện."',
+    'oracle độc lập. Ở bài cái túi, nút nghiệm tốt nhất bị đánh dấu sai là bị cắt — tám test hồi quy ' +
+    'fail trên code cũ xác nhận. Nhiều lời giải tham chiếu khác cũng tự tham chiếu, và 136 file bị viết ' +
+    'dồn một dòng. Cả bốn đều do reviewer hãng khác phát hiện."',
 });
 
 // ---- 30. Bài học rút ra ---------------------------------------------------------------------
@@ -1006,7 +1034,7 @@ SLIDES.push({
   blocks: [
     { type: 'bullets', items: [
       'Viết tay (ca nhỏ, đáp án dễ thấy) + dựng có chủ đích (đồ thị kinh điển đã biết χ) + sinh ngẫu nhiên theo seed.',
-      'App tự hạ xác suất cạnh p để kỳ vọng số cạnh ≤ 7.200, từ chối nếu số cạnh thực vượt 8.000.',
+      'App tự hạ xác suất edge p để kỳ vọng số edge ≤ 7.200, từ chối nếu số edge thực vượt 8.000.',
       '22 file testcase, xuất qua lệnh export của app ra testcases/graph-coloring/.',
     ], fontSize: 15.5 },
   ],
@@ -1047,43 +1075,46 @@ SLIDES.push({
 SLIDES.push({
   kicker: 'Chương 7 · Đánh giá',
   title: 'Đánh giá: tính đúng, trực quan, hạn chế',
-  durationSec: 35,
+  durationSec: 40,
   blocks: [
     { type: 'bullets', items: [
       { text: 'Tính đúng:', bold: true },
-      '"Đạt 22/22"; 314/314 e2e pass trên chính domain https://algorithm-visualizer.hieutk.dev; 825 unit test; quay lui/vét cạn so với oracle độc lập.',
+      '"Đạt 22/22"; 314/314 e2e pass trên chính domain https://algorithm-visualizer.hieutk.dev; 825 unit test.',
+      'Backtracking: so với oracle độc lập existsColoring, trên nhiều seed/kích thước. Exhaustive search: so với backtracking trên nhiều input, cộng kiểm trực tiếp bằng oracle χ(G) trên vài đồ thị nhỏ (vương miện, chu trình).',
       { text: 'Trực quan:', bold: true },
-      'mỗi bước có mã giả + giải thích + trạng thái đồ thị; lùi được bất kỳ bước; cây trạng thái thấy rõ lúc quay lui.',
+      'mỗi bước có mã giả + giải thích + trạng thái đồ thị; lùi được bất kỳ bước; state-space tree thấy rõ lúc backtrack.',
       { text: 'Hạn chế:', bold: true },
       'thuật toán chính xác chỉ chạy đồ thị nhỏ; với n > 12 không biết χ thật; heuristic không bảo đảm; toàn bộ code do AI sinh, có thể còn lỗi chưa phát hiện.',
-    ], fontSize: 13 },
+    ], fontSize: 12 },
   ],
   notes:
-    'Thời lượng: ~22s.\n' +
-    'Lời đọc: "Tính đúng: đạt 22/22 testcase, 314/314 e2e pass trên domain thật. Trực quan: mỗi bước có ' +
-    'mã giả, giải thích, trạng thái đồ thị, lùi được bất kỳ bước. Hạn chế: thuật toán chính xác chỉ chạy ' +
-    'đồ thị nhỏ, trên 12 đỉnh không biết χ thật, và toàn bộ code do AI sinh có thể còn lỗi chưa phát hiện."',
+    'Thời lượng: ~34s.\n' +
+    'Lời đọc: "Tính đúng: đạt 22/22 testcase, 314/314 e2e pass trên domain thật. Backtracking kiểm bằng ' +
+    'oracle existsColoring; exhaustive search so với backtracking trên nhiều input, cộng oracle χ(G) ' +
+    'trên vài đồ thị nhỏ như vương miện, chu trình. Trực quan: mỗi bước có mã giả, giải thích, trạng ' +
+    'thái đồ thị, lùi được bất kỳ bước. Hạn chế: thuật toán chính xác chỉ chạy đồ thị nhỏ, trên 12 ' +
+    'vertex không biết χ thật, code do AI sinh có thể còn lỗi."',
 });
 
 // ---- 34. Hướng phát triển & mở rộng ---------------------------------------------------------
 SLIDES.push({
   kicker: 'Chương 7–8 · Hướng phát triển và mở rộng',
   title: 'Hướng phát triển & mở rộng: toàn bộ sách Levitin',
-  durationSec: 25,
+  durationSec: 32,
   blocks: [
     { type: 'bullets', items: [
       { text: 'Hướng phát triển:', bold: true },
-      'thêm nhánh cận (clique + DSATUR) để tìm χ(G) trên đồ thị lớn hơn; thêm biến thể (tô màu cạnh, list coloring); nhập đồ thị bằng vẽ tay.',
+      'thêm nhánh cận (clique + DSATUR) để tìm χ(G) trên đồ thị lớn hơn; thêm biến thể (tô màu edge, list coloring); nhập đồ thị bằng vẽ tay.',
       { text: 'Mở rộng đã có (≈30s):', bold: true },
-      'cùng nền tảng Player/So sánh/Testcase phục vụ 47 bài toán, 126 cách giải trong sách Levitin (Dijkstra, LCS, TSP, n-hậu…) — phần chấm điểm chính vẫn là bài Tô màu đồ thị.',
-    ], fontSize: 15 },
+      'cùng nền tảng Player/So sánh/Testcase phục vụ 47 bài toán, 126 cách giải — phần lớn theo sách Levitin (Dijkstra, LCS, TSP, n-hậu…), một số ngoại lệ ngoài sách được ghi rõ trong app (DSATUR, Hungarian). Phần chấm điểm chính vẫn là bài Tô màu đồ thị.',
+    ], fontSize: 13.5 },
   ],
   demo: true,
   notes:
-    'Thời lượng slide: ~16s + demo ~10s (tổng ~26s).\n' +
-    'Lời đọc: "Hướng tới: thêm nhánh cận để tìm χ(G) trên đồ thị lớn hơn, thêm biến thể như tô màu cạnh. ' +
-    'Ngoài bài trọng tâm, nền tảng này còn dùng được cho 47 bài toán, 126 cách giải trong sách Levitin — ' +
-    'nhưng phần nộp chấm chính vẫn là bài tô màu đồ thị."\n' +
+    'Thời lượng slide: ~18s + demo ~10s (tổng ~28s).\n' +
+    'Lời đọc: "Hướng tới: thêm nhánh cận để tìm χ(G) trên đồ thị lớn hơn, thêm biến thể như tô màu edge. ' +
+    'Nền tảng này còn dùng cho 47 bài toán, 126 cách giải — phần lớn theo Levitin, trừ vài ngoại lệ app ' +
+    'ghi rõ như DSATUR, Hungarian. Phần nộp chấm chính vẫn là bài tô màu đồ thị."\n' +
     '[CHUYỂN SANG DEMO: /algorithms → Ctrl+K gõ "Dijkstra" → mở Player Dijkstra (hoặc LCS) → cho chạy 3–4 bước]',
 });
 
@@ -1186,11 +1217,29 @@ function buildContentSlide(pptx, spec, index, total) {
           fontFace: FONT, fontSize: 11, italic: true, color: C.sub, valign: 'top', lineSpacing: 15,
         });
       }
+    } else if (side.type === 'code-stack') {
+      let sy = sideTop;
+      for (const sub of side.blocks) {
+        slide.addText(sub.title, {
+          x: SIDE_X, y: sy, w: SIDE_W, h: 0.26,
+          fontFace: FONT, fontSize: 11, bold: true, color: C.sub,
+        });
+        sy = renderCode(slide, pptx, sub.lines, SIDE_X, sy + 0.3, SIDE_W, { fontSize: sub.fontSize || 10.5, lineH: 0.21 });
+        sy += 0.18;
+      }
     }
   }
 
   slide.addNotes(spec.notes);
   return slide;
+}
+
+if (process.env.NARR_DUMP) {
+  SLIDES.forEach((spec, i) => {
+    const line = (spec.notes || '').split('\n').find((l) => l.startsWith('Lời đọc:'));
+    console.log(`#${i + 1} ${spec.title || ''}\n${line}\n`);
+  });
+  process.exit(0);
 }
 
 if (process.env.DUR_CHECK) {
@@ -1255,6 +1304,7 @@ function summarizeContent(spec) {
     if (spec.side.type === 'table') parts.push(`[Cột phải] Bảng: ${spec.side.title || ''}`);
     else if (spec.side.type === 'code') parts.push(`[Cột phải] Mã/JSON: ${spec.side.title || ''}`);
     else if (spec.side.type === 'diagram') parts.push(`[Cột phải] Sơ đồ: ${spec.side.title || ''}`);
+    else if (spec.side.type === 'code-stack') parts.push(`[Cột phải] Mã giả nguyên văn: ${spec.side.blocks.map((b) => b.title).join(' + ')}`);
   }
   return parts.join(' — ');
 }
