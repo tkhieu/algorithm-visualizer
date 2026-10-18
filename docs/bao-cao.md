@@ -126,9 +126,9 @@ Dữ liệu vào là JSON, định nghĩa bằng Zod trong `source-code/src/prob
 | Quay lui | n ≤ 9 ở chế độ k màu, n ≤ 10 ở chế độ χ. Vượt mức thì app báo "Không áp dụng" |
 | Vét cạn | kⁿ ≤ 200.000 ở chế độ k màu; Σkⁿ (k = 1..n) ≤ 200.000 ở chế độ χ, tức tối đa 6 đỉnh. Vượt mức thì báo "Không áp dụng". Ngưỡng ghi trace là n ≤ 6, và trace luôn bị cắt khi quá 5.000 bước hoặc 2,5 MB |
 
-Giới hạn n ≤ 9 của quay lui ở chế độ k màu được chọn sau khi đo ca xấu nhất: nhiều đỉnh cô lập đặt trước một clique không tô được làm quay lui phải thử lại mọi tổ hợp màu của các đỉnh cô lập. Ví dụ, với một đồ thị 12 đỉnh ở chế độ k màu, Player hiện: "Không áp dụng: quay lui chỉ an toàn với đồ thị ≤ 9 đỉnh ở chế độ k-coloring, vì thứ tự đỉnh xấu (ví dụ nhiều đỉnh cô lập trước một clique không tô được) có thể khiến nó thử lại toàn bộ tổ hợp màu của các đỉnh không liên quan (đồ thị hiện có 12 đỉnh)." Số đỉnh ở cuối câu là số đỉnh thật của input.
+Giới hạn n ≤ 9 của quay lui ở chế độ k màu được chọn sau khi đo ca xấu nhất: nhiều đỉnh cô lập đặt trước một clique không tô được làm quay lui phải thử lại mọi tổ hợp màu của các đỉnh cô lập. Ví dụ, với một đồ thị 12 đỉnh ở chế độ k màu, Player hiện: "Không áp dụng: Quay lui chỉ an toàn với đồ thị ≤ 9 đỉnh ở chế độ k-coloring, vì thứ tự đỉnh xấu (ví dụ nhiều đỉnh cô lập trước một clique không tô được) có thể khiến nó thử lại toàn bộ tổ hợp màu của các đỉnh không liên quan (đồ thị hiện có 12 đỉnh)." Số đỉnh ở cuối câu là số đỉnh thật của input.
 
-> **[CHỜ PR SỬA TIỀN TỐ]:** trên bản đang chạy (c018f19), chữ "Không áp dụng:" bị lặp hai lần trong thông báo của quay lui và vét cạn, vì lý do đã có sẵn tiền tố và Player/So sánh lại thêm một lần nữa. Một PR sửa lỗi này đang được làm; câu trích ở trên là nội dung sau khi sửa. Chụp ảnh sau khi bản sửa được deploy.
+> **[CHỜ PR #14]:** trên bản đang chạy (c018f19), chữ "Không áp dụng:" bị lặp hai lần trong thông báo của quay lui và vét cạn, vì lý do đã có sẵn tiền tố và Player/So sánh lại thêm một lần nữa. PR #14 sửa lỗi này; câu trích ở trên là nội dung sau khi sửa. Chỉ chụp ảnh sau khi PR #14 được merge và deploy.
 
 ### 2.6. Ví dụ Input/Output
 
@@ -259,7 +259,7 @@ Exhaustive(G, k)
 - **Giới hạn trong app:**
   - n ≤ 6 là ngưỡng kích thước input để ghi trace. Vượt ngưỡng này thì thuật toán vẫn chạy nhưng không ghi đủ trace.
   - Kể cả khi n ≤ 6, trace vẫn bị cắt nếu quá 5.000 bước hoặc 2,5 MB. Ví dụ K₆ với k = 5 có 5⁶ = 15.625 phép gán, vô nghiệm, nên sinh ra hơn 5.000 bước.
-  - Nếu kⁿ > 200.000, app báo "Không áp dụng: vét cạn chỉ an toàn khi kⁿ ≤ 200.000" thay vì chạy. Ở chế độ χ, ngưỡng tính theo Σkⁿ (k = 1..n): n = 6 cho tổng 67.171, còn n = 7 đã vượt 200.000.
+  - Nếu kⁿ > 200.000, app báo "Không áp dụng: Vét cạn chỉ an toàn khi kⁿ ≤ 200.000" thay vì chạy. Ở chế độ χ, ngưỡng tính theo Σkⁿ (k = 1..n): n = 6 cho tổng 67.171, còn n = 7 đã vượt 200.000.
 
 #### Bảng tổng hợp
 
