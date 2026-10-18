@@ -24,9 +24,15 @@ OUT_PATH = ROOT / "report" / "bao-cao.docx"
 SERIF = "Times New Roman"
 MONO = "Courier New"
 
-PLACEHOLDER_RE = re.compile(r"(SV X[AÁ]C NH[AẬ]N|SV ĐI[ÈỀ]N|CH[ƯUƯ]A L[ÀA]M)")
+# A `[...]` span counts as a student-to-fill placeholder (and gets the whole
+# bracket, including any explanatory text inside it, highlighted yellow) only
+# when it contains one of these markers. This deliberately excludes ordinary
+# brackets that are array/index notation or math intervals, e.g. `color[v]`,
+# `coloring[i]`, "coloring = [0,1,0,1,0,1]", "xác suất cạnh p (đưa về [0, 1])".
+PLACEHOLDER_MARKER = r"SV\s*X[ÁA]C\s*NH[ẬA]N|SV\s*ĐI[ỀE]N|CH[ƯU]A\s*L[ÀA]M|MSSV|ẢNH"
 INLINE_RE = re.compile(
-    r"(?P<bold>\*\*(?:[^*]|\*(?!\*))+?\*\*)"
+    r"(?P<placeholder>\[[^\[\]]*?(?:" + PLACEHOLDER_MARKER + r")[^\[\]]*?\])"
+    r"|(?P<bold>\*\*(?:[^*]|\*(?!\*))+?\*\*)"
     r"|(?P<code>`[^`]+?`)"
     r"|(?P<italic>\*[^*]+?\*)"
     r"|(?P<url>https?://[^\s\]\)”\"]+)"
@@ -111,47 +117,68 @@ def add_hyperlink(paragraph, url: str, text: str, size_pt: float):
     paragraph._p.append(hyperlink)
 
 
-def emit_plain(paragraph, text: str, bold=False, italic=False, code=False, size_pt=None, color=None):
-    """Add `text` as one or more runs, splitting out yellow-highlighted placeholders."""
-    parts = PLACEHOLDER_RE.split(text)
-    for part in parts:
-        if not part:
-            continue
-        run = paragraph.add_run(part)
-        run.bold = bold
-        run.italic = italic
-        if code:
-            run.font.name = MONO
-            run.font.size = Pt(size_pt - 1.5 if size_pt else 11)
-        elif size_pt:
-            run.font.size = Pt(size_pt)
-        if color:
-            run.font.color.rgb = RGBColor.from_string(color)
-        if PLACEHOLDER_RE.fullmatch(part):
-            run.font.highlight_color = WD_COLOR_INDEX.YELLOW
-            run.bold = True
+def emit_plain(paragraph, text: str, bold=False, italic=False, code=False, size_pt=None, color=None, highlight=False):
+    """Add `text` as a single run with the given formatting."""
+    if not text:
+        return None
+    run = paragraph.add_run(text)
+    run.bold = bold
+    run.italic = italic
+    if code:
+        run.font.name = MONO
+        run.font.size = Pt(size_pt - 1.5 if size_pt else 11)
+    elif size_pt:
+        run.font.size = Pt(size_pt)
+    if color:
+        run.font.color.rgb = RGBColor.from_string(color)
+    if highlight:
+        run.font.highlight_color = WD_COLOR_INDEX.YELLOW
+    return run
 
 
-def render_inline(paragraph, text: str, base_size=None, base_bold=False):
-    """Parse **bold**, `code`, *italic*, and bare URLs, then add runs to `paragraph`."""
+def render_inline(paragraph, text: str, base_size=None, base_bold=False, base_italic=False, highlight=False):
+    """Parse `[placeholder]`, **bold**, `code`, *italic*, and bare URLs recursively.
+
+    Markup nested inside **bold**/*italic* (e.g. a `` `code` `` span, or a
+    `[placeholder]`) is re-parsed rather than dropped to literal text, so no
+    Markdown punctuation survives into the rendered run. A `[placeholder]`
+    match highlights its own brackets plus everything inside them (including
+    any nested formatting it contains); `highlight` propagates that into
+    recursive calls so nested spans stay highlighted too.
+    """
     pos = 0
     for m in INLINE_RE.finditer(text):
         if m.start() > pos:
-            emit_plain(paragraph, text[pos : m.start()], bold=base_bold, size_pt=base_size)
-        if m.group("bold"):
-            emit_plain(paragraph, m.group("bold")[2:-2], bold=True, size_pt=base_size)
+            emit_plain(
+                paragraph, text[pos : m.start()], bold=base_bold, italic=base_italic, size_pt=base_size, highlight=highlight
+            )
+        if m.group("placeholder"):
+            bracket_text = m.group("placeholder")
+            emit_plain(paragraph, "[", bold=base_bold, italic=base_italic, size_pt=base_size, highlight=True)
+            render_inline(
+                paragraph, bracket_text[1:-1], base_size=base_size, base_bold=base_bold, base_italic=base_italic, highlight=True
+            )
+            emit_plain(paragraph, "]", bold=base_bold, italic=base_italic, size_pt=base_size, highlight=True)
+        elif m.group("bold"):
+            render_inline(
+                paragraph, m.group("bold")[2:-2], base_size=base_size, base_bold=True, base_italic=base_italic, highlight=highlight
+            )
         elif m.group("code"):
-            emit_plain(paragraph, m.group("code")[1:-1], code=True, bold=base_bold, size_pt=base_size)
+            emit_plain(
+                paragraph, m.group("code")[1:-1], code=True, bold=base_bold, italic=base_italic, size_pt=base_size, highlight=highlight
+            )
         elif m.group("italic"):
-            emit_plain(paragraph, m.group("italic")[1:-1], italic=True, bold=base_bold, size_pt=base_size)
+            render_inline(
+                paragraph, m.group("italic")[1:-1], base_size=base_size, base_bold=base_bold, base_italic=True, highlight=highlight
+            )
         elif m.group("url"):
             url, trail = strip_url_trailing_punct(m.group("url"))
             add_hyperlink(paragraph, url, url, base_size or 13)
             if trail:
-                emit_plain(paragraph, trail, bold=base_bold, size_pt=base_size)
+                emit_plain(paragraph, trail, bold=base_bold, italic=base_italic, size_pt=base_size, highlight=highlight)
         pos = m.end()
     if pos < len(text):
-        emit_plain(paragraph, text[pos:], bold=base_bold, size_pt=base_size)
+        emit_plain(paragraph, text[pos:], bold=base_bold, italic=base_italic, size_pt=base_size, highlight=highlight)
 
 
 def shade_paragraph(paragraph, hex_color: str):
@@ -296,13 +323,16 @@ class Builder:
                 run.italic = True
         return p
 
-    def image_callout(self, text):
+    def image_callout(self, bracketed_text):
+        """`bracketed_text` is the exact `[ẢNH: ...]` md text, kept verbatim
+        (not reworded); render_inline highlights it as a placeholder since it
+        contains the "ẢNH" marker."""
         p = self.doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         p.paragraph_format.space_before = Pt(6)
         p.paragraph_format.space_after = Pt(6)
         shade_paragraph(p, "ECECEC")
-        emit_plain(p, f"[Chèn ảnh: {text}]", italic=True, size_pt=11, color="555555")
+        render_inline(p, bracketed_text, base_size=11, base_italic=True)
         return p
 
     def code_block(self, lines):
@@ -418,7 +448,7 @@ def convert():
 
     for level, (before, after, size) in {1: (18, 10, 16), 2: (12, 6, 14), 3: (10, 4, 13)}.items():
         style = doc.styles[f"Heading {level}"]
-        style.font.name = SERIF
+        style.font.name = SERIF  # sets w:rFonts ascii/hAnsi; also pin eastAsia below
         style.font.size = Pt(size)
         style.font.bold = True
         style.font.color.rgb = RGBColor(0, 0, 0)
@@ -426,6 +456,22 @@ def convert():
         style.paragraph_format.space_after = Pt(after)
         style.paragraph_format.keep_with_next = True
         style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        h_rpr = style.element.get_or_add_rPr()
+        h_rFonts = h_rpr.find(qn("w:rFonts"))
+        if h_rFonts is None:
+            h_rFonts = OxmlElement("w:rFonts")
+            h_rpr.append(h_rFonts)
+        h_rFonts.set(qn("w:eastAsia"), SERIF)
+        # python-docx's built-in "Heading N" styles ship with BOTH a literal
+        # font (which style.font.name above just set to Times New Roman) AND
+        # w:*Theme="majorHAnsi" attributes pointing at the template's theme
+        # font (Calibri). When LibreOffice round-trips the file (updating the
+        # TOC field), it resolves the theme reference and silently writes
+        # Calibri back over our literal font. Drop the theme attributes so
+        # only the literal Times New Roman request remains.
+        for theme_attr in ("w:asciiTheme", "w:hAnsiTheme", "w:eastAsiaTheme", "w:cstheme"):
+            if h_rFonts.get(qn(theme_attr)) is not None:
+                del h_rFonts.attrib[qn(theme_attr)]
 
     # footer page numbers (suppressed on the cover page only)
     section.different_first_page_header_footer = True
@@ -444,24 +490,16 @@ def convert():
 
     b = Builder(doc)
 
-    front_matter_lines = []
     i = 0
     n = len(lines)
-    mode = "frontmatter"  # frontmatter -> cover -> toc -> body
+    # "preamble" = everything between the md's "# ..." title (line 1, used as
+    # the cover title below) and its first real "## Trang bìa" heading: the
+    # ">" editor's-note block ("Bản nháp Markdown để review trước khi dựng
+    # file .docx...") plus the "---" that follows it. That note is
+    # instructions to whoever builds the docx, not report content, so it is
+    # intentionally dropped here rather than rendered anywhere in the output.
+    mode = "preamble"  # preamble -> cover -> toc -> body
     cover_lines = []
-
-    def flush_front_matter_note():
-        if not front_matter_lines:
-            return
-        b.heading(2, "Ghi chú biên tập (không thuộc nội dung nộp bài)")
-        for raw in front_matter_lines:
-            m = QUOTE_RE.match(raw)
-            text = m.group(1) if m else raw
-            bm = BULLET_RE.match(text)
-            if bm:
-                b.quote_line(bm.group(2), bullet=True)
-            elif text.strip():
-                b.quote_line(text)
 
     while i < n:
         raw = lines[i]
@@ -486,7 +524,7 @@ def convert():
             if mode == "cover":
                 render_cover(doc, b, cover_lines)
                 doc.add_page_break()
-                mode = "frontmatter"
+                mode = "preamble"
             if text == "Trang bìa":
                 mode = "cover"
                 cover_lines = []
@@ -498,7 +536,6 @@ def convert():
                 continue
             if mode == "toc":
                 render_toc(doc, b)
-                flush_front_matter_note()
                 doc.add_page_break()
             mode = "body"
             b.heading(level - 1, text)
@@ -513,8 +550,8 @@ def convert():
             # ignore the "(Word tự sinh từ các heading.)" placeholder line
             i += 1
             continue
-        if mode == "frontmatter":
-            front_matter_lines.append(line)
+        if mode == "preamble":
+            # intentionally dropped — see the comment where `mode` is set up
             i += 1
             continue
 
@@ -556,9 +593,8 @@ def convert():
                     b.quote_line(qtext)
             continue
 
-        im = IMAGE_RE.match(line.strip())
-        if im:
-            b.image_callout(im.group(1))
+        if IMAGE_RE.match(line.strip()):
+            b.image_callout(line.strip())
             i += 1
             continue
 
