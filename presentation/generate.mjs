@@ -432,7 +432,7 @@ SLIDES.push({
     { type: 'bullets', items: [
       'Danh sách vertex có thứ tự (nodes) — quyết định thứ tự duyệt.',
       'Tập edge dạng Set<string> các cặp vertex — kiểm tra kề nhau trong O(1).',
-      'Mảng màu color[v], với −1 là chưa tô.',
+      'Mảng màu color[v], với null là chưa tô.',
       'Tập màu bị cấm của vertex v: các màu đang có ở vertex kề v.',
       'Độ bão hòa sat(v) (chỉ DSATUR): số màu khác nhau ở các vertex kề v.',
       'Trace từng bước: lineId mã giả, trạng thái đồ thị, state-space tree (treeNodes), lời giải thích.',
@@ -654,7 +654,7 @@ SLIDES.push({
   blocks: [
     { type: 'bullets', items: [
       '6 loài: A1, B1, A2, B2, A3, B3 (đúng thứ tự nhập).',
-      'Edge: Ai–Bj với i ≠ j (6 edge).',
+      'Edges: Ai–Bj với i ≠ j (6 edges).',
       'Chế độ "Tô bằng k màu cho sẵn", k = 2.',
       'JSON dán trực tiếp vào tab "Chỉnh JSON" — dữ liệu cập nhật ngay, không cần nút áp dụng.',
     ], fontSize: 15.5 },
@@ -754,14 +754,16 @@ SLIDES.push({
     ]},
   ],
   notes:
-    'Thời lượng slide: ~20s + demo ~18s (tổng ~38s).\n' +
+    'Thời lượng slide: ~20s + demo ~24s (tổng ~44s).\n' +
     'Lời đọc: "Trên trang So sánh, năm thuật toán chạy cùng lúc — mỗi thuật toán có checkbox riêng, và ' +
     'dropdown Đồng bộ đồng bộ các lane theo phần trăm tiến độ, giai đoạn hoặc số bước. Greedy và ' +
     'Welsh–Powell báo chưa tìm được. DSATUR thành công trong mười bốn bước. Backtracking chỉ cần hai ' +
     'mươi bước so với sáu mươi chín của exhaustive search."\n' +
     '[CHUYỂN SANG DEMO: https://algorithm-visualizer.hieutk.dev/compare/graph-coloring → dán lại JSON ví dụ chung ' +
-    'vào trình nhập → bấm "Chạy tất cả" → tắt/bật thử 1 checkbox thuật toán → mở dropdown "Đồng bộ" và chọn ' +
-    '"% tiến độ" → kéo thử thanh trượt "Bước" của một lane → zoom vào cột số bước/phép toán và cột "Trung vị ms"]',
+    'vào trình nhập → TRƯỚC KHI chạy: tắt/bật thử 1 checkbox thuật toán để minh họa, rồi đảm bảo lại đủ 5 ' +
+    'checkbox được chọn → mở dropdown "Đồng bộ" và chọn "% tiến độ" → bấm "Chạy tất cả" (cả 5 kết quả cùng ' +
+    'xuất hiện vì không còn checkbox nào bị tắt) → kéo thử thanh trượt "Bước" của một lane → zoom vào cột số ' +
+    'bước/phép toán và cột "Trung vị ms" → bấm nút "Đo hiệu năng theo n" → zoom vào biểu đồ benchmark hiện ra]',
 });
 
 // ---- 20. Chế độ χ(G) (DEMO) ------------------------------------------------------
@@ -875,16 +877,19 @@ SLIDES.push({
       'Chạy toàn bộ bằng một nút, kết quả "Đạt 22/22".',
       'Hầu hết các nhánh thuật toán được phủ bằng 22 file testcase này (có nghiệm, vô nghiệm, χ đã biết, vượt giới hạn…).',
       'Riêng nhánh "heuristic bế tắc dù đồ thị có nghiệm" được phủ bằng 1 unit test của greedy — chưa có file testcase riêng.',
+      'Thẻ "Hiệu năng theo n": nút "Đo thời gian" mở biểu đồ thời gian chạy theo n.',
       'Xuất kết quả CSV/JSON để đưa trực tiếp vào report.',
-    ], fontSize: 13.5 },
+    ], fontSize: 12.5 },
   ],
   notes:
-    'Thời lượng slide: ~17s + demo ~16s (tổng ~33s).\n' +
+    'Thời lượng slide: ~20s + demo ~18s (tổng ~38s).\n' +
     'Lời đọc: "Trang Testcase chạy toàn bộ dữ liệu, chia sáu nhóm, đạt 22 trên 22 ca. Phần lớn nhánh ' +
     'thuật toán được phủ ngay trong 22 file này; riêng heuristic bế tắc dù đồ thị có nghiệm thì được ' +
-    'phủ bằng một unit test của greedy, chưa có file riêng. Kết quả xuất CSV hoặc JSON để đưa vào report."\n' +
+    'phủ bằng một unit test của greedy, chưa có file riêng. Thẻ Hiệu năng theo n còn cho đo thời gian ' +
+    'chạy theo kích thước n. Kết quả xuất CSV hoặc JSON để đưa vào report."\n' +
     '[CHUYỂN SANG DEMO: /testcases/graph-coloring → bấm chạy toàn bộ → dừng ở dòng "Đạt 22/22" → cuộn qua các ' +
-    'nhóm → bấm xuất CSV/JSON]',
+    'nhóm → cuộn tới thẻ "Hiệu năng theo n", bấm nút "Đo thời gian" → zoom vào biểu đồ hiện ra → bấm xuất ' +
+    'CSV/JSON]',
 });
 
 // ---- 25. Đồ thị lớn & giới hạn an toàn (DEMO) -------------------------------------------
@@ -1034,7 +1039,7 @@ SLIDES.push({
   blocks: [
     { type: 'bullets', items: [
       'Viết tay (ca nhỏ, đáp án dễ thấy) + dựng có chủ đích (đồ thị kinh điển đã biết χ) + sinh ngẫu nhiên theo seed.',
-      'App tự hạ xác suất edge p để kỳ vọng số edge ≤ 7.200, từ chối nếu số edge thực vượt 8.000.',
+      'App tự hạ xác suất edge p để kỳ vọng số edges ≤ 7.200, từ chối nếu số edges thực vượt 8.000.',
       '22 file testcase, xuất qua lệnh export của app ra testcases/graph-coloring/.',
     ], fontSize: 15.5 },
   ],
@@ -1104,7 +1109,7 @@ SLIDES.push({
   blocks: [
     { type: 'bullets', items: [
       { text: 'Hướng phát triển:', bold: true },
-      'thêm nhánh cận (clique + DSATUR) để tìm χ(G) trên đồ thị lớn hơn; thêm biến thể (tô màu edge, list coloring); nhập đồ thị bằng vẽ tay.',
+      'thêm nhánh cận (clique + DSATUR) để tìm χ(G) trên đồ thị lớn hơn; thêm biến thể (edge coloring, list coloring); nhập đồ thị bằng vẽ tay.',
       { text: 'Mở rộng đã có (≈30s):', bold: true },
       'cùng nền tảng Player/So sánh/Testcase phục vụ 47 bài toán, 126 cách giải — phần lớn theo sách Levitin (Dijkstra, LCS, TSP, n-hậu…), một số ngoại lệ ngoài sách được ghi rõ trong app (DSATUR, Hungarian). Phần chấm điểm chính vẫn là bài Tô màu đồ thị.',
     ], fontSize: 13.5 },
@@ -1112,7 +1117,7 @@ SLIDES.push({
   demo: true,
   notes:
     'Thời lượng slide: ~18s + demo ~10s (tổng ~28s).\n' +
-    'Lời đọc: "Hướng tới: thêm nhánh cận để tìm χ(G) trên đồ thị lớn hơn, thêm biến thể như tô màu edge. ' +
+    'Lời đọc: "Hướng tới: thêm nhánh cận để tìm χ(G) trên đồ thị lớn hơn, thêm biến thể như edge coloring. ' +
     'Nền tảng này còn dùng cho 47 bài toán, 126 cách giải — phần lớn theo Levitin, trừ vài ngoại lệ app ' +
     'ghi rõ như DSATUR, Hungarian. Phần nộp chấm chính vẫn là bài tô màu đồ thị."\n' +
     '[CHUYỂN SANG DEMO: /algorithms → Ctrl+K gõ "Dijkstra" → mở Player Dijkstra (hoặc LCS) → cho chạy 3–4 bước]',
