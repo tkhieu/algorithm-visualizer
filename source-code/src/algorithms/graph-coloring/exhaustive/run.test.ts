@@ -18,7 +18,7 @@ describe('graph-coloring/exhaustive', () => {
   });
   it('kⁿ vượt giới hạn an toàn: báo "Không áp dụng" bằng tiếng Việt qua precondition, không throw', () => {
     const big = {nodes: Array.from({length: 10}, (_, i) => `V${i}`), edges: [], colors: 10};
-    expect(algorithm.precondition?.(big)).toMatch(/Không áp dụng/);
+    expect(algorithm.precondition?.(big)).toMatch(/^Vét cạn chỉ an toàn/);
     expect(() => algorithm.run(big, {rec: new MetricsRecorder(), signal: new AbortController().signal})).not.toThrow();
   });
   it('kⁿ trong giới hạn an toàn: precondition không chặn', () => {
@@ -28,7 +28,7 @@ describe('graph-coloring/exhaustive', () => {
   it('chế độ χ(G): precondition chặn khi n vượt ngưỡng Σkⁿ (k=1..n)', () => {
     const big = {nodes: Array.from({length: 7}, (_, i) => `V${i}`), edges: [], colors: 1, mode: 'chromatic' as const};
     const small = {nodes: Array.from({length: 6}, (_, i) => `V${i}`), edges: [], colors: 1, mode: 'chromatic' as const};
-    expect(algorithm.precondition?.(big)).toMatch(/Không áp dụng/);
+    expect(algorithm.precondition?.(big)).toMatch(/^Vét cạn tìm χ\(G\) chỉ an toàn/);
     expect(algorithm.precondition?.(small)).toBeUndefined();
   });
   it('trace tua lại đúng và khớp output cuối', () => {
