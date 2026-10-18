@@ -94,8 +94,8 @@ Bộ slide: mở `presentation/algorithm-visualizer-video.pptx`. Nếu sửa n�
 
 ## Kiểm thử
 
-- Mỗi thuật toán có unit test. Với thuật toán exact, test so kết quả với một lời giải tham chiếu độc lập, không viết lại chính thuật toán đó. Với heuristic như greedy hay DSATUR, test kiểm tra output là một cách tô hợp lệ bằng bộ chấm (`checker`) và so với các ví dụ cố định.
-- E2E test tự mở mọi trang Player và Testcase trong catalog, cùng trang So sánh của mọi bài toán có từ hai cách giải trở lên. Mỗi trang chạy với input mặc định, kiểm tra có kết quả và không có lỗi console.
+- Mỗi thuật toán có unit test. Mức kiểm tra khác nhau theo từng thuật toán: có test chỉ dùng bộ chấm (`checker`) để xác nhận output hợp lệ và so với các ví dụ cố định; có test so kết quả với một lời giải tham chiếu độc lập. Ví dụ với Graph Coloring, backtracking được so với oracle `existsColoring`, còn greedy và DSATUR được kiểm bằng bộ chấm và ví dụ cố định.
+- E2E test tự mở mọi trang Player và Testcase trong catalog, cùng trang So sánh của mọi bài toán có từ hai cách giải trở lên. Trang Player và So sánh chạy với input mặc định; trang Testcase chạy toàn bộ bộ testcase của bài toán. Mọi trang đều được kiểm tra có kết quả và không có lỗi console.
 - Bộ testcase chia 6 nhóm dùng chung: `normal`, `edge`, `small`, `large`, `special`, `invalid`. Chi tiết trong [testcases/README.md](testcases/README.md).
 
 ## Quá trình phát triển
