@@ -126,7 +126,9 @@ Dữ liệu vào là JSON, định nghĩa bằng Zod trong `source-code/src/prob
 | Quay lui | n ≤ 9 ở chế độ k màu, n ≤ 10 ở chế độ χ. Vượt mức thì app báo "Không áp dụng" |
 | Vét cạn | kⁿ ≤ 200.000 ở chế độ k màu; Σkⁿ (k = 1..n) ≤ 200.000 ở chế độ χ, tức tối đa 6 đỉnh. Vượt mức thì báo "Không áp dụng". Ngưỡng ghi trace là n ≤ 6, và trace luôn bị cắt khi quá 5.000 bước hoặc 2,5 MB |
 
-Giới hạn n ≤ 9 của quay lui ở chế độ k màu được chọn sau khi đo ca xấu nhất: nhiều đỉnh cô lập đặt trước một clique không tô được làm quay lui phải thử lại mọi tổ hợp màu của các đỉnh cô lập. Thông báo nguyên văn của app: "Không áp dụng: quay lui chỉ an toàn với đồ thị ≤ 9 đỉnh ở chế độ k-coloring, vì thứ tự đỉnh xấu (ví dụ nhiều đỉnh cô lập trước một clique không tô được) có thể khiến nó thử lại toàn bộ tổ hợp màu của các đỉnh không liên quan (đồ thị hiện có n đỉnh)."
+Giới hạn n ≤ 9 của quay lui ở chế độ k màu được chọn sau khi đo ca xấu nhất: nhiều đỉnh cô lập đặt trước một clique không tô được làm quay lui phải thử lại mọi tổ hợp màu của các đỉnh cô lập. Ví dụ, với một đồ thị 12 đỉnh ở chế độ k màu, Player hiện: "Không áp dụng: quay lui chỉ an toàn với đồ thị ≤ 9 đỉnh ở chế độ k-coloring, vì thứ tự đỉnh xấu (ví dụ nhiều đỉnh cô lập trước một clique không tô được) có thể khiến nó thử lại toàn bộ tổ hợp màu của các đỉnh không liên quan (đồ thị hiện có 12 đỉnh)." Số đỉnh ở cuối câu là số đỉnh thật của input.
+
+> **[CHỜ PR SỬA TIỀN TỐ]:** trên bản đang chạy (c018f19), chữ "Không áp dụng:" bị lặp hai lần trong thông báo của quay lui và vét cạn, vì lý do đã có sẵn tiền tố và Player/So sánh lại thêm một lần nữa. Một PR sửa lỗi này đang được làm; câu trích ở trên là nội dung sau khi sửa. Chụp ảnh sau khi bản sửa được deploy.
 
 ### 2.6. Ví dụ Input/Output
 
@@ -624,7 +626,8 @@ Mỗi nhánh của thuật toán phải có ít nhất một testcase đi qua:
 |---|---|
 | Có nghiệm | normal-1 |
 | Vô nghiệm, thuật toán chính xác chứng minh | normal-2, large-2 |
-| Heuristic "chưa tìm được" dù có nghiệm | đồ thị vương miện ở chế độ k màu (unit test); ở chế độ χ là chromatic-crown, greedy dùng 3 màu trong khi χ = 2 |
+| Heuristic "chưa tìm được" dù có nghiệm | đồ thị vương miện ở chế độ k màu, k = 2 (unit test của greedy; chưa có file testcase riêng) |
+| Heuristic tô được nhưng chưa tối ưu | chromatic-crown ở chế độ χ: greedy trả về cách tô hợp lệ với 3 màu, trong khi χ = 2 |
 | Đồ thị rỗng hoặc không có cạnh | edge-no-edges, ca n = 0 trong unit test |
 | Đồ thị đầy đủ | special-complete4 |
 | Dữ liệu sai | invalid-zero-colors, invalid-mode |
@@ -637,7 +640,7 @@ Mỗi nhánh của thuật toán phải có ít nhất một testcase đi qua:
 
 ### 7.1. Tính đúng
 
-- **Trang Testcase:** "Đạt 22/22", không ca nào "Không áp dụng". Con số này được e2e kiểm tra trên bản đang chạy ở algorithm-visualizer.hieutk.dev ngày 18/10 (314/314 e2e pass). [ẢNH: trang Testcase]
+- **Trang Testcase:** "Đạt 22/22", không ca nào "Không áp dụng". Bằng chứng gồm hai lần chạy riêng: (1) bộ e2e chạy local trên dev server lúc merge PR #12; (2) ngày 18/10, cùng bộ e2e được chạy lại với một cấu hình Playwright tạm có `baseURL` trỏ thẳng tới https://algorithm-visualizer.hieutk.dev, không bật dev server, và pass 314/314, trong đó có kiểm tra "Đạt 22/22" của trang Testcase. [ẢNH: trang Testcase]
 - **Unit test:**
   - Quay lui được so với oracle độc lập `existsColoring`.
   - Vét cạn được so với quay lui.

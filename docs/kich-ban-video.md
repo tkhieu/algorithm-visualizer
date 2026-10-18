@@ -116,12 +116,13 @@
 - **Hình 1:** mở `/testcases/graph-coloring`, bấm chạy toàn bộ. Dừng ở dòng kết quả "Đạt 22/22".
   - Chữ: "Bộ testcase chia 6 nhóm: thường, biên, nhỏ, lớn, đặc biệt, không hợp lệ".
 - **Hình 2:** cuộn qua từng nhóm, mỗi nhóm khoảng 3 giây.
-- **Hình 3, đồ thị lớn:** trên trang So sánh, chế độ χ, dùng bộ sinh ngẫu nhiên với n = 300, p = 0,1, seed = 1, rồi bấm "Chạy tất cả". Ba heuristic cho số màu và thời gian; quay lui và vét cạn hiện "Không áp dụng".
+- **Hình 3, xuất kết quả:** vẫn ở trang Testcase, bấm xuất CSV/JSON. Chữ: "Xuất kết quả để đưa vào report".
+- **Hình 4, đồ thị lớn:** mở `/compare/graph-coloring`. Trang này tự nạp testcase đầu tiên, nên trong trình nhập phải chọn chế độ "Tìm sắc số χ(G)", dùng bộ sinh ngẫu nhiên với n = 300, p = 0,1, seed = 1, rồi bấm "Chạy tất cả". Ba heuristic cho số màu và thời gian; quay lui và vét cạn hiện "Không áp dụng".
   - Chữ: "Heuristic chạy được trên đồ thị 300 đỉnh; DSATUR dùng ít màu nhất".
-  - **[KIỂM TRÊN WEB TRƯỚC KHI QUAY]:** trace từng bước của heuristic chỉ được ghi khi n ≤ 10, nên đồ thị lớn chỉ xem được kết quả, không xem từng bước. Hãy thử trước để chọn trang (So sánh hay Player) cho hình đẹp nhất.
-- **Hình 4, giới hạn an toàn:** mở Player quay lui (`/play/graph-coloring/backtracking`) với cùng đồ thị 300 đỉnh. App hiện "Không áp dụng: quay lui tìm χ(G) chỉ an toàn với đồ thị ≤ 10 đỉnh…".
+  - **[KIỂM TRÊN WEB TRƯỚC KHI QUAY]:** trace từng bước của heuristic chỉ được ghi khi n ≤ 10, nên đồ thị lớn chỉ xem được kết quả, không xem từng bước.
+- **Hình 5, giới hạn an toàn:** mở Player quay lui `/play/graph-coloring/backtracking`. Player không giữ dữ liệu từ trang So sánh, nên phải **sinh lại** đồ thị: chế độ "Tìm sắc số χ(G)", bộ sinh ngẫu nhiên n = 300, p = 0,1, seed = 1, rồi bấm "Chạy". App hiện "Không áp dụng: quay lui tìm χ(G) chỉ an toàn với đồ thị ≤ 10 đỉnh khi giữ thứ tự duyệt đã cho (đồ thị hiện có 300 đỉnh)."
   - Chữ: "Thuật toán chính xác có giới hạn an toàn – báo rõ thay vì treo máy".
-- **Hình 5:** bấm xuất CSV/JSON. Chữ: "Xuất kết quả để đưa vào report".
+  - **[CHỜ PR SỬA TIỀN TỐ]:** trên bản c018f19, chữ "Không áp dụng:" đang bị lặp hai lần. Chỉ quay hình này sau khi bản sửa được deploy.
 
 ### Cảnh 8 – Phần mở rộng: cả sách (0:30)
 
@@ -132,7 +133,7 @@
 
 ### Cảnh 9 – Hạn chế và kết (0:25)
 
-- **Hình:** quay lại Player tô màu với kết quả cuối của ví dụ chung, đứng yên.
+- **Hình:** mở lại Player quay lui tô màu. Kết quả cũ không được giữ khi đổi trang, nên phải dán lại JSON ví dụ chung (mục 5.1), bấm "Chạy", rồi tua tới bước cuối (bước 20) và để đứng yên.
 - **Chữ:**
   - "Hạn chế: thuật toán chính xác chỉ chạy được với đồ thị nhỏ; heuristic không bảo đảm".
   - "Mã nguồn được sinh bằng AI (Claude Code, Codex) và kiểm chứng bằng review chéo, test độc lập – chi tiết trong report".
@@ -195,8 +196,8 @@
 
 **Cảnh 7 – Testcase và dữ liệu lớn (0:50)**
 > Trang Testcase chạy toàn bộ bộ dữ liệu thử nghiệm, chia thành sáu nhóm: thông thường, biên, nhỏ, lớn, đặc biệt và không hợp lệ. Kết quả là đạt hai mươi hai trên hai mươi hai ca.
-> Với đồ thị ngẫu nhiên ba trăm đỉnh, các heuristic vẫn chạy được, và DSATUR dùng ít màu nhất. Còn thuật toán chính xác thì báo rõ là không áp dụng, thay vì làm treo trình duyệt. Quay lui chỉ nhận tới chín đỉnh ở chế độ k màu và mười đỉnh ở chế độ sắc số.
 > Kết quả có thể xuất ra file CSV hoặc JSON để đưa vào report.
+> Với đồ thị ngẫu nhiên ba trăm đỉnh, các heuristic vẫn chạy được, và DSATUR dùng ít màu nhất. Còn thuật toán chính xác thì báo rõ là không áp dụng, thay vì làm treo trình duyệt. Quay lui chỉ nhận tới chín đỉnh ở chế độ k màu và mười đỉnh ở chế độ sắc số.
 
 **Cảnh 8 – Phần mở rộng (0:30)**
 > Ngoài bài trọng tâm, em xây app trên một nền tảng chung. Nền tảng này dùng lại được cho bốn mươi bảy bài toán với một trăm hai mươi sáu cách giải trong sách Levitin, ví dụ Dijkstra hay LCS. Tuy vậy, phần em phân tích sâu và nộp để chấm vẫn là bài tô màu đồ thị.
