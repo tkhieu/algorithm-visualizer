@@ -1,0 +1,13 @@
+{
+  "name": "av-presentation",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Generator for the CS112 video-presentation slide deck (graph coloring).",
+  "scripts": {
+    "build": "node generate.mjs"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
+}

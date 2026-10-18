@@ -149,7 +149,7 @@ Giới hạn n ≤ 9 của quay lui ở chế độ k màu được chọn sau k
 - **Danh sách đỉnh có thứ tự** (`nodes`): quyết định thứ tự duyệt.
 - **Tập cạnh:** checker dùng `Set<string>` chứa các cặp đỉnh có cạnh, nên kiểm tra hai đỉnh có kề nhau hay không trong O(1).
   - **[SV XÁC NHẬN cách lưu kề trong từng `run.ts`]:** có thể là danh sách kề hoặc tập cạnh.
-- **Mảng màu** `color[v]`, với giá trị −1 nghĩa là chưa tô.
+- **Mảng màu** `color[v]`, với giá trị `null` nghĩa là chưa tô.
 - **Tập màu bị cấm** của đỉnh v: các màu đang có ở các đỉnh kề với v.
 - **Độ bão hòa** sat(v) (chỉ dùng cho DSATUR): số màu *khác nhau* đang có ở các đỉnh kề v.
 - **Trace từng bước:** mỗi bước lưu dòng mã giả (`lineId`), trạng thái đồ thị (màu từng đỉnh, đỉnh đang xét), cây trạng thái (`treeNodes`) và lời giải thích. Tham khảo `algorithms/graph-coloring/shared.ts`.
